@@ -1,0 +1,19 @@
+.toolbar {
+  background-color: rgb(99, 219, 145);
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  transition: 0.5s;
+}
+
+.toolbar-title:hover {
+  cursor: pointer;
+  color: rgb(221, 221, 221);
+  transition: 0.2s;
+}
