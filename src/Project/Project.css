@@ -1,0 +1,15 @@
+.project-window {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    overflow-y: hidden;
+}
+
+.project-task-list,
+.project-task-summary {
+    padding: 1em;
+    text-align: center;
+    background-color: var(--bubbleBackgroundColor);
+    margin: 5em;
+    border-radius: var(--borderRadius);
+}

@@ -1,21 +1,17 @@
 .main-window {
-  display: grid;
-  grid-template-columns: 200px 5fr;
+  display: flex;
   margin: 0;
   height: 100vh;
   padding: 0;
 }
 
-@media (max-width: 1200px) {
-  .main-window {
-    grid-template-columns: 1fr 5fr;
-  }
-}
-
 .project-list {
+  margin: 2em;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap; /* Allow items to wrap to the next line */
-  justify-content: flex-start; /* Align items to the left */
-  align-items: flex-start; /* Align items to the top */
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  max-height: 100%;
+  overflow-y: scroll;
 }

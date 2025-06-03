@@ -1,6 +1,6 @@
 export interface ProjectObject { name: string; id?: string }
 
-export class Project {
+export class ProjectClass {
   public name: string;
   public id: string;
 
@@ -9,8 +9,8 @@ export class Project {
     this.id = id;
   }
 
-  static fromMap(allData: { name: string; id?: string }): Project {
-    let project: Project = new Project(
+  static fromMap(allData: { name: string; id?: string }): ProjectClass {
+    let project: ProjectClass = new ProjectClass(
       allData.name,
       allData.id || "0"
     );

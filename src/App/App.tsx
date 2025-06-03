@@ -1,7 +1,9 @@
-import { ProjectCard } from "../ProjectCard/ProjectCard";
 import { Toolbar } from "../Toolbar/Toolbar";
-import { Project, type ProjectObject } from "../DataClasses/Project";
+import { ProjectClass, type ProjectObject } from "../DataClasses/ProjectClass";
 import "./App.css";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { ProjectCard } from "./ProjectCard/ProjectCard";
+import { Project } from "../Project/Project";
 
 function App() {
   const preProjectData: ProjectObject[] = [
@@ -10,17 +12,27 @@ function App() {
     { name: "Project 3", id: "3" },
   ];
 
-  const projectData = preProjectData.map((project) => Project.fromMap(project));
+  const projectData = preProjectData.map((project) => ProjectClass.fromMap(project));
 
   return (
-    <div className="main-window">
-      <Toolbar />
-      <div className="project-list">
-        {projectData.map((project) => (
-          <ProjectCard project={project} key={project.id} />
-        ))}
+
+    <BrowserRouter>
+      <div className="main-window">
+        <Toolbar />
+        <div style={{ flex: "1 1 auto" }}>
+          <Routes>
+            <Route path="/" element={
+              <div className="project-list">
+                {projectData.map((project) => (
+                  <Link to="/project" state={{ project }} key={project.id}>
+                    <ProjectCard project={project} /></Link>
+                ))}
+              </div>} />
+            <Route path="/project" element={<Project />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </BrowserRouter >
   );
 }
 
