@@ -1,16 +1,18 @@
+export interface ProjectObject { name: string; id?: string }
+
 export class Project {
   public name: string;
-  public id: string | number;
+  public id: string;
 
-  constructor(name: string, id: string | number) {
+  constructor(name: string, id: string) {
     this.name = name;
     this.id = id;
   }
 
-  static fromMap(allData: Map<string, any>): Project {
+  static fromMap(allData: { name: string; id?: string }): Project {
     let project: Project = new Project(
-      allData.get("name"),
-      allData.get("id") || "0"
+      allData.name,
+      allData.id || "0"
     );
     return project;
   }
