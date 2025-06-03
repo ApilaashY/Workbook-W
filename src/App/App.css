@@ -1,6 +1,6 @@
 .main-window {
   display: grid;
-  grid-template-columns: 300px 3fr;
+  grid-template-columns: 200px 5fr;
   margin: 0;
   height: 100vh;
   padding: 0;
@@ -8,7 +8,7 @@
 
 @media (max-width: 1200px) {
   .main-window {
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 1fr 5fr;
   }
 }
 

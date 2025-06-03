@@ -4,12 +4,27 @@
   flex-direction: column;
 }
 
+.toolbar-top-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding-top: 3em;
+}
+
+.toolbar-bottom-section {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  padding-bottom: 2em;
+}
+
 .toolbar-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: bold;
   color: white;
   text-align: center;
-  transition: 0.5s;
+  transition: 0.2s;
+  margin: 8px;
 }
 
 .toolbar-title:hover {
