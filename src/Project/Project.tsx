@@ -1,20 +1,32 @@
 import { Link, useLocation } from "react-router-dom";
 import "./Project.css";
-import type { ProjectObject } from "../DataClasses/ProjectClass";
+import type { ProjectClass } from "../DataClasses/ProjectClass";
+import type { TaskClass } from "../DataClasses/TaskClass";
 
-export function Project() {
+export function Project({
+  setTaskStack,
+}: {
+  setTaskStack: React.Dispatch<
+    React.SetStateAction<(ProjectClass | TaskClass)[]>
+  >;
+}) {
   const location = useLocation();
-  const state = location.state as ProjectObject;
+  const project = location.state as ProjectClass;
 
-  console.log(state);
+  console.log(project);
 
   return (
     <div className="project-window">
       <div className="project-task-list">
         <h2>Project Task List</h2>
-        {state.tasks?.map((task) => (
+        {project.tasks.map((task) => (
           <Link to="/project/task" state={task} key={task.id}>
-            <button className="project-task-item" onClick={() => {}}>
+            <button
+              className="project-task-item"
+              onClick={() => {
+                setTaskStack([project]);
+              }}
+            >
               {task.title}
             </button>
           </Link>

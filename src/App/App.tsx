@@ -5,11 +5,13 @@ import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import { ProjectCard } from "./ProjectCard/ProjectCard";
 import { Project } from "../Project/Project";
 import { Task } from "../Subtask/Task";
+import type { TaskClass } from "../DataClasses/TaskClass";
+import { useState } from "react";
 
 function App() {
   const preProjectData: ProjectObject[] = [
     {
-      name: "Project 1",
+      title: "Project 1",
       id: "1",
       tasks: [
         { id: "t1", title: "Design UI" },
@@ -17,7 +19,7 @@ function App() {
       ],
     },
     {
-      name: "Project 2",
+      title: "Project 2",
       id: "2",
       tasks: [
         { id: "t3", title: "Write documentation" },
@@ -25,7 +27,7 @@ function App() {
       ],
     },
     {
-      name: "Project 3",
+      title: "Project 3",
       id: "3",
       tasks: [{ id: "t5", title: "Research competitors" }],
     },
@@ -34,11 +36,12 @@ function App() {
   const projectData = preProjectData.map((project) =>
     ProjectClass.fromMap(project)
   );
+  const [taskStack, setTaskStack] = useState<(ProjectClass | TaskClass)[]>([]);
 
   return (
     <BrowserRouter>
       <div className="main-window">
-        <Toolbar />
+        <Toolbar taskStack={taskStack} setTaskStack={setTaskStack} />
         <div style={{ flex: "1 1 auto" }}>
           <Routes>
             <Route
@@ -53,8 +56,14 @@ function App() {
                 </div>
               }
             />
-            <Route path="/project" element={<Project />} />
-            <Route path="/project/task" element={<Task />} />
+            <Route
+              path="/project"
+              element={<Project setTaskStack={setTaskStack} />}
+            />
+            <Route
+              path="/project/task"
+              element={<Task setTaskStack={setTaskStack} />}
+            />
           </Routes>
         </div>
       </div>

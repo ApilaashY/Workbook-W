@@ -1,25 +1,25 @@
 import { TaskClass, type TaskObject } from "./TaskClass";
 
 export interface ProjectObject {
-  name: string;
+  title: string;
   id?: string;
-  tasks?: TaskObject[];
+  tasks: TaskObject[];
 }
 
 export class ProjectClass {
-  public name: string;
+  public title: string;
   public id: string;
   public tasks: TaskClass[];
 
-  constructor(name: string, id: string, tasks: TaskClass[]) {
-    this.name = name;
+  constructor(title: string, id: string, tasks: TaskClass[]) {
+    this.title = title;
     this.id = id;
-    this.tasks = tasks || [];
+    this.tasks = tasks ?? [];
   }
 
   static fromMap(allData: ProjectObject): ProjectClass {
     let project: ProjectClass = new ProjectClass(
-      allData.name,
+      allData.title,
       allData.id || "0",
       (allData.tasks || []).map((task) => TaskClass.fromMap(task))
     );

@@ -1,17 +1,10 @@
+import type { ProjectClass } from "../../DataClasses/ProjectClass";
 import "./ProjectCard.css";
 
-interface ProjectCardProps {
-  project: {
-    name: string;
-    id: string | number;
-    // add other properties if needed
-  };
-}
-
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project }: { project: ProjectClass }) {
   return (
     <div className="project-card">
-      <h3>{project.name}</h3>
+      <h3>{project.title}</h3>
       <p>ID: {project.id}</p>
     </div>
   );

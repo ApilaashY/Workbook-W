@@ -13,17 +13,17 @@
   border-radius: var(--borderRadius);
   display: flex;
   flex-direction: column;
-  gap: 1em;
 }
 
 .task-subtask-list {
   background-color: var(--bubbleBackgroundColor);
+  gap: 1em;
 }
 
 .task-information-text {
   text-align: center;
   width: fit-content;
-  margin: 0 auto;
+  margin: 1em auto;
   transition-duration: 0.2s;
 }
 
