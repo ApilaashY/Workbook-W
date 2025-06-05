@@ -3,6 +3,9 @@ import { TaskClass } from "../DataClasses/TaskClass";
 import "./Task.css";
 import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
+import { useSelector } from "react-redux";
+import type { ProjectStore } from "../store";
+import { current } from "@reduxjs/toolkit";
 
 export function Task({
   setTaskStack,
@@ -13,8 +16,18 @@ export function Task({
 }) {
   const location = useLocation();
   const params = useParams();
+  const project = location.state as string;
+  const projectData: ProjectClass[] = useSelector(
+    (state: ProjectStore) => state.projects
+  );
 
-  const [task, setTask] = useState(TaskClass.fromMap(location.state));
+  const projectInfo: TaskClass | undefined = findTaskById(projectData, project);
+
+  if (!projectInfo) {
+    return <div>Project not found</div>;
+  }
+
+  const [task, setTask] = useState(projectInfo);
   const [taskTitle, setTaskTitle] = useState(task.title);
   const [taskDescription, setTaskDescription] = useState(task.description);
   const [progress, setProgress] = useState(0);
@@ -28,6 +41,33 @@ export function Task({
     setSubtasks(newTask.subtasks);
     setProgress(0);
   }, [location.state, params.id]);
+
+  function findTaskById(
+    data: ProjectClass[],
+    id: string
+  ): TaskClass | undefined {
+    let currentId: string = "";
+    const idParts = id.split("-");
+
+    let currentData: TaskClass[] | undefined =
+      (data as ProjectClass[]).find((project) => project.id === idParts[0])
+        ?.tasks || [];
+
+    for (let i = 0; i < idParts.length; i++) {
+      if (i > 0) {
+        currentId += "-";
+      }
+      currentId += idParts[i];
+      if (currentData instanceof TaskClass) return currentData;
+
+      for (const project of currentData) {
+        if (project.id === currentId) {
+          currentData = project.tasks;
+        }
+      }
+    }
+    return currentData;
+  }
 
   function editTaskInfo(category: "title" | "description", required: boolean) {
     let data: string | null = null;
