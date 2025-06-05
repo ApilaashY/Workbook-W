@@ -14,22 +14,22 @@ function App() {
       title: "Project 1",
       id: "1",
       tasks: [
-        { id: "t1", title: "Design UI" },
-        { id: "t2", title: "Set up backend" },
+        { id: "1-0", title: "Design UI" },
+        { id: "1-1", title: "Set up backend" },
       ],
     },
     {
       title: "Project 2",
       id: "2",
       tasks: [
-        { id: "t3", title: "Write documentation" },
-        { id: "t4", title: "Deploy to server" },
+        { id: "2-0", title: "Write documentation" },
+        { id: "2-1", title: "Deploy to server" },
       ],
     },
     {
       title: "Project 3",
       id: "3",
-      tasks: [{ id: "t5", title: "Research competitors" }],
+      tasks: [{ id: "3-0", title: "Research competitors" }],
     },
   ];
 
@@ -41,7 +41,11 @@ function App() {
   return (
     <BrowserRouter>
       <div className="main-window">
-        <Toolbar taskStack={taskStack} setTaskStack={setTaskStack} />
+        <Toolbar
+          taskStack={taskStack}
+          setTaskStack={setTaskStack}
+          testData={projectData}
+        />
         <div style={{ flex: "1 1 auto" }}>
           <Routes>
             <Route
@@ -61,7 +65,7 @@ function App() {
               element={<Project setTaskStack={setTaskStack} />}
             />
             <Route
-              path="/project/task"
+              path="/project/task/:id"
               element={<Task setTaskStack={setTaskStack} />}
             />
           </Routes>

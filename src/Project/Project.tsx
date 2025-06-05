@@ -13,14 +13,12 @@ export function Project({
   const location = useLocation();
   const project = location.state as ProjectClass;
 
-  console.log(project);
-
   return (
     <div className="project-window">
       <div className="project-task-list">
         <h2>Project Task List</h2>
         {project.tasks.map((task) => (
-          <Link to="/project/task" state={task} key={task.id}>
+          <Link to={`/project/task/${task.id}`} state={task} key={task.id}>
             <button
               className="project-task-item"
               onClick={() => {

@@ -1,9 +1,10 @@
 export interface TaskObject {
   title: string;
   description?: string;
-  id?: string;
+  id: string;
   progress?: number;
   subtasks?: TaskObject[];
+  taskCount?: number;
 }
 
 export class TaskClass {
@@ -12,29 +13,38 @@ export class TaskClass {
   public id: string;
   public progress: number;
   public subtasks: TaskClass[];
+  public taskCount: number;
 
   constructor(
     title: string,
-    id?: string,
+    id: string,
     description?: string,
     progress?: number,
-    subtasks?: TaskClass[]
+    subtasks?: TaskClass[],
+    taskCount?: number
   ) {
     this.title = title.trim();
-    this.id = (id ?? "0").trim();
+    this.id = id.trim();
     this.description = (description ?? "").trim();
     this.progress = progress ?? 0;
     this.subtasks = subtasks ?? [];
+    this.taskCount = taskCount ?? subtasks?.length ?? 0;
   }
 
   static fromMap(allData: TaskObject): TaskClass {
     let task: TaskClass = new TaskClass(
       allData.title.trim(),
-      allData.id?.trim() || "0",
+      allData.id.trim(),
       allData.description?.trim() || "",
       allData.progress,
-      allData.subtasks?.map(TaskClass.fromMap) || []
+      allData.subtasks?.map(TaskClass.fromMap) || [],
+      allData.taskCount ?? allData.subtasks?.length ?? 0
     );
     return task;
+  }
+
+  static getTaskCount(task: TaskClass): number {
+    task.taskCount++;
+    return task.taskCount - 1;
   }
 }

@@ -1,7 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { TaskClass } from "../DataClasses/TaskClass";
 import "./Task.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 
 export function Task({
@@ -12,12 +12,22 @@ export function Task({
   >;
 }) {
   const location = useLocation();
-  const task = location.state as TaskClass;
+  const params = useParams();
 
+  const [task, setTask] = useState(TaskClass.fromMap(location.state));
   const [taskTitle, setTaskTitle] = useState(task.title);
   const [taskDescription, setTaskDescription] = useState(task.description);
   const [progress, setProgress] = useState(0);
   const [subtasks, setSubtasks] = useState(task.subtasks);
+
+  useEffect(() => {
+    const newTask = location.state;
+    setTask(newTask);
+    setTaskTitle(newTask.title);
+    setTaskDescription(newTask.description);
+    setSubtasks(newTask.subtasks);
+    setProgress(0);
+  }, [location.state, params.id]);
 
   function editTaskInfo(category: "title" | "description", required: boolean) {
     let data: string | null = null;
@@ -89,7 +99,10 @@ export function Task({
           onClick={() =>
             setSubtasks((previousTasks) => [
               ...previousTasks,
-              new TaskClass("new sub"),
+              new TaskClass(
+                "new sub",
+                task.id + "-" + TaskClass.getTaskCount(task)
+              ),
             ])
           }
         >
@@ -97,7 +110,7 @@ export function Task({
         </button>
         {subtasks.map((subtask) => (
           <Link
-            to="/project/task"
+            to={`/project/task/${subtask.id}`}
             state={subtask}
             key={subtask.id}
             onClick={() => {
