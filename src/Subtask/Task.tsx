@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useSelector } from "react-redux";
 import type { ProjectStore } from "../store";
-import { current } from "@reduxjs/toolkit";
 
 export function Task({
   setTaskStack,
@@ -28,45 +27,42 @@ export function Task({
   }
 
   const [task, setTask] = useState(projectInfo);
-  const [taskTitle, setTaskTitle] = useState(task.title);
-  const [taskDescription, setTaskDescription] = useState(task.description);
   const [progress, setProgress] = useState(0);
-  const [subtasks, setSubtasks] = useState(task.subtasks);
 
   useEffect(() => {
-    const newTask = location.state;
-    setTask(newTask);
-    setTaskTitle(newTask.title);
-    setTaskDescription(newTask.description);
-    setSubtasks(newTask.subtasks);
-    setProgress(0);
+    const newTask = findTaskById(projectData, location.state as string);
+    if (newTask !== undefined) {
+      setTask(newTask);
+      setProgress(0);
+    }
   }, [location.state, params.id]);
 
   function findTaskById(
     data: ProjectClass[],
     id: string
   ): TaskClass | undefined {
-    let currentId: string = "";
     const idParts = id.split("-");
+    let currentId: string = idParts[0];
 
-    let currentData: TaskClass[] | undefined =
-      (data as ProjectClass[]).find((project) => project.id === idParts[0])
-        ?.tasks || [];
+    let currentData: ProjectClass | TaskClass | undefined = (
+      data as ProjectClass[]
+    ).find((project) => project.id === currentId);
 
-    for (let i = 0; i < idParts.length; i++) {
-      if (i > 0) {
-        currentId += "-";
-      }
-      currentId += idParts[i];
-      if (currentData instanceof TaskClass) return currentData;
+    for (let i = 1; i < idParts.length; i++) {
+      currentId += "-" + idParts[i];
 
-      for (const project of currentData) {
-        if (project.id === currentId) {
-          currentData = project.tasks;
-        }
+      if (currentData === undefined) return undefined;
+      else if (!currentData.id.includes("-")) {
+        currentData = (currentData as ProjectClass).tasks.find(
+          (task) => task.id === currentId
+        );
+      } else {
+        currentData = (currentData as TaskClass).subtasks.find(
+          (subtask) => subtask.id === currentId
+        );
       }
     }
-    return currentData;
+    return currentData as TaskClass | undefined;
   }
 
   function editTaskInfo(category: "title" | "description", required: boolean) {
@@ -80,9 +76,17 @@ export function Task({
         data = null;
       } else {
         if (category === "title") {
-          setTaskTitle(data); // Update the task title in state
+          const newTask = {
+            ...task,
+            title: data,
+          };
+          setTask(newTask); // Update the task title in state
         } else if (category === "description") {
-          setTaskDescription(data); // Update the task description in state
+          const newTask = {
+            ...task,
+            description: data,
+          };
+          setTask(newTask); // Update the task description in state
         }
         task[category] = data; // Update the task title
       }
@@ -110,15 +114,15 @@ export function Task({
           onClick={() => editTaskInfo("title", true)}
           className="task-information-text"
         >
-          {taskTitle}
+          {task.title}
         </h2>
         <h2
           onClick={() => editTaskInfo("description", false)}
           className="task-information-text"
         >
-          {taskDescription.trim().length === 0
+          {task.description.trim().length === 0
             ? "No Description"
-            : taskDescription}
+            : task.description}
         </h2>
         <label>
           <h2>Progress: {progress}%</h2>
@@ -136,22 +140,26 @@ export function Task({
       <div className="task-subtask-list">
         <h2>Sub Tasks</h2>
         <button
-          onClick={() =>
-            setSubtasks((previousTasks) => [
-              ...previousTasks,
-              new TaskClass(
-                "new sub",
-                task.id + "-" + TaskClass.getTaskCount(task)
-              ),
-            ])
-          }
+          onClick={() => {
+            const updatedTask = {
+              ...task,
+              subtasks: [
+                ...task.subtasks,
+                new TaskClass(
+                  "new sub",
+                  task.id + "-" + TaskClass.getTaskCount(task)
+                ),
+              ],
+            };
+            setTask(updatedTask);
+          }}
         >
           Add Subtask
         </button>
-        {subtasks.map((subtask) => (
+        {task.subtasks.map((subtask) => (
           <Link
             to={`/project/task/${subtask.id}`}
-            state={subtask}
+            state={subtask.id}
             key={subtask.id}
             onClick={() => {
               setTaskStack((prevStack) => [...prevStack, subtask]);
