@@ -3,7 +3,7 @@ import { TaskClass } from "../DataClasses/TaskClass";
 import "./Task.css";
 import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { ProjectStore } from "../store";
 
 export function Task({
@@ -15,6 +15,7 @@ export function Task({
 }) {
   const location = useLocation();
   const params = useParams();
+  const dispatch = useDispatch();
   const project = location.state as string;
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
@@ -141,17 +142,11 @@ export function Task({
         <h2>Sub Tasks</h2>
         <button
           onClick={() => {
-            const updatedTask = {
+            // Replace 'updateTaskAction' with your actual action creator
+            dispatch({ type: "updateTasks", payload: { id: task.id, data: "new sub" } });
+            setTask({
               ...task,
-              subtasks: [
-                ...task.subtasks,
-                new TaskClass(
-                  "new sub",
-                  task.id + "-" + TaskClass.getTaskCount(task)
-                ),
-              ],
-            };
-            setTask(updatedTask);
+            });
           }}
         >
           Add Subtask
