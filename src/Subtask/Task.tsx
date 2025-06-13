@@ -76,16 +76,16 @@ export function Task({
         data = null;
       } else {
         if (category === "title") {
-          const newTask = {
+          const newTask = TaskClass.fromMap({
             ...task,
             title: data,
-          };
+          });
           setTask(newTask); // Update the task title in state
         } else if (category === "description") {
-          const newTask = {
+          const newTask = TaskClass.fromMap({
             ...task,
             description: data,
-          };
+          });
           setTask(newTask); // Update the task description in state
         }
         task[category] = data; // Update the task title
@@ -141,16 +141,13 @@ export function Task({
         <h2>Sub Tasks</h2>
         <button
           onClick={() => {
-            const updatedTask = {
+            const updatedTask = TaskClass.fromMap({
               ...task,
               subtasks: [
                 ...task.subtasks,
-                new TaskClass(
-                  "new sub",
-                  task.id + "-" + TaskClass.getTaskCount(task)
-                ),
+                new TaskClass("new sub", task.id + "-" + task.getTaskCount()),
               ],
-            };
+            });
             setTask(updatedTask);
           }}
         >

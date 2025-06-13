@@ -15,7 +15,7 @@ const projectSlice = createSlice({
         { id: "1-0", title: "Design UI" },
         { id: "1-1", title: "Set up backend" },
       ],
-    }),
+    }).toMap(),
     ProjectClass.fromMap({
       title: "Project 2",
       id: "2",
@@ -23,12 +23,12 @@ const projectSlice = createSlice({
         { id: "2-0", title: "Write documentation" },
         { id: "2-1", title: "Deploy to server" },
       ],
-    }),
+    }).toMap(),
     ProjectClass.fromMap({
       title: "Project 3",
       id: "3",
       tasks: [{ id: "3-0", title: "Research competitors" }],
-    }),
+    }).toMap(),
   ],
   reducers: {},
 });
