@@ -1,8 +1,37 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-import { ProjectClass } from "./DataClasses/ProjectClass";
+import { ProjectClass, type ProjectObject } from "./DataClasses/ProjectClass";
+import { TaskClass } from "./DataClasses/TaskClass";
 
 export interface ProjectStore {
   projects: ProjectClass[];
+}
+
+function findTaskById(
+  data: ProjectObject[],
+  id: string
+): TaskClass | undefined {
+  const idParts = id.split("-");
+  let currentId: string = idParts[0];
+
+  let currentData: ProjectClass | TaskClass | undefined = (
+    data as ProjectClass[]
+  ).find((project) => project.id === currentId);
+
+  for (let i = 1; i < idParts.length; i++) {
+    currentId += "-" + idParts[i];
+
+    if (currentData === undefined) return undefined;
+    else if (!currentData.id.includes("-")) {
+      currentData = (currentData as ProjectClass).tasks.find(
+        (task) => task.id === currentId
+      );
+    } else {
+      currentData = (currentData as TaskClass).subtasks.find(
+        (subtask) => subtask.id === currentId
+      );
+    }
+  }
+  return currentData as TaskClass | undefined;
 }
 
 const projectSlice = createSlice({
@@ -30,7 +59,20 @@ const projectSlice = createSlice({
       tasks: [{ id: "3-0", title: "Research competitors" }],
     }).toMap(),
   ],
-  reducers: {},
+  reducers: {
+    updateTasks: (state, action: { payload: { id: string; data: string } }) => {
+      let task = findTaskById(state, action.payload.id);
+      if (task) {
+        task.subtasks = [
+          ...task.subtasks,
+          new TaskClass(
+            action.payload.data,
+            task.id + "-" + task.getTaskCount()
+          ),
+        ];
+      }
+    },
+  },
 });
 
 export const store = configureStore({
@@ -38,3 +80,5 @@ export const store = configureStore({
     projects: projectSlice.reducer,
   },
 });
+
+export const { updateTasks } = projectSlice.actions;

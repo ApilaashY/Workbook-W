@@ -34,4 +34,13 @@ export class ProjectClass {
     );
     return project;
   }
+
+  toMap(): ProjectObject {
+    return {
+      title: this.title,
+      id: this.id,
+      tasks: this.tasks.map((val) => val.toMap()),
+      taskCount: this.taskCount,
+    };
+  }
 }

@@ -43,8 +43,19 @@ export class TaskClass {
     return task;
   }
 
-  static getTaskCount(task: TaskClass): number {
-    task.taskCount++;
-    return task.taskCount - 1;
+  getTaskCount(): number {
+    this.taskCount++;
+    return this.taskCount - 1;
+  }
+
+  toMap(): TaskObject {
+    return {
+      title: this.title,
+      id: this.id,
+      taskCount: this.taskCount,
+      description: this.description,
+      progress: this.progress,
+      subtasks: this.subtasks.map((val) => val.toMap()),
+    };
   }
 }
