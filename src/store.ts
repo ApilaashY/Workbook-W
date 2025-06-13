@@ -62,12 +62,13 @@ const projectSlice = createSlice({
   reducers: {
     updateTasks: (state, action: { payload: { id: string; data: string } }) => {
       let task = findTaskById(state, action.payload.id);
+      console.log(task?.title);
       if (task) {
         task.subtasks = [
           ...task.subtasks,
           new TaskClass(
             action.payload.data,
-            task.id + "-" + task.getTaskCount()
+            task.id + "-" + TaskClass.getTaskCount(task)
           ),
         ];
       }

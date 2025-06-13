@@ -43,9 +43,9 @@ export class TaskClass {
     return task;
   }
 
-  getTaskCount(): number {
-    this.taskCount++;
-    return this.taskCount - 1;
+  static getTaskCount(allData: TaskClass): number {
+    allData.taskCount++;
+    return allData.taskCount - 1;
   }
 
   toMap(): TaskObject {

@@ -4,7 +4,7 @@ import "./Task.css";
 import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
-import type { ProjectStore } from "../store";
+import { updateTasks, type ProjectStore } from "../store";
 
 export function Task({
   setTaskStack,
@@ -89,7 +89,6 @@ export function Task({
           });
           setTask(newTask); // Update the task description in state
         }
-        task[category] = data; // Update the task title
       }
     }
   }
@@ -142,16 +141,8 @@ export function Task({
         <h2>Sub Tasks</h2>
         <button
           onClick={() => {
-            // Replace 'updateTaskAction' with your actual action creator
-            dispatch({
-              type: "updateTasks",
-              payload: { id: task.id, data: "new sub" },
-            });
-            setTask(
-              TaskClass.fromMap({
-                ...task,
-              })
-            );
+            dispatch(updateTasks({ id: task.id, data: "new sub" }));
+            setTask(findTaskById(projectData, project) || task);
           }}
         >
           Add Subtask
