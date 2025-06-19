@@ -43,7 +43,8 @@ export class TaskClass {
     return task;
   }
 
-  static getTaskCount(allData: TaskClass): number {
+  static getTaskCount(allData: TaskClass | TaskObject): number {
+    allData.taskCount = allData.taskCount ?? 0;
     allData.taskCount++;
     return allData.taskCount - 1;
   }

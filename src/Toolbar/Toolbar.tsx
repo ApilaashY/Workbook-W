@@ -26,7 +26,7 @@ export function Toolbar({
               to={
                 !item.id.includes("-") ? "/project" : `/project/task/${item.id}`
               }
-              state={item}
+              state={item.id}
               key={item.id}
               onClick={() => setTaskStack((prev) => prev.slice(0, index))}
             >

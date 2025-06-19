@@ -1,10 +1,10 @@
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { TaskClass } from "../DataClasses/TaskClass";
 import "./Task.css";
 import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
-import { updateTasks, type ProjectStore } from "../store";
+import { addTasks, updateTask, type ProjectStore } from "../store";
 
 export function Task({
   setTaskStack,
@@ -14,10 +14,9 @@ export function Task({
   >;
 }) {
   const location = useLocation();
-  const params = useParams();
   const dispatch = useDispatch();
   const project = location.state as string;
-  const projectData: ProjectClass[] = useSelector(
+  let projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
 
@@ -36,12 +35,9 @@ export function Task({
       setTask(newTask);
       setProgress(0);
     }
-  }, [location.state, params.id]);
+  }, [projectData, location.state]);
 
-  function findTaskById(
-    data: ProjectClass[],
-    id: string
-  ): TaskClass | undefined {
+  function findTaskById(data: ProjectClass[], id: string): TaskClass {
     const idParts = id.split("-");
     let currentId: string = idParts[0];
 
@@ -52,7 +48,7 @@ export function Task({
     for (let i = 1; i < idParts.length; i++) {
       currentId += "-" + idParts[i];
 
-      if (currentData === undefined) return undefined;
+      if (currentData === undefined) return new TaskClass("", "");
       else if (!currentData.id.includes("-")) {
         currentData = (currentData as ProjectClass).tasks.find(
           (task) => task.id === currentId
@@ -63,7 +59,7 @@ export function Task({
         );
       }
     }
-    return currentData as TaskClass | undefined;
+    return currentData as TaskClass;
   }
 
   function editTaskInfo(category: "title" | "description", required: boolean) {
@@ -76,19 +72,9 @@ export function Task({
         alert(`Task ${category} cannot be empty`);
         data = null;
       } else {
-        if (category === "title") {
-          const newTask = TaskClass.fromMap({
-            ...task,
-            title: data,
-          });
-          setTask(newTask); // Update the task title in state
-        } else if (category === "description") {
-          const newTask = TaskClass.fromMap({
-            ...task,
-            description: data,
-          });
-          setTask(newTask); // Update the task description in state
-        }
+        dispatch(
+          updateTask({ id: location.state, category: category, data: data })
+        );
       }
     }
   }
@@ -141,8 +127,7 @@ export function Task({
         <h2>Sub Tasks</h2>
         <button
           onClick={() => {
-            dispatch(updateTasks({ id: task.id, data: "new sub" }));
-            setTask(findTaskById(projectData, project) || task);
+            dispatch(addTasks({ id: task.id, data: "new sub" }));
           }}
         >
           Add Subtask
