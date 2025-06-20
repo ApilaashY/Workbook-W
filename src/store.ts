@@ -76,7 +76,7 @@ const projectSlice = createSlice({
     updateTask: (
       state,
       action: {
-        payload: { id: string; category: "title" | "description"; data: any };
+        payload: { id: string; category: "title" | "description" | "progress"; data: any };
       }
     ) => {
       const idParts = action.payload.id.split("-");

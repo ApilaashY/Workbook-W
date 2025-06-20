@@ -1,17 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import "./Project.css";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
-import type { TaskClass } from "../DataClasses/TaskClass";
 import { useSelector } from "react-redux";
 import type { ProjectStore } from "../store";
 
-export function Project({
-  setTaskStack,
-}: {
-  setTaskStack: React.Dispatch<
-    React.SetStateAction<(ProjectClass | TaskClass)[]>
-  >;
-}) {
+export function Project() {
   const location = useLocation();
   const project = location.state as string;
   const projectData: ProjectClass[] = useSelector(
@@ -30,9 +23,6 @@ export function Project({
           <Link to={`/project/task/${task.id}`} state={task.id} key={task.id}>
             <button
               className="project-task-item"
-              onClick={() => {
-                setTaskStack([projectInfo]);
-              }}
             >
               {task.title}
             </button>

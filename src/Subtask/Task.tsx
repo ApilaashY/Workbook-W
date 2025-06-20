@@ -5,14 +5,9 @@ import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
 import { addTasks, updateTask, type ProjectStore } from "../store";
+import { TaskProgressTypes } from "../DataClasses/TaskClass";
 
-export function Task({
-  setTaskStack,
-}: {
-  setTaskStack: React.Dispatch<
-    React.SetStateAction<(ProjectClass | TaskClass)[]>
-  >;
-}) {
+export function Task() {
   const location = useLocation();
   const dispatch = useDispatch();
   const project = location.state as string;
@@ -110,6 +105,16 @@ export function Task({
             ? "No Description"
             : task.description}
         </h2>
+
+        <select value={task.progress} id="cars" onChange={(e) => dispatch(
+          updateTask({ id: location.state, category: "progress", data: e.target.value })
+        )}>
+          {
+            TaskProgressTypes.map((progressOption) => <option value={progressOption} key={progressOption}>
+              {progressOption}
+            </option>)
+          }
+        </select>
         <label>
           <h2>Progress: {progress}%</h2>
           <input
@@ -137,9 +142,6 @@ export function Task({
             to={`/project/task/${subtask.id}`}
             state={subtask.id}
             key={subtask.id}
-            onClick={() => {
-              setTaskStack((prevStack) => [...prevStack, subtask]);
-            }}
           >
             <button className="project-task-item">{subtask.title}</button>
           </Link>

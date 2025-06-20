@@ -2,7 +2,7 @@ export interface TaskObject {
   title: string;
   description?: string;
   id: string;
-  progress?: number;
+  progress?: TaskProgress;
   subtasks?: TaskObject[];
   taskCount?: number;
 }
@@ -11,7 +11,7 @@ export class TaskClass {
   public title: string;
   public description: string;
   public id: string;
-  public progress: number;
+  public progress: TaskProgress;
   public subtasks: TaskClass[];
   public taskCount: number;
 
@@ -19,14 +19,14 @@ export class TaskClass {
     title: string,
     id: string,
     description?: string,
-    progress?: number,
+    progress?: TaskProgress,
     subtasks?: TaskClass[],
     taskCount?: number
   ) {
     this.title = title.trim();
     this.id = id.trim();
     this.description = (description ?? "").trim();
-    this.progress = progress ?? 0;
+    this.progress = progress ?? "Not Started";
     this.subtasks = subtasks ?? [];
     this.taskCount = taskCount ?? subtasks?.length ?? 0;
   }
@@ -36,7 +36,7 @@ export class TaskClass {
       allData.title.trim(),
       allData.id.trim(),
       allData.description?.trim() || "",
-      allData.progress,
+      allData.progress || "Not Started",
       allData.subtasks?.map(TaskClass.fromMap) || [],
       allData.taskCount ?? allData.subtasks?.length ?? 0
     );
@@ -60,3 +60,11 @@ export class TaskClass {
     };
   }
 }
+
+export const TaskProgressTypes: string[] = [
+  "Not Started",
+  "In Progress",
+  "Scheduled",
+  "Done",
+];
+export type TaskProgress = (typeof TaskProgressTypes)[number];
