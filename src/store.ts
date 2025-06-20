@@ -120,10 +120,11 @@ const projectSlice = createSlice({
           (obj) => obj == currentData
         );
 
-        (previousData as TaskClass).subtasks[index] = TaskClass.fromMap({
-          ...currentData,
-          [action.payload.category]: action.payload.data,
-        } as TaskObject);
+        ((previousData as TaskObject).subtasks || [])[index] =
+          TaskClass.fromMap({
+            ...currentData,
+            [action.payload.category]: action.payload.data,
+          } as TaskObject).toMap();
       }
     },
   },

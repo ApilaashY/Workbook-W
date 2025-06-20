@@ -3,6 +3,7 @@ import "./Project.css";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useSelector } from "react-redux";
 import type { ProjectStore } from "../store";
+import { TaskProgressColors } from "../DataClasses/TaskClass";
 
 export function Project() {
   const location = useLocation();
@@ -23,6 +24,9 @@ export function Project() {
           <Link to={`/project/task/${task.id}`} state={task.id} key={task.id}>
             <button
               className="project-task-item"
+              style={{
+                border: `2px solid ${TaskProgressColors[task.progress]}`
+              }}
             >
               {task.title}
             </button>

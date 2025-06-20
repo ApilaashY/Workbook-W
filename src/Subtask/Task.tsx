@@ -22,13 +22,11 @@ export function Task() {
   }
 
   const [task, setTask] = useState(projectInfo);
-  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const newTask = findTaskById(projectData, location.state as string);
     if (newTask !== undefined) {
       setTask(newTask);
-      setProgress(0);
     }
   }, [projectData, location.state]);
 
@@ -74,18 +72,19 @@ export function Task() {
     }
   }
 
-  function calculateColor(progress: number): string {
-    if (progress <= 50) {
-      const red = 255 * (1 - progress / 50) + 255 * (progress / 50);
-      const green = 0 * (1 - progress / 50) + 255 * (progress / 50);
-
-      return `rgb(${red}, ${green}, 0)`;
+  function createNewTask() {
+    let data: string | null | undefined = null;
+    while (data === null) {
+      data = prompt("Enter title of new subtask")?.trim();
+      if (data === null || data === undefined) {
+        return; // User cancelled
+      } else if (data === "") {
+        alert(`Task title cannot be empty`);
+        data = null;
+      } else {
+        dispatch(addTasks({ id: task.id, data: data }));
+      }
     }
-    const red = 255 * (1 - (progress - 50) / 50) + 0 * ((progress - 50) / 50);
-    const green =
-      255 * (1 - (progress - 50) / 50) + 255 * ((progress - 50) / 50);
-
-    return `rgb(${red}, ${green}, 0)`;
   }
 
   return (
@@ -106,47 +105,39 @@ export function Task() {
             : task.description}
         </h2>
 
-        <select value={task.progress} id="cars" onChange={(e) => dispatch(
+        <select value={task.progress} className="task-progress-select" onChange={(e) => dispatch(
           updateTask({ id: location.state, category: "progress", data: e.target.value })
         )}
-          style={{ backgroundColor: TaskProgressColors[task.progress] }}>
+          style={{ backgroundColor: TaskProgressColors[task.progress], color: ((TaskProgressColors[task.progress].startsWith("#ff")) ? "black" : "white") }}>
           {
             TaskProgressTypes.map((progressOption) => <option value={progressOption} key={progressOption}>
               {progressOption}
             </option>)
           }
         </select>
-        <label>
-          <h2>Progress: {progress}%</h2>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={progress}
-            onChange={(e) => setProgress(Number(e.target.value))}
-            style={{ width: "100%", accentColor: calculateColor(progress) }}
-          />
-        </label>
       </div>
 
       <div className="task-subtask-list">
         <h2>Sub Tasks</h2>
+        <div className="task-subtask-list-items">
+          {task.subtasks.map((subtask) => (
+            <Link
+              to={`/project/task/${subtask.id}`}
+              state={subtask.id}
+              key={subtask.id}
+            >
+              <button className="task-subtask-item" style={{
+                border: `2px solid ${TaskProgressColors[subtask.progress]}`
+              }}>{subtask.title}</button>
+            </Link>
+          ))}</div>
         <button
-          onClick={() => {
-            dispatch(addTasks({ id: task.id, data: "new sub" }));
-          }}
+          className="add-subtask-button"
+          onClick={createNewTask}
+
         >
           Add Subtask
         </button>
-        {task.subtasks.map((subtask) => (
-          <Link
-            to={`/project/task/${subtask.id}`}
-            state={subtask.id}
-            key={subtask.id}
-          >
-            <button className="project-task-item">{subtask.title}</button>
-          </Link>
-        ))}
       </div>
     </div>
   );
