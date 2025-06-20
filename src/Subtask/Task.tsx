@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { TaskClass } from "../DataClasses/TaskClass";
+import { TaskClass, TaskProgressColors } from "../DataClasses/TaskClass";
 import "./Task.css";
 import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
@@ -108,7 +108,8 @@ export function Task() {
 
         <select value={task.progress} id="cars" onChange={(e) => dispatch(
           updateTask({ id: location.state, category: "progress", data: e.target.value })
-        )}>
+        )}
+          style={{ backgroundColor: TaskProgressColors[task.progress] }}>
           {
             TaskProgressTypes.map((progressOption) => <option value={progressOption} key={progressOption}>
               {progressOption}

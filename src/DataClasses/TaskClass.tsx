@@ -68,3 +68,9 @@ export const TaskProgressTypes: string[] = [
   "Done",
 ];
 export type TaskProgress = (typeof TaskProgressTypes)[number];
+export const TaskProgressColors: Record<TaskProgress, string> = {
+  "Not Started": "grey",
+  "In Progress": "yellow",
+  "Scheduled": "blue",
+  "Done": "green",
+};
