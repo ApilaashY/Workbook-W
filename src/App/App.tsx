@@ -7,11 +7,22 @@ import { Project } from "../Project/Project";
 import { Task } from "../Subtask/Task";
 import { useSelector } from "react-redux";
 import type { ProjectStore } from "../store";
+import { useEffect } from "react";
+import { onValue, ref } from "firebase/database";
+import { db } from "../firebase";
 
 function App() {
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
+
+  useEffect(() => {
+    onValue(
+      ref(db, "projects"),
+      (data) => {
+        console.log(data.val())
+      });
+  })
 
   return (
     <BrowserRouter>

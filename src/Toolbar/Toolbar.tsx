@@ -19,9 +19,10 @@ export function Toolbar({
   );
 
   useEffect(() => {
-    console.log(location.state);
-
-    if (!location.state) return;
+    if (!location.state) {
+      setStack([]);
+      return;
+    }
 
     let newStack = new Array<ProjectClass | TaskClass>(location.state.split("-").length);
 
@@ -58,20 +59,25 @@ export function Toolbar({
         <Link to="/" onClick={() => setStack([])}>
           <h2 className="toolbar-title">Projects</h2>
         </Link>
-        {stack.map((item, index) => {
-          return (
-            <Link
-              to={
-                !item.id.includes("-") ? "/project" : `/project/task/${item.id}`
-              }
-              state={item.id}
-              key={item.id}
-              onClick={() => setStack((prev) => prev.slice(0, index))}
-            >
-              <h2 className="toolbar-title">{item.title}</h2>
-            </Link>
-          );
-        })}
+        <div className='toolbar-breadcrumbs'>
+          {stack.map((item, index) => {
+            return (
+              <>
+                <h2 style={{ textAlign: "center", color: "white", margin: "0.25em" }}>V</h2>
+                <Link
+                  to={
+                    !item.id.includes("-") ? "/project" : `/project/task/${item.id}`
+                  }
+                  state={item.id}
+                  key={item.id}
+                  onClick={() => setStack((prev) => prev.slice(0, index))}
+                >
+                  <h2 className="toolbar-title">{item.title}</h2>
+                </Link>
+              </>
+            );
+          })}
+        </div>
       </div>
       <div className="toolbar-bottom-section">
         <button onClick={() => console.log(testData)}>HIDFS</button>
