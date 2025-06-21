@@ -5,7 +5,9 @@
   margin: 0;
   padding: 0;
   --bubbleBackgroundColor: rgb(240, 240, 240);
-  --borderRadius: 8px
+  --borderRadius: 8px;
+  --primary: #32cb6c;
+  height: 100%;
 }
 
 body {

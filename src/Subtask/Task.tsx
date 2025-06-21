@@ -6,6 +6,7 @@ import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
 import { addTasks, updateTask, type ProjectStore } from "../store";
 import { TaskProgressTypes } from "../DataClasses/TaskClass";
+import { Toolbar } from "../Toolbar/Toolbar";
 
 export function Task() {
   const location = useLocation();
@@ -88,56 +89,58 @@ export function Task() {
   }
 
   return (
-    <div className="task-window">
-      <div className="task-stats">
-        <h2
-          onClick={() => editTaskInfo("title", true)}
-          className="task-information-text"
-        >
-          {task.title}
-        </h2>
-        <h2
-          onClick={() => editTaskInfo("description", false)}
-          className="task-information-text"
-        >
-          {task.description.trim().length === 0
-            ? "No Description"
-            : task.description}
-        </h2>
+    <div className="main-window">
+      <Toolbar />
+      <div className="task-window">
+        <div className="task-stats">
+          <h2
+            onClick={() => editTaskInfo("title", true)}
+            className="task-information-text"
+          >
+            {task.title}
+          </h2>
+          <h2
+            onClick={() => editTaskInfo("description", false)}
+            className="task-information-text"
+          >
+            {task.description.trim().length === 0
+              ? "No Description"
+              : task.description}
+          </h2>
 
-        <select value={task.progress} className="task-progress-select" onChange={(e) => dispatch(
-          updateTask({ id: location.state, category: "progress", data: e.target.value })
-        )}
-          style={{ backgroundColor: TaskProgressColors[task.progress], color: ((TaskProgressColors[task.progress].startsWith("#ff")) ? "black" : "white") }}>
-          {
-            TaskProgressTypes.map((progressOption) => <option value={progressOption} key={progressOption}>
-              {progressOption}
-            </option>)
-          }
-        </select>
-      </div>
+          <select value={task.progress} className="task-progress-select" onChange={(e) => dispatch(
+            updateTask({ id: location.state, category: "progress", data: e.target.value })
+          )}
+            style={{ backgroundColor: TaskProgressColors[task.progress], color: ((TaskProgressColors[task.progress].startsWith("#ff")) ? "black" : "white") }}>
+            {
+              TaskProgressTypes.map((progressOption) => <option value={progressOption} key={progressOption}>
+                {progressOption}
+              </option>)
+            }
+          </select>
+        </div>
 
-      <div className="task-subtask-list">
-        <h2>Sub Tasks</h2>
-        <div className="task-subtask-list-items">
-          {task.subtasks.map((subtask) => (
-            <Link
-              to={`/project/task/${subtask.id}`}
-              state={subtask.id}
-              key={subtask.id}
-            >
-              <button className="task-subtask-item" style={{
-                border: `2px solid ${TaskProgressColors[subtask.progress]}`
-              }}>{subtask.title}</button>
-            </Link>
-          ))}</div>
-        <button
-          className="add-subtask-button"
-          onClick={createNewTask}
-
-        >
-          Add Subtask
-        </button>
+        <div className="task-subtask-list">
+          <h2>Sub Tasks</h2>
+          <div className="task-subtask-list-items">
+            {task.subtasks.map((subtask) => (
+              <Link
+                to={`/project/task/${subtask.id}`}
+                state={subtask.id}
+                key={subtask.id}
+              >
+                <button className="task-subtask-item" style={{
+                  border: `2px solid ${TaskProgressColors[subtask.progress]}`
+                }}>{subtask.title}</button>
+              </Link>
+            ))}</div>
+          <button
+            className="add-subtask-button"
+            onClick={createNewTask}
+          >
+            Add Subtask
+          </button>
+        </div>
       </div>
     </div>
   );

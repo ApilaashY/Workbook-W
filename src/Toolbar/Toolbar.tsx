@@ -6,11 +6,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import type { ProjectStore } from "../store";
 
-export function Toolbar({
-  testData,
-}: {
-  testData: ProjectClass[];
-}) {
+export function Toolbar() {
 
   const location = useLocation();
   const [stack, setStack] = useState<(ProjectClass | TaskClass)[]>([]);
@@ -80,7 +76,6 @@ export function Toolbar({
         </div>
       </div>
       <div className="toolbar-bottom-section">
-        <button onClick={() => console.log(testData)}>HIDFS</button>
         <h2 className="toolbar-title">Profile</h2>
         <h2 className="toolbar-title">Settings</h2>
       </div>

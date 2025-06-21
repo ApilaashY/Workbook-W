@@ -72,5 +72,5 @@ export const TaskProgressColors: Record<TaskProgress, string> = {
   "Not Started": "#808080",
   "In Progress": "#ffff00",
   "Scheduled": "#0000ff",
-  "Done": "#00ee00",
+  "Done": "#32cb6c",
 };

@@ -1,5 +1,5 @@
 .toolbar {
-  background-color: rgb(50, 203, 108);
+  background-color: var(--primary);
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
