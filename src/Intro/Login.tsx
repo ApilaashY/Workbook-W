@@ -2,39 +2,79 @@ import { useState } from "react";
 import "./Login.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { FirebaseError } from "firebase/app";
 
 export function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [hidePassword, setHidePassword] = useState(true);
+  const navigate = useNavigate();
 
-    async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-        try {
-            await signInWithEmailAndPassword(auth, email, password)
-            navigate("/");
-        } catch (error: FirebaseError | any) {
-            if (error.code === "auth/wrong-password") {
-                alert("Incorrect password. Please try again.");
-            } else if (error.code === "auth/user-not-found") {
-                alert("No user found with this email. Please check your email or register.");
-            }
-        }
-
-
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/");
+    } catch (error: FirebaseError | any) {
+      if (error.code === "auth/wrong-password") {
+        alert("Incorrect password. Please try again.");
+      } else if (error.code === "auth/user-not-found") {
+        alert(
+          "No user found with this email. Please check your email or register."
+        );
+      }
     }
+  }
 
-    return <div className="login-window">
-        <form className="login-card" onSubmit={handleLogin}>
-            <h1>Login</h1>
-            <label htmlFor="email">Email:</label>
-            <input type="email" name="password" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <label htmlFor="password">Password:</label>
-            <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <input type="submit" value="Login" />
+  return (
+    <div className="login-window">
+      <div className="login-card">
+        <h1>Login</h1>
+        <form onSubmit={handleLogin}>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            name="password"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <label htmlFor="password">Password:</label>
+          <div style={{ position: "relative", width: "100%" }}>
+            <input
+              type={hidePassword ? "password" : "text"}
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setHidePassword((v) => !v)}
+              className="toggle-hide-password"
+              style={{
+                position: "absolute",
+                right: 0,
+                top: 0,
+                height: "100%",
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+                padding: "0 0.5em",
+                transitionDuration: "0.2s",
+              }}
+            >
+              {hidePassword ? "Show" : "Hide"}
+            </button>
+          </div>
+          <input type="submit" value="Login" />
         </form>
+        <Link to="/signup" style={{ textAlign: "center" }}>
+          Don't have an account?
+        </Link>
+      </div>
     </div>
+  );
 }

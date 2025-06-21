@@ -1,51 +1,75 @@
 .login-window {
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .login-card {
-    background-color: rgb(249, 249, 249);
-    opacity: 90%;
-    display: flex;
-    flex-direction: column;
-    padding: 3em;
-    border-radius: var(--borderRadius);
-    width: 100%;
-    max-width: 30em;
-    margin: 0 1em;
-    height: 60%;
-    border: 0.5em solid var(--primary);
-    box-shadow: 10px 10px 1em rgba(0, 0, 0, 0.3);
+  background-color: rgb(249, 249, 249);
+  opacity: 90%;
+  display: flex;
+  flex-direction: column;
+  padding: 3em;
+  border-radius: var(--borderRadius);
+  width: 100%;
+  max-width: 30em;
+  margin: 0 1em;
+  height: 60%;
+  border: 0.5em solid var(--primary);
+  box-shadow: 10px 10px 1em rgba(0, 0, 0, 0.3);
 }
 
-.login-card input[type="email"],
-.login-card input[type="password"] {
-    padding: 0.5em;
-    font-family: inherit;
-    font-size: 1.25rem;
-}
-
-.login-card h1 {
-    font-size: 2.5rem;
-    margin: 1em 0 0.5em;
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .login-card label {
-    font-size: 1.25rem;
-    margin: 0.5em 0 0.25em;
+  width: 100%;
+}
+
+.login-card input[type="email"],
+.login-card input[type="password"],
+.login-card input[type="text"] {
+  padding: 0.5em;
+  font-family: inherit;
+  font-size: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.login-card h1 {
+  font-size: 2.25rem;
+  margin: 1em 0 0.5em;
+}
+
+.login-card label {
+  font-size: 1rem;
+  margin: 0.5em 0 0.25em;
 }
 
 .login-card input[type="submit"] {
-    background-color: var(--primary);
-    color: white;
-    font-size: 1.25rem;
-    padding: 0.5em 1em;
-    border-radius: var(--borderRadius);
-    border: none;
-    cursor: pointer;
-    margin-top: 3em;
+  background-color: var(--primary);
+  color: white;
+  font-size: 1.1rem;
+  padding: 0.5em 1em;
+  border-radius: var(--borderRadius);
+  border: none;
+  cursor: pointer;
+  margin-top: 1em;
+  width: 100%;
+}
+
+.login-card input[type="submit"]:hover {
+  background-color: var(--primaryHover);
+}
+
+.toggle-hide-password:hover {
+  transition-duration: 0.2s;
+  color: grey;
 }
