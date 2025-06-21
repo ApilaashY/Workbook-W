@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { onValue, ref } from "firebase/database";
 import { auth, db, fdb } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth"
+import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
   const projectData: ProjectClass[] = useSelector(
@@ -22,25 +22,23 @@ function App() {
       console.log(user);
       if (!user) {
         navigate("/login");
+        return;
       }
-    })
+    });
 
     getDoc(doc(fdb, "Users", "A6vQ9GPYBzfxjmHpfDooPA7YUEl1")).then((doc) => {
       console.log(doc.data());
-    })
+    });
 
-    onValue(
-      ref(db, "Projects"),
-      (data) => {
-        console.log(data.val())
-      });
-  }, [])
+    onValue(ref(db, "Projects"), (data) => {
+      console.log(data.val());
+    });
+  }, []);
 
   return (
     <div className="main-window">
       <Toolbar />
       <div style={{ flex: "1 1 auto" }}>
-
         <div className="project-list">
           {projectData.map((project) => (
             <Link to="/project" state={project.id} key={project.id}>
