@@ -1,6 +1,8 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { ProjectClass, type ProjectObject } from "./DataClasses/ProjectClass";
 import { TaskClass, type TaskObject } from "./DataClasses/TaskClass";
+import { ref, update } from "firebase/database";
+import { db } from "./firebase";
 
 export interface ProjectStore {
   projects: ProjectClass[];
@@ -37,29 +39,58 @@ function findTaskById(
 const projectSlice = createSlice({
   name: "projects",
   initialState: [
-    ProjectClass.fromMap({
-      title: "Project 1",
-      id: "1",
-      tasks: [
-        { id: "1-0", title: "Design UI" },
-        { id: "1-1", title: "Set up backend" },
-      ],
-    }).toMap(),
-    ProjectClass.fromMap({
-      title: "Project 2",
-      id: "2",
-      tasks: [
-        { id: "2-0", title: "Write documentation" },
-        { id: "2-1", title: "Deploy to server" },
-      ],
-    }).toMap(),
-    ProjectClass.fromMap({
-      title: "Project 3",
-      id: "3",
-      tasks: [{ id: "3-0", title: "Research competitors" }],
-    }).toMap(),
-  ],
+    // ProjectClass.fromMap({
+    //   title: "Project 1",
+    //   id: "1",
+    //   tasks: [
+    //     { id: "1-0", title: "Design UI" },
+    //     { id: "1-1", title: "Set up backend" },
+    //   ],
+    // }).toMap(),
+    // ProjectClass.fromMap({
+    //   title: "Project 2",
+    //   id: "2",
+    //   tasks: [
+    //     { id: "2-0", title: "Write documentation" },
+    //     { id: "2-1", title: "Deploy to server" },
+    //   ],
+    // }).toMap(),
+    // ProjectClass.fromMap({
+    //   title: "Project 3",
+    //   id: "3",
+    //   tasks: [{ id: "3-0", title: "Research competitors" }],
+    // }).toMap(),
+  ] as ProjectObject[],
   reducers: {
+    addProject: (state, action: { payload: ProjectObject }) => {
+      let index = state.findIndex((proj) => proj.id === action.payload.id);
+
+      if (index !== -1) {
+        state[index] = ProjectClass.fromMap(action.payload).toMap();
+      } else {
+        state.push(ProjectClass.fromMap(action.payload).toMap());
+      }
+    },
+    addProjectTasks: (
+      state,
+      action: { payload: { id: string; data: string } }
+    ) => {
+      let proj = state.find((proj) => proj.id === action.payload.id);
+
+      if (proj) {
+        proj.tasks = [
+          ...(proj.tasks || []),
+          new TaskClass(
+            action.payload.data,
+            proj.id + "-" + ProjectClass.getTaskCount(proj)
+          ).toMap(),
+        ];
+
+        update(ref(db, "projects/" + proj.id), {
+          ...proj,
+        });
+      }
+    },
     addTasks: (state, action: { payload: { id: string; data: string } }) => {
       let task = findTaskById(state, action.payload.id);
       console.log(task?.title);
@@ -76,7 +107,11 @@ const projectSlice = createSlice({
     updateTask: (
       state,
       action: {
-        payload: { id: string; category: "title" | "description" | "progress"; data: any };
+        payload: {
+          id: string;
+          category: "title" | "description" | "progress";
+          data: any;
+        };
       }
     ) => {
       const idParts = action.payload.id.split("-");
@@ -136,4 +171,5 @@ export const store = configureStore({
   },
 });
 
-export const { addTasks, updateTask } = projectSlice.actions;
+export const { addProject, addProjectTasks, addTasks, updateTask } =
+  projectSlice.actions;

@@ -3,6 +3,7 @@
   grid-template-columns: 1fr 1fr;
   height: 100%;
   overflow-y: hidden;
+  flex-grow: 1;
 }
 
 .project-task-list,
@@ -31,4 +32,25 @@
 .project-task-item:hover {
   background-color: var(--bubbleBackgroundColorHover);
   transition-duration: 0.2s;
+}
+
+.add-task-button {
+  padding: 1em;
+  transition-duration: 0.2s;
+  background-color: transparent;
+  border: 1px solid black;
+  border-radius: var(--borderRadius);
+  font-family: inherit;
+  font-size: 1rem;
+  margin: 1em 0;
+}
+
+.add-task-button:hover {
+  transition-duration: 0.2s;
+  cursor: pointer;
+  background-color: rgb(150, 150, 150);
+}
+
+.project-task-list-only {
+  flex-grow: 1;
 }

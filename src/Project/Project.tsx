@@ -1,21 +1,43 @@
 import { Link, useLocation } from "react-router-dom";
 import "./Project.css";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
-import { useSelector } from "react-redux";
-import type { ProjectStore } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { addProjectTasks, type ProjectStore } from "../store";
 import { TaskProgressColors } from "../DataClasses/TaskClass";
 import { Toolbar } from "../Toolbar/Toolbar";
+import { useState } from "react";
 
 export function Project() {
   const location = useLocation();
-  const project = location.state as string;
+  const dispatch = useDispatch();
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
 
   const projectInfo: ProjectClass | undefined = projectData.find(
-    (p) => p.id === project
+    (p) => p.id === (location.state as string)
   );
+
+  if (!projectInfo) {
+    return <div>Project not found</div>;
+  }
+
+  const [project, _] = useState(projectInfo);
+
+  function createNewTask() {
+    let data: string | null | undefined = null;
+    while (data === null) {
+      data = prompt("Enter title of new task")?.trim();
+      if (data === null || data === undefined) {
+        return; // User cancelled
+      } else if (data === "") {
+        alert(`Task title cannot be empty`);
+        data = null;
+      } else {
+        dispatch(addProjectTasks({ id: project.id, data: data }));
+      }
+    }
+  }
 
   return (
     <div className="main-window">
@@ -23,18 +45,27 @@ export function Project() {
       <div className="project-window">
         <div className="project-task-list">
           <h2>Project Task List</h2>
-          {projectInfo?.tasks.map((task) => (
-            <Link to={`/project/task/${task.id}`} state={task.id} key={task.id}>
-              <button
-                className="project-task-item"
-                style={{
-                  border: `2px solid ${TaskProgressColors[task.progress]}`
-                }}
+          <div className="project-task-list-only">
+            {projectInfo?.tasks.map((task) => (
+              <Link
+                to={`/project/task/${task.id}`}
+                state={task.id}
+                key={task.id}
               >
-                {task.title}
-              </button>
-            </Link>
-          ))}
+                <button
+                  className="project-task-item"
+                  style={{
+                    border: `2px solid ${TaskProgressColors[task.progress]}`,
+                  }}
+                >
+                  {task.title}
+                </button>
+              </Link>
+            ))}
+          </div>
+          <button className="add-task-button" onClick={createNewTask}>
+            Add Task
+          </button>
         </div>
 
         <div className="project-task-summary">

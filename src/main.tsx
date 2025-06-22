@@ -9,6 +9,7 @@ import { Project } from "./Project/Project.tsx";
 import { Task } from "./Subtask/Task.tsx";
 import { Login } from "./Login/Login.tsx";
 import { Signup } from "./Signup/Signup.tsx";
+import { ForgotPassword } from "./ForgotPassword/ForgotPassword.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -20,6 +21,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/project/task/:id" element={<Task />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
       </BrowserRouter>
     </Provider>

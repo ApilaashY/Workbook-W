@@ -10,9 +10,31 @@
   margin: 2em;
   display: flex;
   flex-direction: row;
+  justify-content: flex-start; /* or just remove this line */
   flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  max-height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+
+.project-list a {
+  height: fit-content;
+}
+
+.project-card {
+  background-color: var(--bubbleBackgroundColor);
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  max-width: 80%;
+  margin: 1em;
+  padding: 0.5em;
+  text-align: center;
+  border-radius: var(--borderRadius);
+  transition-duration: 0.2s;
+  max-height: fit-content;
+}
+
+.project-card:hover {
+  font-size: 1.2rem;
+  transition-duration: 0.2s;
+  cursor: pointer;
 }

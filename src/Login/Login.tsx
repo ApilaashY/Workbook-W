@@ -2,14 +2,15 @@ import { useState } from "react";
 import "./Login.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { FirebaseError } from "firebase/app";
 
 export function Login() {
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [email, setEmail] = useState(location.state || "");
   const [password, setPassword] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
-  const navigate = useNavigate();
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,7 +37,7 @@ export function Login() {
           <label htmlFor="email">Email:</label>
           <input
             type="email"
-            name="password"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -71,8 +72,19 @@ export function Login() {
           </div>
           <input type="submit" value="Login" />
         </form>
-        <Link to="/signup" style={{ textAlign: "center" }}>
+        <Link
+          to="/signup"
+          state={email}
+          style={{ textAlign: "center", color: "blue" }}
+        >
           Don't have an account?
+        </Link>
+        <Link
+          to="/forgot-password"
+          state={email}
+          style={{ textAlign: "center", color: "blue" }}
+        >
+          Forgot your password?
         </Link>
       </div>
     </div>

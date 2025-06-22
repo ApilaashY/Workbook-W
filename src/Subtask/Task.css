@@ -3,6 +3,7 @@
   grid-template-columns: 1fr 1fr;
   height: 100%;
   overflow-y: hidden;
+  flex-grow: 1;
 }
 
 .task-stats,

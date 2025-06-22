@@ -1,23 +1,56 @@
 import { useState } from "react";
 import "./Signup.css";
-import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  type UserCredential,
+} from "firebase/auth";
+import { auth, fdb } from "../firebase";
 import type { FirebaseError } from "firebase/app";
+import { doc, setDoc } from "firebase/firestore";
 
 export function Signup() {
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState(location.state || "");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
   const [hideRepeatPassword, setHideRepeatPassword] = useState(true);
-  const navigate = useNavigate();
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    if (username.trim().length < 0) {
+      alert("Username can not be empty.");
+      return;
+    } else if (password !== repeatPassword) {
+      alert("Passwords do not match. Please try again.");
+      return;
+    } else if (password.length < 8) {
+      alert("Password must be at least 8 characters long.");
+      return;
+    }
+
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      let user: UserCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      updateProfile(user.user, {
+        displayName: username,
+      });
+
+      await setDoc(doc(fdb, "Users", user.user.uid), {
+        username: username,
+        projects: [],
+        projectCount: 0,
+      });
+
       navigate("/");
     } catch (error: FirebaseError | any) {
       if (error.code === "auth/wrong-password") {
@@ -26,6 +59,11 @@ export function Signup() {
         alert(
           "No user found with this email. Please check your email or register."
         );
+      } else if (error.code === "auth/email-already-in-use") {
+        alert("This email is already in use. Please use a different email.");
+        navigate("/login", { state: email });
+      } else {
+        console.log(error);
       }
     }
   }
@@ -35,10 +73,18 @@ export function Signup() {
       <div className="signup-card">
         <h1>Create your account</h1>
         <form onSubmit={handleSignup}>
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
           <label htmlFor="email">Email:</label>
           <input
             type="email"
-            name="password"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -101,7 +147,11 @@ export function Signup() {
           </div>
           <input type="submit" value="Create Account" />
         </form>
-        <Link to="/login" style={{ textAlign: "center" }}>
+        <Link
+          to="/login"
+          state={email}
+          style={{ textAlign: "center", color: "blue" }}
+        >
           Already have an account?
         </Link>
       </div>
