@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./ForgotPassword.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { sendPasswordResetEmail } from "firebase/auth"
+import { auth } from "../firebase";
 
 export function ForgotPassword() {
   const location = useLocation();
@@ -9,6 +11,10 @@ export function ForgotPassword() {
 
   async function handleForgotPassword(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    await sendPasswordResetEmail(auth, email);
+
+    alert("Password reset email sent. Please check your inbox.");
 
     navigate("/login", { state: email });
   }

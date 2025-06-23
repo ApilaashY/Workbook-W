@@ -48,7 +48,7 @@ export function Task() {
           (task) => task.id === currentId
         );
       } else {
-        currentData = (currentData as TaskClass).subtasks.find(
+        currentData = (currentData as TaskClass).tasks.find(
           (subtask) => subtask.id === currentId
         );
       }
@@ -123,7 +123,7 @@ export function Task() {
         <div className="task-subtask-list">
           <h2>Sub Tasks</h2>
           <div className="task-subtask-list-items">
-            {task.subtasks.map((subtask) => (
+            {task.tasks.map((subtask) => (
               <Link
                 to={`/project/task/${subtask.id}`}
                 state={subtask.id}

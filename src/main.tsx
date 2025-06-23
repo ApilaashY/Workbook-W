@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "./store.ts";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Project } from "./Project/Project.tsx";
-import { Task } from "./Subtask/Task.tsx";
+import { Task } from "./Task/Task.tsx";
 import { Login } from "./Login/Login.tsx";
 import { Signup } from "./Signup/Signup.tsx";
 import { ForgotPassword } from "./ForgotPassword/ForgotPassword.tsx";

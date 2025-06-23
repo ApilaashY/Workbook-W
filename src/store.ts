@@ -28,12 +28,35 @@ function findTaskById(
         (task) => task.id === currentId
       );
     } else {
-      currentData = (currentData as TaskClass).subtasks.find(
-        (subtask) => subtask.id === currentId
+      currentData = (currentData as TaskClass).tasks.find(
+        (task) => task.id === currentId
       );
     }
   }
   return currentData as TaskClass | undefined;
+}
+
+function createIdTrail(id: string, data: ProjectObject[]): string {
+  let parts = id.split("-");
+  let total = parts[0];
+  let current = parts[0];
+  let currentData = data.find((proj) => proj.id === parts[0]);
+
+  for (let i = 1; i<parts.length; i++) {
+    if (!currentData) {
+      return total;
+    }
+
+    current += "-" + parts[i];
+
+    console.log(current);
+
+    total += "/tasks/" + currentData.tasks?.findIndex((task) => task.id === current);
+    currentData = currentData.tasks?.find((task) => task.id === current);
+  }
+
+
+  return total;
 }
 
 const projectSlice = createSlice({
@@ -95,13 +118,14 @@ const projectSlice = createSlice({
       let task = findTaskById(state, action.payload.id);
       console.log(task?.title);
       if (task) {
-        task.subtasks = [
-          ...(task.subtasks || []),
+        task.tasks = [
+          ...(task.tasks || []),
           new TaskClass(
             action.payload.data,
             task.id + "-" + TaskClass.getTaskCount(task)
           ).toMap(),
         ];
+        update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), task);
       }
     },
     updateTask: (
@@ -133,34 +157,23 @@ const projectSlice = createSlice({
           );
         } else {
           previousData = currentData;
-          currentData = (currentData as TaskClass).subtasks.find(
-            (subtask) => subtask.id === currentId
+          currentData = (currentData as TaskClass).tasks.find(
+            (task) => task.id === currentId
           );
         }
       }
 
-      let index: number;
-      if (!previousData?.id.includes("-")) {
-        index = (previousData as ProjectClass).tasks.findIndex(
+      let index: number = previousData!.tasks.findIndex(
           (obj) => obj == currentData
         );
-
-        ((previousData as ProjectObject).tasks || [])[index] =
-          TaskClass.fromMap({
-            ...currentData,
-            [action.payload.category]: action.payload.data,
-          } as TaskObject).toMap();
-      } else {
-        index = (previousData as TaskClass).subtasks.findIndex(
-          (obj) => obj == currentData
-        );
-
-        ((previousData as TaskObject).subtasks || [])[index] =
-          TaskClass.fromMap({
-            ...currentData,
-            [action.payload.category]: action.payload.data,
-          } as TaskObject).toMap();
-      }
+      
+      ((previousData as TaskObject).tasks || [])[index] =
+        TaskClass.fromMap({
+          ...currentData,
+          [action.payload.category]: action.payload.data,
+        } as TaskObject).toMap();
+      
+      update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), previousData!.tasks[index]);
     },
   },
 });

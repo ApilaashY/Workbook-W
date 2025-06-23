@@ -18,6 +18,13 @@
   gap: 1em;
 }
 
+.project-task-list-only {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  flex-grow: 1;
+}
+
 .project-task-item {
   background-color: white;
   border: none;
@@ -49,8 +56,4 @@
   transition-duration: 0.2s;
   cursor: pointer;
   background-color: rgb(150, 150, 150);
-}
-
-.project-task-list-only {
-  flex-grow: 1;
 }

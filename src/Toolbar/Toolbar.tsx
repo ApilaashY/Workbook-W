@@ -38,7 +38,7 @@ export function Toolbar() {
           (task) => task.id === currentId
         );
       } else {
-        currentData = (currentData as TaskClass).subtasks.find(
+        currentData = (currentData as TaskClass).tasks.find(
           (subtask) => subtask.id === currentId
         );
       }
@@ -59,7 +59,9 @@ export function Toolbar() {
           {stack.map((item, index) => {
             return (
               <>
-                <h2 style={{ textAlign: "center", color: "white", margin: "0.25em" }}>V</h2>
+                <h2 
+                  key={`${item.id}>`}
+                  style={{ textAlign: "center", color: "white", margin: "0.25em" }}>V</h2>
                 <Link
                   to={
                     !item.id.includes("-") ? "/project" : `/project/task/${item.id}`
