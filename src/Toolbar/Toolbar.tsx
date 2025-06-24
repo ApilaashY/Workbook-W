@@ -15,14 +15,15 @@ export function Toolbar() {
   );
 
   useEffect(() => {
-    if (!location.state) {
+    if (!location.state || !location.state.includes("-")) {
       setStack([]);
       return;
     }
 
-    let newStack = new Array<ProjectClass | TaskClass>(location.state.split("-").length);
+    let newStack = new Array<ProjectClass | TaskClass>(location.state.split("-").length - 1);
 
     const idParts = location.state.split("-");
+    idParts.pop(); // Remove the current page from the list of ids
     let currentId: string = idParts[0];
     let currentData: ProjectClass | TaskClass | undefined = (
       projectData as ProjectClass[]
@@ -58,21 +59,19 @@ export function Toolbar() {
         <div className='toolbar-breadcrumbs'>
           {stack.map((item, index) => {
             return (
-              <>
-                <h2 
-                  key={`${item.id}>`}
+              <div key={item.id}>
+                <h2
                   style={{ textAlign: "center", color: "white", margin: "0.25em" }}>V</h2>
                 <Link
                   to={
                     !item.id.includes("-") ? "/project" : `/project/task/${item.id}`
                   }
                   state={item.id}
-                  key={item.id}
                   onClick={() => setStack((prev) => prev.slice(0, index))}
                 >
                   <h2 className="toolbar-title">{item.title}</h2>
                 </Link>
-              </>
+              </div>
             );
           })}
         </div>

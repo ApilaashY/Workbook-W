@@ -42,7 +42,7 @@ function createIdTrail(id: string, data: ProjectObject[]): string {
   let current = parts[0];
   let currentData = data.find((proj) => proj.id === parts[0]);
 
-  for (let i = 1; i<parts.length; i++) {
+  for (let i = 1; i < parts.length; i++) {
     if (!currentData) {
       return total;
     }
@@ -164,15 +164,15 @@ const projectSlice = createSlice({
       }
 
       let index: number = previousData!.tasks.findIndex(
-          (obj) => obj == currentData
-        );
-      
+        (obj) => obj == currentData
+      );
+
       ((previousData as TaskObject).tasks || [])[index] =
         TaskClass.fromMap({
           ...currentData,
           [action.payload.category]: action.payload.data,
         } as TaskObject).toMap();
-      
+
       update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), previousData!.tasks[index]);
     },
   },
