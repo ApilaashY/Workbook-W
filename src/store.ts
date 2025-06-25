@@ -8,10 +8,12 @@ export interface ProjectStore {
   projects: ProjectClass[];
 }
 
-function findTaskById(
+export function findTaskById(
   data: ProjectObject[],
   id: string
-): TaskObject | undefined {
+): TaskObject | ProjectObject | ProjectObject[] | undefined {
+  if (!id) return data;
+
   const idParts = id.split("-");
   let currentId: string = idParts[0];
 
@@ -115,7 +117,7 @@ const projectSlice = createSlice({
       }
     },
     addTasks: (state, action: { payload: { id: string; data: string } }) => {
-      let task = findTaskById(state, action.payload.id);
+      let task = findTaskById(state, action.payload.id) as TaskObject | undefined;
       console.log(task?.title);
       if (task) {
         task.tasks = [
@@ -125,7 +127,6 @@ const projectSlice = createSlice({
             task.id + "-" + TaskClass.getTaskCount(task)
           ).toMap(),
         ];
-        update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), task);
       }
     },
     updateTask: (
@@ -184,5 +185,12 @@ export const store = configureStore({
   },
 });
 
-export const { addProject, addProjectTasks, addTasks, updateTask } =
+export const { addProject, addProjectTasks, updateTask } =
   projectSlice.actions;
+
+export function addTasks(payload: { id: string; data: string }) {
+  projectSlice.actions.addTasks({ id: payload.id, data: payload.data })
+  let task = findTaskById(store.getState().projects, payload.id) as TaskObject | undefined;
+  if (!task) return;
+  update(ref(db, `projects/${createIdTrail(payload.id, store.getState().projects)}`), task);
+}

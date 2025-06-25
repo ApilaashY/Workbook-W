@@ -20,6 +20,8 @@ function App() {
 
 
   useEffect(() => {
+
+
     setProjects(projectData)
   }, [projectData])
 
@@ -64,3 +66,4 @@ function App() {
 }
 
 export default App;
+
