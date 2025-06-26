@@ -1,4 +1,4 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { configureStore, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ProjectClass, type ProjectObject } from "./DataClasses/ProjectClass";
 import { TaskClass, type TaskObject } from "./DataClasses/TaskClass";
 import { ref, update } from "firebase/database";
@@ -125,8 +125,10 @@ const projectSlice = createSlice({
             task.id + "-" + TaskClass.getTaskCount(task)
           ).toMap(),
         ];
+        console.log("DONNEONWF");
         //update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), task);
       }
+      console.log("DONE!")
     },
     updateTask: (
       state,
@@ -186,3 +188,23 @@ export const store = configureStore({
 
 export const { addProject, addProjectTasks, addTasks, updateTask } =
   projectSlice.actions;
+
+
+export const addProjectTasksAsync = createAsyncThunk(
+  'projects/addProjectTasksAsync',
+  async ({ id, data }: { id: string; data: string }, thunkAPI) => {
+    // Do async work here (e.g., API call)
+    // Optionally dispatch addProjectTasks here
+    thunkAPI.dispatch(addProjectTasks({ id, data }));
+  }
+);
+
+
+export const addTasksAsync = createAsyncThunk(
+  'projects/addProjectTasksAsync',
+  async ({ id, data }: { id: string; data: string }, thunkAPI) => {
+    // Do async work here (e.g., API call)
+    // Optionally dispatch addProjectTasks here
+    thunkAPI.dispatch(addTasks({ id, data }));
+  }
+);

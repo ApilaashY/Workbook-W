@@ -8,6 +8,31 @@ import { findTaskById, type ProjectStore } from "../store";
 import { GoogleGenAI } from "@google/genai";
 import { allCommands, executeCommands } from "../executeCommands";
 
+async function getSpeechInput(): Promise<string> {
+  return new Promise((resolve, _) => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech recognition not supported in this browser.");
+      resolve("");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event: any) => {
+      resolve(event.results[0][0].transcript);
+    };
+    recognition.onerror = (event: any) => {
+      alert("Speech recognition error: " + event.error);
+      resolve("");
+    };
+    recognition.onend = () => { };
+    recognition.start();
+  });
+}
+
 export function Toolbar() {
 
   const location = useLocation();
@@ -17,34 +42,38 @@ export function Toolbar() {
     (state: ProjectStore) => state.projects
   );
 
-  function AICommands() {
-
-    // executeCommands(location.state, projectData, "ADDTASK color\nOPENTASK color\nCHANGETASKDESCRIPTION I like cheese", dispatch);
-    // return;
+  async function AICommands() {
 
     const ai = new GoogleGenAI({ apiKey: "AIzaSyBdJwUyanHls9Cw05xGm8JfK64UGwUoc4Q" });
 
-    const promptMessage = "Your name is Terrance, an agentic AI for a project managementsoftware. You job is to use what I ask you, and turn it into a list of instructions, each instruction will be on seperate lines. All possible instructions are as follows "
+    const systemInstruction = "Your name is Terrance, an agentic AI for a project management software. Your job is to use what I ask you, and turn it into a list of instructions, each instruction will be on seperate lines. All possible instructions are as follows "
       + Object.entries(allCommands).map(([command, description]) => `${command} ${description[0]} (${description[1]})`)
       + ". When I reference projects or tasks, I may make spelling mistakes, please correct them according to the project database given: "
-      + JSON.stringify(findTaskById(projectData, location.state as string));
+      + JSON.stringify(findTaskById(projectData, location.state as string))
+      + ". The structure of the project database is either a list of projects, a project, or a task. You can tell if the current directory is a project or task by looking at the id. If the id contains a dash, it is a task, if not, it is a project. Here is the typescript interface for a project and task:"
+      + "interface ProjectObject {title: string;id: string;tasks?: TaskObject[];taskCount?: number;}"
+      + ". interface TaskObject {title: string;description?: string;id: string;progress?: TaskProgress;tasks?: TaskObject[];taskCount?: number;}"
+      + ". As a note, remember that if you are updating multiple tasks or projects, you have to use OPENPROJECT/OPENTASK and GOTOPARENT to go through every task or project.";
 
-    console.log(promptMessage);
+    const spoken = await getSpeechInput();
+    const userInput = spoken || prompt("Enter your command", "In the do something project, change the description of this task to I like Cheese") || "";
+
+    console.log(userInput);
 
     ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: prompt("Enter your command", "In the do something project, change the description of this task to I like Cheese") || "",
+      contents: userInput,
       config: {
         thinkingConfig: {
           thinkingBudget: 0,
         },
         temperature: 0,
-        systemInstruction: promptMessage
+        systemInstruction: systemInstruction
       },
     }).then((response) => {
       console.log(response.text)
       if (prompt("Enter anything to execute commands: ") != null) {
-        executeCommands(location.state, projectData, response.text || "", dispatch);
+        executeCommands(location.state, response.text || "", dispatch);
       }
     }
     );
