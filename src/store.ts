@@ -125,10 +125,8 @@ const projectSlice = createSlice({
             task.id + "-" + TaskClass.getTaskCount(task)
           ).toMap(),
         ];
-        console.log("DONNEONWF");
         //update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), task);
       }
-      console.log("DONE!")
     },
     updateTask: (
       state,
@@ -175,7 +173,6 @@ const projectSlice = createSlice({
           [action.payload.category]: action.payload.data,
         } as TaskObject).toMap();
 
-      //update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), previousData!.tasks[index]);
     },
   },
 });
@@ -186,7 +183,7 @@ export const store = configureStore({
   },
 });
 
-export const { addProject, addProjectTasks, addTasks, updateTask } =
+export const { addProject, addProjectTasks, addTasks } =
   projectSlice.actions;
 
 
@@ -199,12 +196,34 @@ export const addProjectTasksAsync = createAsyncThunk(
   }
 );
 
-
 export const addTasksAsync = createAsyncThunk(
-  'projects/addProjectTasksAsync',
+  'projects/addTasksAsync',
   async ({ id, data }: { id: string; data: string }, thunkAPI) => {
     // Do async work here (e.g., API call)
     // Optionally dispatch addProjectTasks here
     thunkAPI.dispatch(addTasks({ id, data }));
   }
 );
+
+const updateTasksAsync = createAsyncThunk(
+  'projects/updateTasksAsync',
+  async ({ id, category, data }: {
+    id: string;
+    category: "title" | "description" | "progress";
+    data: any;
+  }, thunkAPI) => {
+    // Do async work here (e.g., API call)
+    // Optionally dispatch addProjectTasks here
+    thunkAPI.dispatch(projectSlice.actions.updateTask({ id, category, data }));
+  }
+);
+
+export async function updateTask(
+  id: string,
+  category: "title" | "description" | "progress",
+  data: any,
+  dispatch: any
+) {
+  await dispatch(updateTasksAsync({ id, category, data }));
+  update(ref(db, `projects/${createIdTrail(id, store.getState().projects)}`), (findTaskById(store.getState().projects, id) as ProjectObject | TaskObject));
+}

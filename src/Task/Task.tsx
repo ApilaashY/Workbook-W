@@ -68,9 +68,7 @@ export function Task() {
         alert(`Task ${category} cannot be empty`);
         data = null;
       } else {
-        dispatch(
-          updateTask({ id: location.state, category: category, data: data })
-        );
+        updateTask(location.state, category, data, dispatch);
       }
     }
   }
@@ -110,9 +108,9 @@ export function Task() {
               : task.description}
           </h2>
 
-          <select value={task.progress} className="task-progress-select" onChange={(e) => dispatch(
-            updateTask({ id: location.state, category: "progress", data: e.target.value })
-          )}
+          <select value={task.progress} className="task-progress-select" onChange={(e) =>
+            updateTask(location.state, "progress", e.target.value, dispatch)
+          }
             style={{ backgroundColor: TaskProgressColors[task.progress], color: ((TaskProgressColors[task.progress].startsWith("#ff")) ? "black" : "white") }}>
             {
               TaskProgressTypes.map((progressOption) => <option value={progressOption} key={progressOption}>

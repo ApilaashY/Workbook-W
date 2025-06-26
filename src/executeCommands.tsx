@@ -57,16 +57,14 @@ async function addTask(id: string, projectData: AnyObject | ProjectObject[], new
 }
 
 async function changeTaskTitle(id: string, _: AnyObject | ProjectObject[], newData: string, dispatch: Dispatch): Promise<string> {
-    dispatch(
-        updateTask({ id: id, category: "title", data: newData })
-    );
+    updateTask(id, "title", newData, dispatch);
+
     return id;
 }
 
 async function changeTaskDescription(id: string, _: AnyObject | ProjectObject[], newData: string, dispatch: Dispatch): Promise<string> {
-    dispatch(
-        updateTask({ id: id, category: "description", data: newData })
-    );
+    updateTask(id, "description", newData, dispatch);
+
     return id;
 }
 
