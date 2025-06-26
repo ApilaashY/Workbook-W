@@ -111,9 +111,7 @@ const projectSlice = createSlice({
           ).toMap(),
         ];
 
-        update(ref(db, "projects/" + proj.id), {
-          ...proj,
-        });
+        //update(ref(db, "projects/" + proj.id), {...proj});
       }
     },
     addTasks: (state, action: { payload: { id: string; data: string } }) => {
@@ -127,6 +125,7 @@ const projectSlice = createSlice({
             task.id + "-" + TaskClass.getTaskCount(task)
           ).toMap(),
         ];
+        //update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), task);
       }
     },
     updateTask: (
@@ -174,7 +173,7 @@ const projectSlice = createSlice({
           [action.payload.category]: action.payload.data,
         } as TaskObject).toMap();
 
-      update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), previousData!.tasks[index]);
+      //update(ref(db, `projects/${createIdTrail(action.payload.id, state)}`), previousData!.tasks[index]);
     },
   },
 });
@@ -185,12 +184,5 @@ export const store = configureStore({
   },
 });
 
-export const { addProject, addProjectTasks, updateTask } =
+export const { addProject, addProjectTasks, addTasks, updateTask } =
   projectSlice.actions;
-
-export function addTasks(payload: { id: string; data: string }) {
-  projectSlice.actions.addTasks({ id: payload.id, data: payload.data })
-  let task = findTaskById(store.getState().projects, payload.id) as TaskObject | undefined;
-  if (!task) return;
-  update(ref(db, `projects/${createIdTrail(payload.id, store.getState().projects)}`), task);
-}

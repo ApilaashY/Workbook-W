@@ -3,47 +3,51 @@ import "./Toolbar.css";
 import { ProjectClass } from "../DataClasses/ProjectClass";
 import { TaskClass } from "../DataClasses/TaskClass";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { findTaskById, type ProjectStore } from "../store";
 import { GoogleGenAI } from "@google/genai";
-
-const allCommands = {
-  "OPENPROJECT [Project Name]": "Opens a specific project. Replace [Project Name] with the name of a project. This changes the current directory to the specified project.",
-  "OPENTASK [Task Name]": "Opens a specific task. Replace [Task Name] with the name of a task. This changes the current directory to the specified task.",
-  "ADDTASK [Task Name]": "Create a task with the name [Task Name]",
-  "CHANGEDESCRIPTION [New Description]": "Changes the description of the current directory's task to the new description. If the current directory is not a task, then only return an ERROR."
-}
+import { allCommands, executeCommands } from "../executeCommands";
 
 export function Toolbar() {
 
   const location = useLocation();
+  const dispatch = useDispatch();
   const [stack, setStack] = useState<(ProjectClass | TaskClass)[]>([]);
   let projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
 
   function AICommands() {
+
+    // executeCommands(location.state, projectData, "ADDTASK color\nOPENTASK color\nCHANGETASKDESCRIPTION I like cheese", dispatch);
+    // return;
+
     const ai = new GoogleGenAI({ apiKey: "AIzaSyBdJwUyanHls9Cw05xGm8JfK64UGwUoc4Q" });
 
-    const prompt = "Your name is Terrance, an agentic AI for a project managementsoftware. You job is to use what I ask you, and turn it into a list of instructions, each instruction will be on seperate lines. All possible instructions are as follows "
-      + Object.entries(allCommands).map(([command, description]) => `${command} (${description})`)
+    const promptMessage = "Your name is Terrance, an agentic AI for a project managementsoftware. You job is to use what I ask you, and turn it into a list of instructions, each instruction will be on seperate lines. All possible instructions are as follows "
+      + Object.entries(allCommands).map(([command, description]) => `${command} ${description[0]} (${description[1]})`)
       + ". When I reference projects or tasks, I may make spelling mistakes, please correct them according to the project database given: "
       + JSON.stringify(findTaskById(projectData, location.state as string));
 
-    console.log(prompt);
+    console.log(promptMessage);
 
     ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: "In the do something project, change the description of this task to I like Cheese",
+      contents: prompt("Enter your command", "In the do something project, change the description of this task to I like Cheese") || "",
       config: {
         thinkingConfig: {
           thinkingBudget: 0,
         },
         temperature: 0,
-        systemInstruction: prompt
+        systemInstruction: promptMessage
       },
-    }).then((response) =>
-      console.log(response.text));
+    }).then((response) => {
+      console.log(response.text)
+      if (prompt("Enter anything to execute commands: ") != null) {
+        executeCommands(location.state, projectData, response.text || "", dispatch);
+      }
+    }
+    );
   }
 
   useEffect(() => {
