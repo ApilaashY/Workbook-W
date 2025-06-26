@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TaskClass, TaskProgressColors } from "../DataClasses/TaskClass";
 import "./Task.css";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import { Toolbar } from "../Toolbar/Toolbar";
 export function Task() {
   const location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const project = location.state as string;
   let projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
@@ -19,6 +20,7 @@ export function Task() {
   const projectInfo: TaskClass | undefined = findTaskById(projectData, project);
 
   if (!projectInfo) {
+    navigate("/")
     return <div>Project not found</div>;
   }
 
