@@ -1,6 +1,6 @@
 import type { ProjectObject } from "./DataClasses/ProjectClass";
 import type { TaskObject } from "./DataClasses/TaskClass";
-import { addProjectTasksAsync, addTasksAsync, findTaskById, store, updateTask } from "./store";
+import { addProjectTask, addTask as addTaskStore, findTaskById, store, updateTask } from "./store";
 import type { Dispatch } from "@reduxjs/toolkit";
 
 export type AnyObject = ProjectObject | TaskObject;
@@ -47,10 +47,10 @@ async function openTask(_: string, __: AnyObject | ProjectObject[], newData: str
 async function addTask(id: string, projectData: AnyObject | ProjectObject[], newData: string, dispatch: any): Promise<string> {
     if (!(projectData as AnyObject).id.includes("-")) {
         // This is a project object
-        await dispatch(addProjectTasksAsync({ id: id, data: newData }));
+        await addProjectTask(id, newData, dispatch);
     } else {
         // This is a task object
-        await dispatch(addTasksAsync({ id: id, data: newData }));
+        await addTaskStore(id, newData, dispatch);
     }
 
     return id;

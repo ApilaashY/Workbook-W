@@ -4,7 +4,7 @@ import "./Task.css";
 import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
-import { addTasks, updateTask, type ProjectStore } from "../store";
+import { addTask, updateTask, type ProjectStore } from "../store";
 import { TaskProgressTypes } from "../DataClasses/TaskClass";
 import { Toolbar } from "../Toolbar/Toolbar";
 
@@ -83,7 +83,7 @@ export function Task() {
         alert(`Task title cannot be empty`);
         data = null;
       } else {
-        dispatch(addTasks({ id: task.id, data: data }));
+        addTask(task.id, data, dispatch);
       }
     }
   }

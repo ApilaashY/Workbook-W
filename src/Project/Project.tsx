@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Project.css";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
-import { addProjectTasks, type ProjectStore } from "../store";
+import { addProjectTask, type ProjectStore } from "../store";
 import { TaskProgressColors } from "../DataClasses/TaskClass";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { useState } from "react";
@@ -36,7 +36,7 @@ export function Project() {
         alert(`Task title cannot be empty`);
         data = null;
       } else {
-        dispatch(addProjectTasks({ id: project.id, data: data }));
+        addProjectTask(project.id, data, dispatch);
       }
     }
   }
