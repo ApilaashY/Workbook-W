@@ -51,8 +51,6 @@ function createIdTrail(id: string, data: ProjectObject[]): string {
 
     current += "-" + parts[i];
 
-    console.log(current);
-
     total += "/tasks/" + currentData.tasks?.findIndex((task) => task.id === current);
     currentData = currentData.tasks?.find((task) => task.id === current);
   }

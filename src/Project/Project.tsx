@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Project.css";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,6 @@ import { useState } from "react";
 export function Project() {
   const location = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
@@ -20,7 +19,6 @@ export function Project() {
   );
 
   if (!projectInfo) {
-    navigate("/")
     return <div>Project not found</div>;
   }
 

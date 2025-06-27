@@ -13,7 +13,7 @@ export const allCommands: {
     "OPENTASK": ["[Task Name]", "Opens a specific task. Replace [Task Name] with the id of a task. If the user gives another identification for the task such as title or description, figure out the id. Use the project database I will give you later to find the id of a task depending on the task title or description or anything else. This changes the current directory to the specified task.", openTask],
     "ADDTASK": ["[Task Name]", "Create a task with the name [Task Name]. Remember, creating a task will not change the current directory, so if you would like to change data in the new task you have to use the opentask instruction. If you need the id of the new task to open it, the id will be the id of the current directory (is it exists) plus a dash then the taskCount, increment the taskCount after the id is created.", addTask],
     "CHANGETASKDESCRIPTION": ["[New Description]", "Changes the description of the current directory's task to the new description. If the current directory is not a task, then only return an ERROR.", changeTaskDescription],
-    "CHANGETASKTITLE": ["[New Title]", "Changes the title of the current directory's task to the new title. If the current directory is not a task, then only return an ERROR.", changeTaskTitle],
+    "CHANGETASKTITLE": ["[New Title]", "Changes the title of the current directory's task to the new title. If the current directory is not a task, then only return an ERROR. The user may refer to the title as the task's name or just say to change the task itself, make sure to interpret these kind of requests as title changes", changeTaskTitle],
     "GOTOPARENT": ["", "Goes back to the parent directory.", goToParent]
 }
 
@@ -29,8 +29,6 @@ export async function executeCommands(startId: string, commands: string, dispatc
         let pieces: string[] = commandList[i].split(" ");
 
         if (pieces.length === 0 || !currentData) continue;
-
-        console.log(currentData);
 
         id = await allCommands[pieces[0]][2](id, currentData, pieces.slice(1).join(" "), dispatch) ?? id;
     }
