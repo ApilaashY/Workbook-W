@@ -114,7 +114,7 @@ const projectSlice = createSlice({
     },
     addTask: (state, action: { payload: { id: string; data: string } }) => {
       let task = findTaskById(state, action.payload.id) as TaskObject | undefined;
-      console.log(task?.title);
+
       if (task) {
         task.tasks = [
           ...(task.tasks || []),
@@ -169,7 +169,6 @@ const projectSlice = createSlice({
           ...currentData,
           [action.payload.category]: action.payload.data,
         } as TaskObject).toMap();
-
     },
   },
 });

@@ -1,7 +1,7 @@
 import type { ProjectObject } from "./DataClasses/ProjectClass";
 import type { TaskObject } from "./DataClasses/TaskClass";
 import { addProjectTask, addTask as addTaskStore, findTaskById, store, updateTask } from "./store";
-import type { Dispatch } from "@reduxjs/toolkit";
+import { type Dispatch } from "@reduxjs/toolkit";
 
 export type AnyObject = ProjectObject | TaskObject;
 
@@ -31,6 +31,10 @@ export async function executeCommands(startId: string, commands: string, dispatc
         if (pieces.length === 0 || !currentData) continue;
 
         id = await allCommands[pieces[0]][2](id, currentData, pieces.slice(1).join(" "), dispatch) ?? id;
+
+        projectData = store.getState().projects;
+        currentData = findTaskById(projectData, id);
+
     }
 }
 
@@ -55,13 +59,13 @@ async function addTask(id: string, projectData: AnyObject | ProjectObject[], new
 }
 
 async function changeTaskTitle(id: string, _: AnyObject | ProjectObject[], newData: string, dispatch: Dispatch): Promise<string> {
-    updateTask(id, "title", newData, dispatch);
+    await updateTask(id, "title", newData, dispatch);
 
     return id;
 }
 
 async function changeTaskDescription(id: string, _: AnyObject | ProjectObject[], newData: string, dispatch: Dispatch): Promise<string> {
-    updateTask(id, "description", newData, dispatch);
+    await updateTask(id, "description", newData, dispatch);
 
     return id;
 }
@@ -73,3 +77,22 @@ async function goToParent(id: string): Promise<string> {
     }
     return pieces.join("-");
 }
+
+`OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-0
+CHANGETASKTITLE NORMALSSSA
+GOTOPARENT
+OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-1
+CHANGETASKTITLE CHEESE
+OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-1-0
+CHANGETASKTITLE DRG
+GOTOPARENT
+GOTOPARENT
+OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-2
+CHANGETASKTITLE THIS TASK
+GOTOPARENT
+OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-6
+CHANGETASKTITLE COLORS
+GOTOPARENT
+OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-7
+CHANGETASKTITLE HKJH
+GOTOPARENT`
