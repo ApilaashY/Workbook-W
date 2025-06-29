@@ -118,6 +118,12 @@ export function Task() {
               </option>)
             }
           </select>
+
+          <span className="fill" />
+
+          <button className="delete-task">
+            Delete Task
+          </button>
         </div>
 
         <div className="task-subtask-list">

@@ -1,9 +1,10 @@
 .project-window {
-  display: grid;
+  display: flex;
   grid-template-columns: 1fr 1fr;
   height: 100%;
   overflow-y: hidden;
   flex-grow: 1;
+  justify-content: space-evenly;
 }
 
 .project-task-list,
@@ -11,11 +12,13 @@
   padding: 1em;
   text-align: center;
   background-color: var(--bubbleBackgroundColor);
-  margin: 5em;
+  margin: 10vh 3em;
   border-radius: var(--borderRadius);
   display: flex;
   flex-direction: column;
   gap: 1em;
+  max-height: 80vh;
+  flex-grow: 1;
 }
 
 .project-task-list-only {
@@ -23,6 +26,7 @@
   flex-direction: column;
   gap: 0.5em;
   flex-grow: 1;
+  overflow-y: auto;
 }
 
 .project-task-item {

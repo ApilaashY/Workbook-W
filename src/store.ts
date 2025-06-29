@@ -125,6 +125,31 @@ const projectSlice = createSlice({
         ];
       }
     },
+    deleteTask: (state, action: { payload: { id: string } }) => {
+      let pieces = action.payload.id.split("-");
+      console.log(action.payload.id);
+      console.log(pieces);
+      if (pieces.length > 0) {
+        pieces.pop();
+      }
+      let parentTask = findTaskById(state, pieces.join("-")) as ProjectObject | TaskObject | undefined;
+
+      if (!parentTask) return;
+
+      parentTask.tasks ??= [];
+
+      let index = 0;
+
+      for (let i = 0; i < (parentTask.tasks.length || 0); i++) {
+        if (parentTask.tasks[i].id == action.payload.id) {
+          index = i;
+        }
+      }
+
+      parentTask.tasks.splice(index, 1);
+
+      console.log(parentTask.tasks?.length)
+    },
     updateTask: (
       state,
       action: {
@@ -201,6 +226,15 @@ const addTaskAsync = createAsyncThunk(
   }
 );
 
+const deleteTaskAsync = createAsyncThunk(
+  'projects/deleteTasksAsync',
+  async ({ id }: { id: string }, thunkAPI) => {
+    // Do async work here (e.g., API call)
+    // Optionally dispatch addProjectTasks here
+    thunkAPI.dispatch(projectSlice.actions.deleteTask({ id }));
+  }
+);
+
 const updateTaskAsync = createAsyncThunk(
   'projects/updateTasksAsync',
   async ({ id, category, data }: {
@@ -240,4 +274,18 @@ export async function updateTask(
 ) {
   await dispatch(updateTaskAsync({ id, category, data }));
   update(ref(db, `projects/${createIdTrail(id, store.getState().projects)}`), findTaskById(store.getState().projects, id)!);
+}
+
+export async function deleteTask(
+  id: string,
+  dispatch: any
+) {
+  console.log(id);
+  await dispatch(deleteTaskAsync({ id }));
+
+  let pieces = id.split("-");
+  if (pieces.length > 0) {
+    pieces.pop();
+  }
+  // update(ref(db, `projects/${createIdTrail(id, store.getState().projects)}`), findTaskById(store.getState().projects, pieces.join("-"))!);
 }

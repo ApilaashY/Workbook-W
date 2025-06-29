@@ -1,6 +1,6 @@
 import type { ProjectObject } from "./DataClasses/ProjectClass";
 import type { TaskObject } from "./DataClasses/TaskClass";
-import { addProjectTask, addTask as addTaskStore, findTaskById, store, updateTask } from "./store";
+import { addProjectTask, addTask as addTaskStore, findTaskById, store, updateTask, deleteTask as deleteTaskStore } from "./store";
 import { type Dispatch } from "@reduxjs/toolkit";
 
 export type AnyObject = ProjectObject | TaskObject;
@@ -14,7 +14,8 @@ export const allCommands: {
     "ADDTASK": ["[Task Name]", "Create a task with the name [Task Name]. Remember, creating a task will not change the current directory, so if you would like to change data in the new task you have to use the opentask instruction. If you need the id of the new task to open it, the id will be the id of the current directory (is it exists) plus a dash then the taskCount, increment the taskCount after the id is created.", addTask],
     "CHANGETASKDESCRIPTION": ["[New Description]", "Changes the description of the current directory's task to the new description. If the current directory is not a task, then only return an ERROR.", changeTaskDescription],
     "CHANGETASKTITLE": ["[New Title]", "Changes the title of the current directory's task to the new title. If the current directory is not a task, then only return an ERROR. The user may refer to the title as the task's name or just say to change the task itself, make sure to interpret these kind of requests as title changes", changeTaskTitle],
-    "GOTOPARENT": ["", "Goes back to the parent directory.", goToParent]
+    "GOTOPARENT": ["", "Goes back to the parent directory.", goToParent],
+    "DELETETASK": ["[Task ID]", "Deletes the task with the id of [Task ID]. If the user wants to delete the current task, remember to go to the parent and then remove this task by id.", deleteTask]
 }
 
 export async function executeCommands(startId: string, commands: string, dispatch: Dispatch) {
@@ -30,11 +31,7 @@ export async function executeCommands(startId: string, commands: string, dispatc
 
         if (pieces.length === 0 || !currentData) continue;
 
-        id = await allCommands[pieces[0]][2](id, currentData, pieces.slice(1).join(" "), dispatch) ?? id;
-
-        projectData = store.getState().projects;
-        currentData = findTaskById(projectData, id);
-
+        id = await allCommands[pieces[0]][2](id, currentData, pieces.slice(1).join(" "), dispatch) ?? id
     }
 }
 
@@ -78,21 +75,9 @@ async function goToParent(id: string): Promise<string> {
     return pieces.join("-");
 }
 
-`OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-0
-CHANGETASKTITLE NORMALSSSA
-GOTOPARENT
-OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-1
-CHANGETASKTITLE CHEESE
-OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-1-0
-CHANGETASKTITLE DRG
-GOTOPARENT
-GOTOPARENT
-OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-2
-CHANGETASKTITLE THIS TASK
-GOTOPARENT
-OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-6
-CHANGETASKTITLE COLORS
-GOTOPARENT
-OPENTASK jXuDj7VNhSNjwOHWpE9CIS5mP1o1_0-7
-CHANGETASKTITLE HKJH
-GOTOPARENT`
+async function deleteTask(id: string, _: AnyObject | ProjectObject[], data: string, dispatch: Dispatch): Promise<string> {
+    await deleteTaskStore(data, dispatch);
+
+    return id;
+}
+

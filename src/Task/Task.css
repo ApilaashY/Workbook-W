@@ -85,3 +85,12 @@
   overflow-y: auto;
   gap: 0.5em;
 }
+
+.task-stats .fill {
+  flex-grow: 1;
+}
+
+.delete-task {
+  padding: 1em;
+  cursor: pointer;
+}

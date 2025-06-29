@@ -41,11 +41,17 @@
 }
 
 .terrance-button {
-  border-image: linear-gradient(0.4turn, #3ffb87, purple) 1;
+  background: linear-gradient(0.3turn, #3ffb87, purple);
   border-radius: var(--borderRadius);
-  border-width: 4px;
-  border-style: solid;
   padding: 5px;
   cursor: pointer;
   box-shadow: 10px 10px 1em rgba(0, 0, 0, 0.4);
+  transition: 0.2s;
+  border: none;
+}
+
+.terrance-button:hover {
+  background: linear-gradient(0.9turn, #3ffb87, purple);
+  box-shadow: 10px 10px 1em rgba(0, 0, 0, 0.6);
+  transition: 0.2s;
 }
