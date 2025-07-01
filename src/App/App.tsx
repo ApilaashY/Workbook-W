@@ -53,7 +53,7 @@ function App() {
       <div style={{ flex: "1 1 auto" }}>
         <div className="project-list">
           {projects.map((project) => (
-            <Link to="/project" state={project.id} key={project.id}>
+            <Link to={`/project/${project.id}`} key={project.id}>
               <div className="project-card">
                 <h3>{project.title}</h3>
               </div>

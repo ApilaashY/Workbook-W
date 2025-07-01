@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "./Project.css";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,14 +8,14 @@ import { Toolbar } from "../Toolbar/Toolbar";
 import { useState } from "react";
 
 export function Project() {
-  const location = useLocation();
+  const {id} = useParams<{id: string}>();
   const dispatch = useDispatch();
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
 
   const projectInfo: ProjectClass | undefined = projectData.find(
-    (p) => p.id === (location.state as string)
+    (p) => p.id === id
   );
 
   if (!projectInfo) {
@@ -49,7 +49,6 @@ export function Project() {
             {projectInfo?.tasks.map((task) => (
               <Link
                 to={`/project/task/${task.id}`}
-                state={task.id}
                 key={task.id}
               >
                 <button

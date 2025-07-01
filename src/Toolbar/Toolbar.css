@@ -48,6 +48,7 @@
   box-shadow: 10px 10px 1em rgba(0, 0, 0, 0.4);
   transition: 0.2s;
   border: none;
+  color: white;
 }
 
 .terrance-button:hover {

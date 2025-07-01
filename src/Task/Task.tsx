@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { TaskClass, TaskProgressColors } from "../DataClasses/TaskClass";
 import "./Task.css";
 import { useEffect, useState } from "react";
@@ -9,15 +9,14 @@ import { TaskProgressTypes } from "../DataClasses/TaskClass";
 import { Toolbar } from "../Toolbar/Toolbar";
 
 export function Task() {
-  const location = useLocation();
+  const { id = "" } = useParams<{id: string}>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const project = location.state as string;
   let projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
 
-  const projectInfo: TaskClass | undefined = findTaskById(projectData, project);
+  const projectInfo: TaskClass | undefined = findTaskById(projectData, id);
 
   if (!projectInfo) {
     navigate("/")
@@ -27,11 +26,11 @@ export function Task() {
   const [task, setTask] = useState(projectInfo);
 
   useEffect(() => {
-    const newTask = findTaskById(projectData, location.state as string);
+    const newTask = findTaskById(projectData, id as string);
     if (newTask !== undefined) {
       setTask(newTask);
     }
-  }, [projectData, location.state]);
+  }, [projectData, id]);
 
   function findTaskById(data: ProjectClass[], id: string): TaskClass {
     const idParts = id.split("-");
@@ -68,7 +67,7 @@ export function Task() {
         alert(`Task ${category} cannot be empty`);
         data = null;
       } else {
-        updateTask(location.state, category, data, dispatch);
+        updateTask(id, category, data, dispatch);
       }
     }
   }
@@ -109,7 +108,7 @@ export function Task() {
           </h2>
 
           <select value={task.progress} className="task-progress-select" onChange={(e) =>
-            updateTask(location.state, "progress", e.target.value, dispatch)
+            updateTask(id, "progress", e.target.value, dispatch)
           }
             style={{ backgroundColor: TaskProgressColors[task.progress], color: ((TaskProgressColors[task.progress].startsWith("#ff")) ? "black" : "white") }}>
             {
@@ -132,7 +131,6 @@ export function Task() {
             {task.tasks.map((subtask) => (
               <Link
                 to={`/project/task/${subtask.id}`}
-                state={subtask.id}
                 key={subtask.id}
               >
                 <button className="task-subtask-item" style={{
