@@ -4,7 +4,7 @@ import "./Task.css";
 import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
-import { addTask, updateTask, type ProjectStore } from "../store";
+import { addTask, deleteTask, popLastTask, updateTask, type ProjectStore } from "../store";
 import { TaskProgressTypes } from "../DataClasses/TaskClass";
 import { Toolbar } from "../Toolbar/Toolbar";
 
@@ -18,11 +18,6 @@ export function Task() {
 
   const projectInfo: TaskClass | undefined = findTaskById(projectData, id);
 
-  if (!projectInfo) {
-    navigate("/")
-    return <div>Project not found</div>;
-  }
-
   const [task, setTask] = useState(projectInfo);
 
   useEffect(() => {
@@ -31,6 +26,10 @@ export function Task() {
       setTask(newTask);
     }
   }, [projectData, id]);
+
+  if (!task) {
+    return <div>Project not found</div>;
+  }
 
   function findTaskById(data: ProjectClass[], id: string): TaskClass {
     const idParts = id.split("-");
@@ -87,6 +86,13 @@ export function Task() {
     }
   }
 
+  async function deleteTaskButton() {
+    await deleteTask(task.id, dispatch);
+    let lastTask: string = popLastTask(task.id);
+    console.log(lastTask)
+    navigate(!lastTask.includes("-") ? `/project/${lastTask}` : `/project/task/${lastTask}`);
+  }
+
   return (
     <div className="main-window">
       <Toolbar />
@@ -120,7 +126,7 @@ export function Task() {
 
           <span className="fill" />
 
-          <button className="delete-task">
+          <button className="delete-task" onClick={deleteTaskButton}>
             Delete Task
           </button>
         </div>

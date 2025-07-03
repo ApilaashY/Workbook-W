@@ -93,4 +93,13 @@
 .delete-task {
   padding: 1em;
   cursor: pointer;
+  border-radius: var(--borderRadius);
+  border: 1px solid black;
+  transition: 0.2s;
+}
+
+.delete-task:hover {
+  transition-duration: 0.2s;
+  cursor: pointer;
+  background-color: rgb(150, 150, 150);
 }

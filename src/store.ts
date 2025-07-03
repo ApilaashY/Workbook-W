@@ -38,6 +38,14 @@ export function findTaskById(
   return currentData as TaskClass | undefined;
 }
 
+export function popLastTask(id: string): string {
+  let pieces: string[] = id.split("-");
+    if (pieces.length > 0) {
+      pieces.pop();
+    }
+    return pieces.join("-")
+}
+
 function createIdTrail(id: string, data: ProjectObject[]): string {
   let parts = id.split("-");
   let total = parts[0];
@@ -126,13 +134,7 @@ const projectSlice = createSlice({
       }
     },
     deleteTask: (state, action: { payload: { id: string } }) => {
-      let pieces = action.payload.id.split("-");
-      console.log(action.payload.id);
-      console.log(pieces);
-      if (pieces.length > 0) {
-        pieces.pop();
-      }
-      let parentTask = findTaskById(state, pieces.join("-")) as ProjectObject | TaskObject | undefined;
+      let parentTask = findTaskById(state, popLastTask(action.payload.id)) as ProjectObject | TaskObject | undefined;
 
       if (!parentTask) return;
 
@@ -147,8 +149,6 @@ const projectSlice = createSlice({
       }
 
       parentTask.tasks.splice(index, 1);
-
-      console.log(parentTask.tasks?.length)
     },
     updateTask: (
       state,
@@ -280,12 +280,7 @@ export async function deleteTask(
   id: string,
   dispatch: any
 ) {
-  console.log(id);
   await dispatch(deleteTaskAsync({ id }));
 
-  let pieces = id.split("-");
-  if (pieces.length > 0) {
-    pieces.pop();
-  }
-  // update(ref(db, `projects/${createIdTrail(id, store.getState().projects)}`), findTaskById(store.getState().projects, pieces.join("-"))!);
+  update(ref(db, `projects/${createIdTrail(popLastTask(id), store.getState().projects)}`), findTaskById(store.getState().projects, popLastTask(id))!);
 }
