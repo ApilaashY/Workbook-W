@@ -14,6 +14,7 @@
   border-radius: var(--borderRadius);
   display: flex;
   flex-direction: column;
+  gap: 1em
 }
 
 .task-subtask-list {
@@ -25,7 +26,7 @@
 .task-information-text {
   text-align: center;
   width: fit-content;
-  margin: 1em auto;
+  margin: 0.5em auto;
   transition-duration: 0.2s;
 }
 

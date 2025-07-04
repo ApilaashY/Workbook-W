@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addTask, deleteTask, popLastTask, updateTask, type ProjectStore } from "../store";
 import { TaskProgressTypes } from "../DataClasses/TaskClass";
 import { Toolbar } from "../Toolbar/Toolbar";
+import { ProgressStatus } from "../Components/ProgressStatus/ProgressStatus"
 
 export function Task() {
-  const { id = "" } = useParams<{id: string}>();
+  const { id = "" } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let projectData: ProjectClass[] = useSelector(
@@ -123,6 +124,11 @@ export function Task() {
               </option>)
             }
           </select>
+
+          <div>
+            <h3>Status of all Subtasks</h3>
+            <ProgressStatus project={task} />
+          </div>
 
           <span className="fill" />
 
