@@ -1,26 +1,36 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./Project.css";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
 import { addProjectTask, type ProjectStore } from "../store";
-import { TaskProgressColors } from "../DataClasses/TaskClass";
+import { TaskClass, TaskProgressColors, TaskProgressTypes, type TaskProgress } from "../DataClasses/TaskClass";
 import { Toolbar } from "../Toolbar/Toolbar";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function Project() {
-  const {id} = useParams<{id: string}>();
+  const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [progressStatProperty, setProgressStatProperty] = useState<string>("Done");
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
+  const goBack = useRef(false);
 
   const projectInfo: ProjectClass | undefined = projectData.find(
     (p) => p.id === id
   );
 
+  useEffect(() => {
+    if (goBack.current) navigate("/");
+  }, [goBack.current])
+
   if (!projectInfo) {
+    goBack.current = true;
     return <div>Project not found</div>;
   }
+
+
 
   const [project, _] = useState(projectInfo);
 
@@ -37,6 +47,19 @@ export function Project() {
         addProjectTask(project.id, data, dispatch);
       }
     }
+  }
+
+  function countTasks(level: ProjectClass | TaskClass): number {
+    return level.tasks.length + level.tasks.map((task) => countTasks(task)).reduce((total, x) => total + x, 0);
+  }
+
+  function countProperty(level: ProjectClass | TaskClass, property: TaskProgress): number {
+    let count: number = 0;
+    level.tasks.forEach((task) => {
+      if (task.progress == property) count++;
+      count += countProperty(task, property);
+    })
+    return count;
   }
 
   return (
@@ -69,6 +92,18 @@ export function Project() {
 
         <div className="project-task-summary">
           <h2>Task Summary</h2>
+          <div style={{ display: "flex", alignItems: "center", margin: "0 0.5em" }}>
+            <h3 style={{ margin: 0 }}>{countProperty(project, progressStatProperty)}/{countTasks(project)}</h3>
+            <select value={progressStatProperty} className="progress-stat-select"
+              onChange={(e) => setProgressStatProperty(e.target.value)}
+              style={{ backgroundColor: TaskProgressColors[progressStatProperty], color: ((TaskProgressColors[progressStatProperty].startsWith("#ff")) ? "black" : "white") }}>
+              {
+                TaskProgressTypes.map((progressOption) => <option value={progressOption} key={progressOption}>
+                  {progressOption}
+                </option>)
+              }
+            </select>
+          </div>
         </div>
       </div>
     </div>

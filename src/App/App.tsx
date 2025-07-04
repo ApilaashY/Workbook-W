@@ -20,8 +20,6 @@ function App() {
 
 
   useEffect(() => {
-
-
     setProjects(projectData)
   }, [projectData])
 

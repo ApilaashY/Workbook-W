@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./Toolbar.css";
 import { ProjectClass } from "../DataClasses/ProjectClass";
 import { TaskClass } from "../DataClasses/TaskClass";
@@ -34,8 +34,9 @@ async function getSpeechInput(): Promise<string> {
 }
 
 export function Toolbar() {
-  const {id = ""} = useParams<{id: string}>();
+  const { id = "" } = useParams<{ id: string }>();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [stack, setStack] = useState<(ProjectClass | TaskClass)[]>([]);
   let projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
@@ -58,8 +59,8 @@ export function Toolbar() {
     + "If you return an error, please explain why it is an error."
       + "Unless otherwise specified, assume the instructions are taking place in the current project or task directory. "
       + "If you have no instructions, leave the [List of Instructions] empty. "
-      // + "The [Your General Response] section should be things you want to say to me that is not instructions. For example, if I tell you to add a task, you may want the general response to be, Okay I have added a new tasked named whatever. "
-      // + "In the general response, speak as if you did the things the instructions are supposed to do, do not mention how you created or wrote a list of instructions. "
+    // + "The [Your General Response] section should be things you want to say to me that is not instructions. For example, if I tell you to add a task, you may want the general response to be, Okay I have added a new tasked named whatever. "
+    // + "In the general response, speak as if you did the things the instructions are supposed to do, do not mention how you created or wrote a list of instructions. "
 
 
     const spoken = await getSpeechInput();
@@ -99,7 +100,11 @@ export function Toolbar() {
     let currentData: ProjectClass | TaskClass | undefined = (
       projectData as ProjectClass[]
     ).find((project) => project.id === currentId);
-    newStack[0] = currentData ?? ProjectClass.fromMap({ title: "ERROR", id: "" });
+    if (!currentData) {
+      navigate("/")
+    } else {
+      newStack[0] = currentData;
+    }
 
     for (let i = 1; i < idParts.length; i++) {
       currentId += "-" + idParts[i];
@@ -115,7 +120,12 @@ export function Toolbar() {
         );
       }
 
-      newStack[i] = currentData ?? TaskClass.fromMap({ title: "ERROR", id: "" });
+      if (!currentData) {
+        navigate("/");
+        console.log("HI")
+      } else {
+        newStack[i] = currentData;
+      }
     }
 
     setStack(newStack);
