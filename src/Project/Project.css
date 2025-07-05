@@ -19,6 +19,7 @@
   gap: 1em;
   max-height: 80vh;
   flex-grow: 1;
+  max-width: 600px;
 }
 
 .project-task-list-only {
@@ -60,4 +61,8 @@
   transition-duration: 0.2s;
   cursor: pointer;
   background-color: rgb(150, 150, 150);
+}
+
+.info-label {
+  margin-bottom: 0;
 }

@@ -102,6 +102,26 @@ const projectSlice = createSlice({
         state.push(ProjectClass.fromMap(action.payload).toMap());
       }
     },
+    updateProject: (
+      state,
+      action: {
+        payload: {
+          id: string;
+          category: "attachedDocs";
+          data: any;
+        };
+      }
+    ) => {
+      let index = state.findIndex((project) => project.id == action.payload.id);
+
+      let currentData = state[index];
+
+      state[index] =
+        ProjectClass.fromMap({
+          ...currentData,
+          [action.payload.category]: action.payload.data,
+        } as ProjectObject).toMap();
+    },
     addProjectTask: (
       state,
       action: { payload: { id: string; data: string } }
@@ -217,6 +237,19 @@ const addProjectTaskAsync = createAsyncThunk(
   }
 );
 
+const updateProjectAsync = createAsyncThunk(
+  'projects/updateProjectAsync',
+  async ({ id, category, data }: {
+    id: string;
+    category: "attachedDocs";
+    data: any;
+  }, thunkAPI) => {
+    // Do async work here (e.g., API call)
+    // Optionally dispatch addProjectTasks here
+    thunkAPI.dispatch(projectSlice.actions.updateProject({ id, category, data }));
+  }
+);
+
 const addTaskAsync = createAsyncThunk(
   'projects/addTasksAsync',
   async ({ id, data }: { id: string; data: string }, thunkAPI) => {
@@ -255,6 +288,16 @@ export async function addProjectTask(
 ) {
   await dispatch(addProjectTaskAsync({ id, data }))
   update(ref(db, `projects/${createIdTrail(id, store.getState().projects)}`), findTaskById(store.getState().projects, id)!);
+}
+
+export async function updateProject(
+  id: string,
+  category: "attachedDocs",
+  data: any,
+  dispatch: any
+) {
+  await dispatch(updateProjectAsync({ id, category, data }));
+  update(ref(db, `projects/${id}`), store.getState().projects.find((project) => project.id == id)!);
 }
 
 export async function addTask(
