@@ -40,10 +40,10 @@ export function findTaskById(
 
 export function popLastTask(id: string): string {
   let pieces: string[] = id.split("-");
-    if (pieces.length > 0) {
-      pieces.pop();
-    }
-    return pieces.join("-")
+  if (pieces.length > 0) {
+    pieces.pop();
+  }
+  return pieces.join("-")
 }
 
 function createIdTrail(id: string, data: ProjectObject[]): string {
@@ -107,7 +107,7 @@ const projectSlice = createSlice({
       action: {
         payload: {
           id: string;
-          category: "attachedDocs";
+          category: "attachedDocs" | "tasks";
           data: any;
         };
       }
@@ -137,7 +137,7 @@ const projectSlice = createSlice({
           ).toMap(),
         ];
 
-        //update(ref(db, "projects/" + proj.id), {...proj});
+        update(ref(db, "projects/" + proj.id), { ...proj });
       }
     },
     addTask: (state, action: { payload: { id: string; data: string } }) => {
@@ -241,7 +241,7 @@ const updateProjectAsync = createAsyncThunk(
   'projects/updateProjectAsync',
   async ({ id, category, data }: {
     id: string;
-    category: "attachedDocs";
+    category: "attachedDocs" | "tasks";
     data: any;
   }, thunkAPI) => {
     // Do async work here (e.g., API call)
@@ -292,7 +292,7 @@ export async function addProjectTask(
 
 export async function updateProject(
   id: string,
-  category: "attachedDocs",
+  category: "attachedDocs" | "tasks",
   data: any,
   dispatch: any
 ) {

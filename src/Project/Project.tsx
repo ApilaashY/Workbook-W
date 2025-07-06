@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./Project.css";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,43 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressStatus } from "../Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "../Components/AttachedDocs/AttachedDocs";
 
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arraySwap,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+
+function SortableTask({ task, color, dragging, ...props }: any) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: task.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    border: `2px solid ${color}`,
+    marginBottom: "0.5em",
+    width: "100%",
+  };
+
+  return (
+    <a href={(dragging) ? undefined : `/project/task/${task.id}`} ref={setNodeRef} {...attributes} {...listeners}>
+      <button ref={setNodeRef} {...attributes} {...listeners} className="project-task-item" style={style} {...props}>
+        {task.title}
+      </button>
+    </a>
+  );
+}
+
 export function Project() {
   const { id = "" } = useParams<{ id: string }>();
   const dispatch = useDispatch();
@@ -17,6 +54,7 @@ export function Project() {
     (state: ProjectStore) => state.projects
   );
   const goBack = useRef(false);
+  const [dragging, setDragging] = useState(false);
 
   const projectInfo: ProjectClass | undefined = projectData.find(
     (p) => p.id === id
@@ -57,7 +95,25 @@ export function Project() {
   }
 
 
+  const sensors = useSensors(useSensor(PointerSensor));
 
+  function handleDragEnd(event: any) {
+    setDragging(false);
+    const { active, over } = event;
+    if (active.id !== over.id) {
+
+      console.log(active.id === project.tasks[0].id);
+      let id1 = project.tasks.findIndex((task) => task.id === active.id);
+      let id2 = project.tasks.findIndex((task) => task.id === over.id);
+
+
+      let newArr = arraySwap(project.tasks, id1, id2);
+
+      console.log(newArr)
+
+      updateProject(id, "tasks", newArr, dispatch);
+    }
+  }
 
 
   return (
@@ -66,23 +122,31 @@ export function Project() {
       <div className="project-window">
         <div className="project-task-list">
           <h2>Project Task List</h2>
-          <div className="project-task-list-only">
-            {projectInfo?.tasks.map((task) => (
-              <Link
-                to={`/project/task/${task.id}`}
-                key={task.id}
-              >
-                <button
-                  className="project-task-item"
-                  style={{
-                    border: `2px solid ${TaskProgressColors[task.progress]}`,
-                  }}
-                >
-                  {task.title}
-                </button>
-              </Link>
-            ))}
-          </div>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={() => setDragging(true)}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+          >
+            <SortableContext
+              items={project.tasks}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="project-task-list-only">
+                {project.tasks.map((task) => {
+                  return (
+                    <SortableTask
+                      key={task.id}
+                      task={task}
+                      color={TaskProgressColors[task.progress]}
+                      dragging={dragging}
+                    />
+                  );
+                })}
+              </div>
+            </SortableContext>
+          </DndContext>
           <button className="add-task-button" onClick={createNewTask}>
             Add Task
           </button>
