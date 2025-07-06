@@ -8,19 +8,19 @@
 
 .task-stats,
 .task-subtask-list {
+  background-color: var(--bubbleBackgroundColor);
   padding: 1em;
   text-align: center;
-  margin: 5em;
+  margin: 10vh 3em;
   border-radius: var(--borderRadius);
   display: flex;
   flex-direction: column;
-  gap: 1em
+  gap: 0.8em;
+  max-width: 600px;
 }
 
 .task-subtask-list {
   display: flex;
-  background-color: var(--bubbleBackgroundColor);
-  gap: 1em;
 }
 
 .task-information-text {

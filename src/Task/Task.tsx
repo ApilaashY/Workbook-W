@@ -8,6 +8,7 @@ import { addTask, deleteTask, popLastTask, updateTask, type ProjectStore } from 
 import { TaskProgressTypes } from "../DataClasses/TaskClass";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { ProgressStatus } from "../Components/ProgressStatus/ProgressStatus"
+import { AttachedDocs } from "../Components/AttachedDocs/AttachedDocs";
 
 export function Task() {
   const { id = "" } = useParams<{ id: string }>();
@@ -125,10 +126,11 @@ export function Task() {
             }
           </select>
 
-          <div>
-            <h3>Status of all Subtasks</h3>
-            <ProgressStatus project={task} />
-          </div>
+          <h3 className="info-label">Status of all Subtasks</h3>
+          <ProgressStatus project={task} />
+
+          <h3 className="info-label">Attached Links</h3>
+          <AttachedDocs links={task.attachedDocs} updateFunction={updateTask} id={id} />
 
           <span className="fill" />
 

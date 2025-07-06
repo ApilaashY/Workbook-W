@@ -5,6 +5,7 @@ export interface TaskObject {
   progress?: TaskProgress;
   tasks?: TaskObject[];
   taskCount?: number;
+  attachedDocs?: [string, string][]
 }
 
 export class TaskClass {
@@ -14,6 +15,7 @@ export class TaskClass {
   public progress: TaskProgress;
   public tasks: TaskClass[];
   public taskCount: number;
+  public attachedDocs: [string, string][];
 
   constructor(
     title: string,
@@ -21,7 +23,8 @@ export class TaskClass {
     description?: string,
     progress?: TaskProgress,
     tasks?: TaskClass[],
-    taskCount?: number
+    taskCount?: number,
+    attachedDocs?: [string, string][]
   ) {
     this.title = title.trim();
     this.id = id.trim();
@@ -29,6 +32,7 @@ export class TaskClass {
     this.progress = progress ?? "Not Started";
     this.tasks = tasks ?? [];
     this.taskCount = taskCount ?? tasks?.length ?? 0;
+    this.attachedDocs = attachedDocs ?? [];
   }
 
   static fromMap(allData: TaskObject): TaskClass {
@@ -38,7 +42,8 @@ export class TaskClass {
       allData.description?.trim() || "",
       allData.progress || "Not Started",
       allData.tasks?.map(TaskClass.fromMap) || [],
-      allData.taskCount ?? allData.tasks?.length ?? 0
+      allData.taskCount ?? allData.tasks?.length ?? 0,
+      allData.attachedDocs ?? [],
     );
     return task;
   }
@@ -57,6 +62,7 @@ export class TaskClass {
       description: this.description,
       progress: this.progress,
       tasks: this.tasks.map((val) => val.toMap()),
+      attachedDocs: this.attachedDocs,
     };
   }
 }

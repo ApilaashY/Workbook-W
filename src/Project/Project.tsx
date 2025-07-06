@@ -10,7 +10,7 @@ import { ProgressStatus } from "../Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "../Components/AttachedDocs/AttachedDocs";
 
 export function Project() {
-  const { id="" } = useParams<{ id: string }>();
+  const { id = "" } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const projectData: ProjectClass[] = useSelector(
@@ -30,7 +30,7 @@ export function Project() {
     goBack.current = true;
     return <div>Project not found</div>;
   }
-  
+
   const [project, setProject] = useState(projectInfo);
 
   useEffect(() => {
@@ -56,10 +56,7 @@ export function Project() {
     }
   }
 
-  function addLink(label: string, link: string): boolean {
-    updateProject(id, "attachedDocs", [...project.attachedDocs, [label, link]], dispatch);
-    return true;
-  }
+
 
 
 
@@ -96,8 +93,8 @@ export function Project() {
           <h3 className="info-label">Status of all Tasks</h3>
           <ProgressStatus project={project} />
 
-          <h3 className="info-label">Attached Documents</h3>
-          <AttachedDocs links={project.attachedDocs} addLink={addLink}/>
+          <h3 className="info-label">Attached Links</h3>
+          <AttachedDocs links={project.attachedDocs} updateFunction={updateProject} id={id} />
         </div>
       </div>
     </div>
