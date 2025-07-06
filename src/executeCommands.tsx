@@ -15,7 +15,8 @@ export const allCommands: {
     "CHANGETASKDESCRIPTION": ["[New Description]", "Changes the description of the current directory's task to the new description. If the current directory is not a task, then only return an ERROR.", changeTaskDescription],
     "CHANGETASKTITLE": ["[New Title]", "Changes the title of the current directory's task to the new title. If the current directory is not a task, then only return an ERROR. The user may refer to the title as the task's name or just say to change the task itself, make sure to interpret these kind of requests as title changes", changeTaskTitle],
     "GOTOPARENT": ["", "Goes back to the parent directory.", goToParent],
-    "DELETETASK": ["[Task ID]", "Deletes the task with the id of [Task ID]. If the user wants to delete the current task, remember to go to the parent and then remove this task by id.", deleteTask]
+    "DELETETASK": ["[Task ID]", "Deletes the task with the id of [Task ID]. If the user wants to delete the current task, remember to go to the parent and then remove this task by id.", deleteTask],
+    "OPENLINK": ["[Link Index]", "Opens the [Link Index]th link of the attachedDocs list in the current directory.", openLink]
 }
 
 export async function executeCommands(startId: string, commands: string, dispatch: Dispatch) {
@@ -81,3 +82,13 @@ async function deleteTask(id: string, _: AnyObject | ProjectObject[], data: stri
     return id;
 }
 
+async function openLink(id: string, data: AnyObject | ProjectObject[], index: string, _: Dispatch): Promise<string> {
+    const attachedDocs = (data as AnyObject).attachedDocs;
+    const idx = Number(index);
+    if (attachedDocs && Array.isArray(attachedDocs) && attachedDocs[idx] && attachedDocs[idx][0]) {
+        console.log(attachedDocs[idx])
+        window.open(attachedDocs[idx][1]);
+    }
+
+    return id;
+}

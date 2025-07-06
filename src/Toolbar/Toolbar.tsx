@@ -47,8 +47,6 @@ export function Toolbar() {
     const ai = new GoogleGenAI({ apiKey: "AIzaSyBdJwUyanHls9Cw05xGm8JfK64UGwUoc4Q" });
 
     const systemInstruction = "Your name is Terrance, an agentic AI for a project management software. I will tell you to do something to the project, you do not have the capabilities to do that, instead, turn my request into a list of instructions, each instruction on a new line. Return the list of instructions to me, your list of instructions will be given to a function in this program that will execute them. "
-      + "Your reponse should be in this format, the square brackets should be replaced with information: "
-      + "[List of Instructions]"//\n\n[Your General Response]"
       + "All possible instructions are as follows "
       + Object.entries(allCommands).map(([command, description]) => `${command} ${description[0]} (${description[1]})`)
       + ". When I reference projects or tasks, I may make spelling mistakes, please correct them according to the project database given "
@@ -64,7 +62,7 @@ export function Toolbar() {
 
 
     const spoken = await getSpeechInput();
-    const userInput = spoken || prompt("Enter your command", "In the do something project, change the description of this task to I like Cheese") || "";
+    const userInput = spoken || prompt("Enter your command") || "";
 
     console.log(userInput);
 
