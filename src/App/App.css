@@ -16,7 +16,7 @@
   margin: 2em;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start; /* or just remove this line */
+  justify-content: center;
   flex-wrap: wrap;
   overflow-y: auto;
 }

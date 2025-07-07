@@ -17,15 +17,16 @@
   }
 
   .toolbar {
-    position: absolute;
-    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    right: -50vw; /* Hide off-screen */
     width: 46vw;
     height: 96vh;
-    padding: 0;
-    left: 50vw;
-    transition: 0.2s;
-    transform: translateX(50vw);
     padding: 2vh 2vw;
+    max-width: 100vw;
+    overflow: hidden;
+    transition: right 0.2s;
+    z-index: 1000;
   }
 
   .mobile-menu-toggle {
@@ -44,6 +45,7 @@
   }
 
   .show-toolbar-menu {
+    right: 0;
     transform: none;
   }
 }
