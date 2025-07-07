@@ -99,6 +99,8 @@ export function Toolbar() {
       projectData as ProjectClass[]
     ).find((project) => project.id === currentId);
     if (!currentData) {
+      console.log(projectData);
+      console.log(currentId)
       navigate("/")
     } else {
       newStack[0] = currentData;

@@ -17,7 +17,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import {
-  arraySwap,
+  arrayMove,
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
@@ -28,6 +28,7 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 function SortableTask({ task, color, dragging, ...props }: any) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task.id });
+  const navigate = useNavigate();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -37,12 +38,32 @@ function SortableTask({ task, color, dragging, ...props }: any) {
     width: "100%",
   };
 
+  function handleClick() {
+    navigate(`/project/task/${task.id}`);
+  }
+
   return (
-    <a href={(dragging) ? undefined : `/project/task/${task.id}`} ref={setNodeRef} {...attributes} {...listeners}>
-      <button ref={setNodeRef} {...attributes} {...listeners} className="project-task-item" style={style} {...props}>
-        {task.title}
-      </button>
-    </a>
+    <button
+      ref={setNodeRef}
+      className="project-task-item"
+      style={style}
+      onClick={handleClick}
+      {...attributes}
+      {...props}
+    >
+      <span>{task.title}</span>
+      <span
+        {...listeners}
+        style={{
+          cursor: "grab",
+          padding: "0 0.5em",
+          userSelect: "none",
+        }}
+        aria-label="Drag handle"
+      >
+        ☰
+      </span>
+    </button>
   );
 }
 
@@ -107,7 +128,7 @@ export function Project() {
       let id2 = project.tasks.findIndex((task) => task.id === over.id);
 
 
-      let newArr = arraySwap(project.tasks, id1, id2);
+      let newArr = arrayMove(project.tasks, id1, id2);
 
       console.log(newArr)
 
@@ -125,7 +146,7 @@ export function Project() {
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
-            onDragStart={() => setDragging(true)}
+            onDragMove={() => setDragging(true)}
             onDragEnd={handleDragEnd}
             modifiers={[restrictToVerticalAxis]}
           >

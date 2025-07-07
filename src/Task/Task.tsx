@@ -22,6 +22,7 @@ export function Task() {
 
   const [task, setTask] = useState(projectInfo);
 
+
   useEffect(() => {
     const newTask = findTaskById(projectData, id as string);
     if (newTask !== undefined) {
@@ -94,6 +95,7 @@ export function Task() {
     console.log(lastTask)
     navigate(!lastTask.includes("-") ? `/project/${lastTask}` : `/project/task/${lastTask}`);
   }
+
 
   return (
     <div className="main-window">
