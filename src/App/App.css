@@ -6,6 +6,12 @@
   overflow-y: hidden;
 }
 
+@media (max-width: 600px) {
+  .main-window {
+    flex-direction: column;
+  }
+}
+
 .project-list {
   margin: 2em;
   display: flex;

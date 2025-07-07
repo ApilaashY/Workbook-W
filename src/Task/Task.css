@@ -1,22 +1,15 @@
-.task-window {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 100%;
-  overflow-y: hidden;
-  flex-grow: 1;
-}
-
 .task-stats,
 .task-subtask-list {
-  background-color: var(--bubbleBackgroundColor);
   padding: 1em;
   text-align: center;
-  margin: 10vh 3em;
+  background-color: var(--bubbleBackgroundColor);
   border-radius: var(--borderRadius);
   display: flex;
   flex-direction: column;
-  gap: 0.8em;
+  gap: 1em;
+  flex: 1 1 0;
   max-width: 600px;
+  min-width: 250px;
 }
 
 .task-subtask-list {

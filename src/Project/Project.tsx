@@ -83,7 +83,7 @@ export function Project() {
 
   useEffect(() => {
     if (goBack.current) navigate("/");
-  }, [goBack.current])
+  }, [goBack.current]);
 
   if (!projectInfo) {
     goBack.current = true;
@@ -98,7 +98,6 @@ export function Project() {
       setProject(newProject);
     }
   }, [projectData, id]);
-
 
   function createNewTask() {
     let data: string | null | undefined = null;
@@ -115,27 +114,20 @@ export function Project() {
     }
   }
 
-
   const sensors = useSensors(useSensor(PointerSensor));
 
   function handleDragEnd(event: any) {
     setDragging(false);
     const { active, over } = event;
     if (active.id !== over.id) {
-
-      console.log(active.id === project.tasks[0].id);
       let id1 = project.tasks.findIndex((task) => task.id === active.id);
       let id2 = project.tasks.findIndex((task) => task.id === over.id);
 
-
       let newArr = arrayMove(project.tasks, id1, id2);
-
-      console.log(newArr)
 
       updateProject(id, "tasks", newArr, dispatch);
     }
   }
-
 
   return (
     <div className="main-window">
@@ -179,7 +171,11 @@ export function Project() {
           <ProgressStatus project={project} />
 
           <h3 className="info-label">Attached Links</h3>
-          <AttachedDocs links={project.attachedDocs} updateFunction={updateProject} id={id} />
+          <AttachedDocs
+            links={project.attachedDocs}
+            updateFunction={updateProject}
+            id={id}
+          />
         </div>
       </div>
     </div>

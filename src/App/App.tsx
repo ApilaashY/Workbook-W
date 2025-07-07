@@ -10,18 +10,15 @@ import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
-  const projectData = useSelector(
-    (state: ProjectStore) => state.projects
-  );
-  const [projects, setProjects] = useState(projectData)
+  const projectData = useSelector((state: ProjectStore) => state.projects);
+  const [projects, setProjects] = useState(projectData);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const gotInfo = useRef(false);
 
-
   useEffect(() => {
-    setProjects(projectData)
-  }, [projectData])
+    setProjects(projectData);
+  }, [projectData]);
 
   useEffect(() => {
     if (gotInfo.current) return;
@@ -37,9 +34,9 @@ function App() {
         const projectIds: string[] = doc.data()?.projects || [];
 
         projectIds.forEach((id) => {
-          onValue(ref(db, `projects/${id}`), ((projData) => {
+          onValue(ref(db, `projects/${id}`), (projData) => {
             dispatch(addProject({ ...projData.val(), id: id }));
-          }));
+          });
         });
       });
     });
@@ -64,4 +61,3 @@ function App() {
 }
 
 export default App;
-
