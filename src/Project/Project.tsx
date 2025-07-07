@@ -89,7 +89,6 @@ export function Project() {
     goBack.current = true;
     return <div>Project not found</div>;
   }
-
   const [project, setProject] = useState(projectInfo);
 
   useEffect(() => {
