@@ -5,6 +5,7 @@
   flex: 0 0 auto;
   padding: 3em 1.5em;
   max-width: 25vw;
+  max-width: 25svw;
 }
 
 .mobile-menu-toggle {
@@ -20,10 +21,20 @@
     position: fixed;
     top: 0;
     right: -50vw; /* Hide off-screen */
+    right: -50svw; /* Hide off-screen */
+
     width: 46vw;
+    width: 46svw;
+
     height: 96vh;
+    height: 96svh;
+
     padding: 2vh 2vw;
+    padding: 2svh 2svw;
+
     max-width: 100vw;
+    max-width: 100svw;
+
     overflow: hidden;
     transition: right 0.2s;
     z-index: 1000;
