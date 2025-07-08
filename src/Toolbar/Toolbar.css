@@ -14,14 +14,17 @@
 
 @media (max-width: 600px) {
   .main-window {
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* Prevent horizontal scroll */
   }
 
   .toolbar {
     position: fixed;
     top: 0;
-    right: -50vw; /* Hide off-screen */
-    right: -50svw; /* Hide off-screen */
+    right: -50vw;
+    /* Hide off-screen */
+    right: -50svw;
+    /* Hide off-screen */
 
     width: 46vw;
     width: 46svw;
@@ -65,7 +68,7 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 .toolbar-bottom-section {

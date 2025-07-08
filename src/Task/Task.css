@@ -46,7 +46,7 @@
   border-radius: var(--borderRadius);
   font-family: inherit;
   font-size: 1rem;
-  margin: 1em 0;
+  margin: 1em 0 0;
 }
 
 .add-subtask-button:hover {
@@ -90,6 +90,7 @@
   border-radius: var(--borderRadius);
   border: 1px solid black;
   transition: 0.2s;
+  font-size: 1rem;
 }
 
 .delete-task:hover {
