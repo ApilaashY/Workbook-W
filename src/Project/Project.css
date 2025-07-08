@@ -4,9 +4,10 @@
   overflow-y: auto;
   flex-grow: 1;
   justify-content: space-evenly;
-  padding: 5em;
-  gap: 5em;
+  padding: 5vh;
+  gap: 5vh;
   align-items: stretch;
+  max-height: 90vh;
 }
 
 @media (max-width: 600px) {
