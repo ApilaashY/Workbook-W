@@ -153,6 +153,8 @@ export function Task() {
   }
 
   async function deleteTaskButton() {
+    if (!window.confirm("Are you sure you want to delete this task?")) return;
+
     await deleteTask(task.id, dispatch);
     let lastTask: string = popLastTask(task.id);
     navigate(
