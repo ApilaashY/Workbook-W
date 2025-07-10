@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ProjectClass } from "../../DataClasses/ProjectClass";
-import { TaskProgressColors, TaskProgressTypes, type TaskClass, type TaskProgress } from "../../DataClasses/TaskClass";
+import { TaskProgressStats, TaskProgressTypes, type TaskClass, type TaskProgress } from "../../DataClasses/TaskClass";
 import "./ProgressStatus.css";
 
 export function ProgressStatus({ project }: { project: ProjectClass | TaskClass }) {
@@ -23,7 +23,7 @@ export function ProgressStatus({ project }: { project: ProjectClass | TaskClass 
         <h3 style={{ margin: 0 }}>{countProperty(project, progressStatProperty)}/{countTasks(project)}</h3>
         <select value={progressStatProperty} className="progress-stat-select"
             onChange={(e) => setProgressStatProperty(e.target.value)}
-            style={{ backgroundColor: TaskProgressColors[progressStatProperty], color: ((TaskProgressColors[progressStatProperty].startsWith("#ff")) ? "black" : "white") }}>
+            style={{ backgroundColor: TaskProgressStats[progressStatProperty].color, color: ((TaskProgressStats[progressStatProperty].color.startsWith("#ff")) ? "black" : "white") }}>
             {
                 TaskProgressTypes.map((progressOption) => <option value={progressOption} key={progressOption}>
                     {progressOption}

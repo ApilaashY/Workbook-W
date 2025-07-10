@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { TaskClass, TaskProgressColors } from "../DataClasses/TaskClass";
+import { TaskClass, TaskProgressStats } from "../DataClasses/TaskClass";
 import "./Task.css";
 import { useEffect, useState } from "react";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
@@ -30,6 +30,9 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 
 function SortableTask({ task, color, dragging, ...props }: any) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -179,6 +182,7 @@ export function Task() {
     }
   }
 
+
   return (
     <div className="main-window">
       <Toolbar />
@@ -206,8 +210,8 @@ export function Task() {
               updateTask(id, "progress", e.target.value, dispatch)
             }
             style={{
-              backgroundColor: TaskProgressColors[task.progress],
-              color: TaskProgressColors[task.progress].startsWith("#ff")
+              backgroundColor: TaskProgressStats[task.progress].color,
+              color: TaskProgressStats[task.progress].color.startsWith("#ff")
                 ? "black"
                 : "white",
             }}
@@ -227,6 +231,20 @@ export function Task() {
             links={task.attachedDocs}
             updateFunction={updateTask}
             id={id}
+          />
+
+          <h3 className="info-label">
+            Due Date
+            <span style={{ color: "red", fontWeight: "800", cursor: "pointer" }} onClick={() => alert("This Task is Past Its Due Date")}>
+              {(task.dueDate && TaskProgressStats[task.progress].alertLate && new Date(task.dueDate) < new Date(Date.now())) ? " !!!!" : ""}</span>
+          </h3>
+          <ReactDatePicker
+            selected={(task.dueDate) ? new Date(task.dueDate) : undefined}
+            onChange={date => updateTask(id, "dueDate", date?.toISOString(), dispatch)}
+            showTimeSelect
+            dateFormat="Pp"
+            placeholderText="Due Date and Time"
+            className="date-picker"
           />
 
           <span className="fill" />
@@ -254,7 +272,7 @@ export function Task() {
                   <SortableTask
                     key={subtask.id}
                     task={subtask}
-                    color={TaskProgressColors[subtask.progress]}
+                    color={TaskProgressStats[subtask.progress].color}
                     dragging={dragging}
                   />
                 ))}

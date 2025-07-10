@@ -30,7 +30,7 @@ async function getSpeechInput(): Promise<string> {
       alert("Speech recognition error: " + event.error);
       resolve("");
     };
-    recognition.onend = () => {};
+    recognition.onend = () => { };
     recognition.start();
   });
 }
@@ -190,7 +190,9 @@ export function Toolbar() {
             Ask Terrance
           </button>
           <h2 className="toolbar-title">Profile</h2>
-          <h2 className="toolbar-title">Settings</h2>
+          <Link to="/settings">
+            <h2 className="toolbar-title">Settings</h2>
+          </Link>
         </div>
       </div>
     </>

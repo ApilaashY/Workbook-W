@@ -3,7 +3,7 @@ import "./Project.css";
 import type { ProjectClass } from "../DataClasses/ProjectClass";
 import { useDispatch, useSelector } from "react-redux";
 import { addProjectTask, updateProject, type ProjectStore } from "../store";
-import { TaskProgressColors } from "../DataClasses/TaskClass";
+import { TaskProgressStats } from "../DataClasses/TaskClass";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { useEffect, useRef, useState } from "react";
 import { ProgressStatus } from "../Components/ProgressStatus/ProgressStatus";
@@ -152,7 +152,7 @@ export function Project() {
                     <SortableTask
                       key={task.id}
                       task={task}
-                      color={TaskProgressColors[task.progress]}
+                      color={TaskProgressStats[task.progress].color}
                       dragging={dragging}
                     />
                   );

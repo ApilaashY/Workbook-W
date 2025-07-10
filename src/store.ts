@@ -175,7 +175,7 @@ const projectSlice = createSlice({
       action: {
         payload: {
           id: string;
-          category: "title" | "description" | "progress" | "tasks";
+          category: "title" | "description" | "progress" | "tasks" | "dueDate";
           data: any;
         };
       }
@@ -272,7 +272,7 @@ const updateTaskAsync = createAsyncThunk(
   'projects/updateTasksAsync',
   async ({ id, category, data }: {
     id: string;
-    category: "title" | "description" | "progress" | "tasks";
+    category: "title" | "description" | "progress" | "tasks" | "dueDate";
     data: any;
   }, thunkAPI) => {
     // Do async work here (e.g., API call)
@@ -311,7 +311,7 @@ export async function addTask(
 
 export async function updateTask(
   id: string,
-  category: "title" | "description" | "progress" | "tasks",
+  category: "title" | "description" | "progress" | "tasks" | "dueDate",
   data: any,
   dispatch: any
 ) {
