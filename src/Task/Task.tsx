@@ -32,6 +32,7 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { SearchBox } from "../Components/SearchBox/SearchBox";
 
 
 function SortableTask({ task, color, dragging, ...props }: any) {
@@ -233,10 +234,24 @@ export function Task() {
             id={id}
           />
 
-          <h3 className="info-label">
+          <h3
+            className={
+              "info-label" +
+              ((task.dueDate &&
+                TaskProgressStats[task.progress].alertLate &&
+                new Date(task.dueDate) < new Date(Date.now()))
+                ? " late-text"
+                : "")
+            }
+            onClick={
+              (task.dueDate &&
+                TaskProgressStats[task.progress].alertLate &&
+                new Date(task.dueDate) < new Date(Date.now()))
+                ? () => alert("This Task is Past Its Due Date")
+                : undefined
+            }
+          >
             Due Date
-            <span style={{ color: "red", fontWeight: "800", cursor: "pointer" }} onClick={() => alert("This Task is Past Its Due Date")}>
-              {(task.dueDate && TaskProgressStats[task.progress].alertLate && new Date(task.dueDate) < new Date(Date.now())) ? " !!!!" : ""}</span>
           </h3>
           <ReactDatePicker
             selected={(task.dueDate) ? new Date(task.dueDate) : undefined}
@@ -246,6 +261,9 @@ export function Task() {
             placeholderText="Due Date and Time"
             className="date-picker"
           />
+
+          <h3 className="info-label">Search For Task</h3>
+          <SearchBox tasks={task.tasks} />
 
           <span className="fill" />
 

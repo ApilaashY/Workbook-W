@@ -24,6 +24,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { SearchBox } from "../Components/SearchBox/SearchBox";
 
 function SortableTask({ task, color, dragging, ...props }: any) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -176,6 +177,9 @@ export function Project() {
             updateFunction={updateProject}
             id={id}
           />
+
+          <h3 className="info-label">Search For Task</h3>
+          <SearchBox tasks={project.tasks} />
         </div>
       </div>
     </div>

@@ -108,3 +108,12 @@
   font-size: 1rem;
   border-radius: var(--borderRadius);
 }
+
+.late-text {
+  color: red;
+  font-weight: 800;
+  cursor: pointer;
+  border: 2px solid red;
+  border-radius: var(--borderRadius);
+  padding: 0 0.5em;
+}
