@@ -12,6 +12,10 @@
   display: none;
 }
 
+.mobile-menu-collapse {
+  display: none;
+}
+
 @media (max-width: 600px) {
   .main-window {
     overflow-x: hidden;
@@ -21,13 +25,13 @@
   .toolbar {
     position: fixed;
     top: 0;
-    right: -50vw;
+    right: -54vw;
     /* Hide off-screen */
-    right: -50svw;
+    right: -54svw;
     /* Hide off-screen */
 
-    width: 46vw;
-    width: 46svw;
+    width: 50vw;
+    width: 50svw;
 
     height: 96vh;
     height: 96svh;
@@ -61,6 +65,17 @@
   .show-toolbar-menu {
     right: 0;
     transform: none;
+  }
+
+  .mobile-menu-collapse {
+    display: inline;
+    position: fixed;
+    background-color: transparent;
+    left: 0;
+    top: 0;
+    width: 46vw;
+    height: 100vh;
+    z-index: 10000;
   }
 }
 

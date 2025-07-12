@@ -30,7 +30,7 @@ async function getSpeechInput(): Promise<string> {
       alert("Speech recognition error: " + event.error);
       resolve("");
     };
-    recognition.onend = () => { };
+    recognition.onend = () => {};
     recognition.start();
   });
 }
@@ -152,6 +152,12 @@ export function Toolbar() {
           ☰
         </h1>
       </div>
+      {hideMenu ? null : (
+        <div
+          className="mobile-menu-collapse"
+          onClick={() => setHideMenu(true)}
+        ></div>
+      )}
       <div className={`toolbar${hideMenu ? "" : " show-toolbar-menu"}`}>
         <div className="toolbar-top-section">
           <Link to="/" onClick={() => setStack([])}>
