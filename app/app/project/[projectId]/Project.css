@@ -1,0 +1,85 @@
+.project-window {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  flex-grow: 1;
+  justify-content: space-evenly;
+  padding: 5vh;
+  gap: 5vh;
+  align-items: stretch;
+}
+
+.project-task-list,
+.project-task-summary {
+  padding: 1em;
+  text-align: center;
+  background-color: var(--bubbleBackgroundColor);
+  border-radius: var(--borderRadius);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  flex: 1 1 0;
+  max-width: 600px;
+  min-width: 250px;
+  max-height: 90vh;
+  max-height: 90svh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .project-window {
+    padding: 2em;
+  }
+
+  .project-task-list,
+  .project-task-summary {
+    overflow-y: visible;
+    max-height: none;
+  }
+}
+
+.project-task-list-only {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.project-task-item {
+  background-color: white;
+  border: none;
+  border-radius: var(--borderRadius);
+  padding: 1em;
+  cursor: pointer;
+  transition-duration: 0.2s;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.project-task-item:hover {
+  background-color: var(--bubbleBackgroundColorHover);
+  transition-duration: 0.2s;
+}
+
+.add-task-button {
+  padding: 1em;
+  transition-duration: 0.2s;
+  background-color: transparent;
+  border: 1px solid black;
+  border-radius: var(--borderRadius);
+  font-family: inherit;
+  font-size: 1rem;
+  margin: 1em 0;
+}
+
+.add-task-button:hover {
+  transition-duration: 0.2s;
+  cursor: pointer;
+  background-color: rgb(150, 150, 150);
+}
+
+.info-label {
+  margin-bottom: 0;
+}

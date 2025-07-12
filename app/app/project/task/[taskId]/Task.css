@@ -1,0 +1,123 @@
+.task-stats,
+.task-subtask-list {
+  padding: 1em;
+  text-align: center;
+  background-color: var(--bubbleBackgroundColor);
+  border-radius: var(--borderRadius);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  flex: 1 1 0;
+  max-width: 600px;
+  min-width: 250px;
+  max-height: 90vh;
+  max-height: 90svh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .task-stats,
+  .task-subtask-list {
+    overflow-y: visible;
+    max-height: none;
+  }
+}
+
+.task-information-text {
+  text-align: center;
+  width: fit-content;
+  margin: 0.5em auto;
+  transition-duration: 0.2s;
+}
+
+.task-information-text:hover {
+  cursor: pointer;
+  font-weight: 200;
+}
+
+.task-progress-select {
+  padding: 0.5em;
+  font-family: inherit;
+  font-size: 1rem;
+  transition-duration: 0.2s;
+  border: none;
+  border-radius: var(--borderRadius);
+  cursor: pointer;
+}
+
+.add-subtask-button {
+  padding: 1em;
+  transition-duration: 0.2s;
+  background-color: transparent;
+  border: 1px solid black;
+  border-radius: var(--borderRadius);
+  font-family: inherit;
+  font-size: 1rem;
+  margin: 1em 0 0;
+}
+
+.add-subtask-button:hover {
+  transition-duration: 0.2s;
+  cursor: pointer;
+  background-color: rgb(150, 150, 150);
+}
+
+.task-subtask-item {
+  background-color: white;
+  border: none;
+  border-radius: var(--borderRadius);
+  padding: 1em;
+  cursor: pointer;
+  transition-duration: 0.2s;
+  font-size: 1rem;
+  width: 100%;
+  margin: 0;
+}
+
+.task-subtask-item:hover {
+  background-color: var(--bubbleBackgroundColorHover);
+  transition-duration: 0.2s;
+}
+
+.task-subtask-list-items {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  gap: 0.5em;
+}
+
+.task-stats .fill {
+  flex-grow: 1;
+}
+
+.delete-task {
+  padding: 1em;
+  cursor: pointer;
+  border-radius: var(--borderRadius);
+  border: 1px solid black;
+  transition: 0.2s;
+  font-size: 1rem;
+}
+
+.delete-task:hover {
+  transition-duration: 0.2s;
+  cursor: pointer;
+  background-color: rgb(150, 150, 150);
+}
+
+.date-picker {
+  padding: 0.5em;
+  font-size: 1rem;
+  border-radius: var(--borderRadius);
+}
+
+.late-text {
+  color: red;
+  font-weight: 800;
+  cursor: pointer;
+  border: 2px solid red;
+  border-radius: var(--borderRadius);
+  padding: 0 0.5em;
+}
