@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import "./Signup.css";
 import {
   createUserWithEmailAndPassword,
@@ -13,7 +13,7 @@ import { auth, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function Signup() {
+function SignupForm() {
   const router = useRouter();
   const params = useSearchParams();
   const [username, setUsername] = useState("");
@@ -158,5 +158,13 @@ export default function Signup() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function Signup() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignupForm />
+    </Suspense>
   );
 }

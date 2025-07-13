@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import "./Login.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import type { FirebaseError } from "firebase/app";
@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import Link from "next/link";
 
-export default function Login() {
+function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const [email, setEmail] = useState(params.get("email") || "");
@@ -89,5 +89,13 @@ export default function Login() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
