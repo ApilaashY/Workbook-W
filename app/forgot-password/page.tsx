@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import Link from "next/link";
 
-export default function ForgotPassword() {
+function ForgotPasswordForm() {
   const router = useRouter();
   const params = useSearchParams();
   const [email, setEmail] = useState(params.get("email") || "");
@@ -23,29 +23,35 @@ export default function ForgotPassword() {
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <div className="forgot-password-window">
-        <div className="forgot-password-card">
-          <h1>Forgot Password</h1>
-          <form onSubmit={handleForgotPassword}>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input type="submit" value="Send Password Reset Request" />
-          </form>
-          <Link
-            href={{ pathname: "/login", query: `email=${email}` }}
-            style={{ textAlign: "center", color: "blue" }}
-          >
-            Remembered your password?
-          </Link>
-        </div>
+    <div className="forgot-password-window">
+      <div className="forgot-password-card">
+        <h1>Forgot Password</h1>
+        <form onSubmit={handleForgotPassword}>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input type="submit" value="Send Password Reset Request" />
+        </form>
+        <Link
+          href={{ pathname: "/login", query: `email=${email}` }}
+          style={{ textAlign: "center", color: "blue" }}
+        >
+          Remembered your password?
+        </Link>
       </div>
+    </div>
+  );
+}
+
+export default function ForgotPassword() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ForgotPasswordForm />
     </Suspense>
   );
 }
