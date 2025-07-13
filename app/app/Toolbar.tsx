@@ -9,11 +9,57 @@ import { allCommands, executeCommands } from "@/lib/executeCommands";
 import { findTaskById, ProjectStore, store } from "@/lib/store";
 import { useParams, useRouter } from "next/navigation";
 
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionResultList {
+  [index: number]: SpeechRecognitionResult;
+  length: number;
+}
+
+interface SpeechRecognitionResult {
+  [index: number]: SpeechRecognitionAlternative;
+  isFinal: boolean;
+  length: number;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+  message: string;
+}
+
+interface SpeechRecognition extends EventTarget {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+
+interface SpeechRecognitionConstructor {
+  new (): SpeechRecognition;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  }
+}
+
 async function getSpeechInput(): Promise<string> {
-  return new Promise((resolve, _) => {
+  return new Promise((resolve) => {
     const SpeechRecognition =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Speech recognition not supported in this browser.");
       resolve("");
@@ -24,10 +70,10 @@ async function getSpeechInput(): Promise<string> {
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       resolve(event.results[0][0].transcript);
     };
-    recognition.onerror = (event: any) => {
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       alert("Speech recognition error: " + event.error);
       resolve("");
     };
@@ -41,7 +87,7 @@ export default function Toolbar() {
   const id = params.projectId || params.taskId || "";
   const dispatch = useDispatch();
   const router = useRouter();
-  let projectData: ProjectClass[] = useSelector(
+  const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
   const [stack, setStack] = useState<(ProjectClass | TaskClass)[]>([]);
@@ -63,8 +109,8 @@ export default function Toolbar() {
       ". The structure of the project database is either a list of projects, a project, or a task. You can tell if the current directory is a project or task by looking at the id. If the id contains a dash, it is a task, if not, it is a project. Here is the typescript interface for a project and task:" +
       "interface ProjectObject {title: string;id: string;tasks?: TaskObject[];taskCount?: number;}" +
       ". interface TaskObject {title: string;description?: string;id: string;progress?: TaskProgress;tasks?: TaskObject[];taskCount?: number;}" +
-      ". As a note, remember that if you are updating multiple tasks or projects, you have to use OPENPROJECT/OPENTASK and GOTOPARENT to go through every task or project.";
-    +"If you return an error, please explain why it is an error." +
+      ". As a note, remember that if you are updating multiple tasks or projects, you have to use OPENPROJECT/OPENTASK and GOTOPARENT to go through every task or project." +
+      "If you return an error, please explain why it is an error." +
       "Unless otherwise specified, assume the instructions are taking place in the current project or task directory. " +
       "If you have no instructions, leave the [List of Instructions] empty. ";
     // + "The [Your General Response] section should be things you want to say to me that is not instructions. For example, if I tell you to add a task, you may want the general response to be, Okay I have added a new tasked named whatever. "
@@ -104,7 +150,7 @@ export default function Toolbar() {
       return;
     }
 
-    let newStack = new Array<ProjectClass | TaskClass>(
+    const newStack = new Array<ProjectClass | TaskClass>(
       id.split("-").length - 1
     );
 
@@ -142,7 +188,7 @@ export default function Toolbar() {
     }
 
     setStack(newStack);
-  }, [id, projectData]);
+  }, [id, projectData, router]);
 
   return (
     <Provider store={store}>

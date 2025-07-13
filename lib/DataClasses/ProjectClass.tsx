@@ -5,7 +5,7 @@ export interface ProjectObject {
   id: string;
   tasks?: TaskObject[];
   taskCount?: number;
-  attachedDocs?: [string, string][]
+  attachedDocs?: [string, string][];
 }
 
 export class ProjectClass {
@@ -13,14 +13,14 @@ export class ProjectClass {
   public id: string;
   public tasks: TaskClass[];
   public taskCount: number;
-  public attachedDocs: [string, string][]
+  public attachedDocs: [string, string][];
 
   constructor(
     title: string,
     id: string,
     tasks: TaskClass[],
     taskCount: number,
-  attachedDocs: [string, string][]
+    attachedDocs: [string, string][]
   ) {
     this.title = title;
     this.id = id;
@@ -30,7 +30,7 @@ export class ProjectClass {
   }
 
   static fromMap(allData: ProjectObject): ProjectClass {
-    let project: ProjectClass = new ProjectClass(
+    const project: ProjectClass = new ProjectClass(
       allData.title,
       allData.id || "0",
       (allData.tasks || []).map((task) => TaskClass.fromMap(task)),

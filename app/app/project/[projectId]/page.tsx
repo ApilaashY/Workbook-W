@@ -8,6 +8,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -26,7 +27,15 @@ import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import "./Project.css";
 
-function SortableTask({ task, color, dragging, ...props }: any) {
+function SortableTask({
+  task,
+  color,
+  ...props
+}: {
+  task: ProjectClass;
+  color: string;
+  dragging?: boolean;
+}) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task.id });
   const router = useRouter();
@@ -97,7 +106,7 @@ export default function Project({
 
   useEffect(() => {
     if (goBack.current) router.push("/app");
-  }, [goBack.current]);
+  }, [goBack, router]);
 
   useEffect(() => {
     const newProject = projectData.find((p) => p.id === id);
@@ -134,16 +143,16 @@ export default function Project({
     }
   }
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndEvent) {
     if (!project) return; // Early return if project is undefined
 
     setDragging(false);
     const { active, over } = event;
-    if (active.id !== over.id) {
-      let id1 = project.tasks.findIndex((task) => task.id === active.id);
-      let id2 = project.tasks.findIndex((task) => task.id === over.id);
+    if (over && active.id !== over.id) {
+      const id1 = project.tasks.findIndex((task) => task.id === active.id);
+      const id2 = project.tasks.findIndex((task) => task.id === over.id);
 
-      let newArr = arrayMove(project.tasks, id1, id2);
+      const newArr = arrayMove(project.tasks, id1, id2);
 
       updateProject(id, "tasks", newArr, dispatch);
     }

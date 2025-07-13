@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import "./Login.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import type { FirebaseError } from "firebase/app";
+import { FirebaseError } from "firebase/app";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import Link from "next/link";
@@ -21,7 +21,8 @@ function LoginForm() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/app");
-    } catch (error: FirebaseError | any) {
+    } catch (error: FirebaseError | unknown) {
+      if (!(error instanceof FirebaseError)) return;
       if (error.code === "auth/wrong-password") {
         alert("Incorrect password. Please try again.");
       } else if (error.code === "auth/user-not-found") {
@@ -79,7 +80,7 @@ function LoginForm() {
           href={{ pathname: "/signup", query: `email=${email}` }}
           style={{ textAlign: "center", color: "blue" }}
         >
-          Don't have an account?
+          Don&apos;t have an account?
         </Link>
         <Link
           href={{ pathname: "/forgot-password", query: `email=${email}` }}

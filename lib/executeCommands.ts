@@ -1,4 +1,3 @@
-
 import { ProjectObject } from "./DataClasses/ProjectClass";
 import { TaskObject } from "./DataClasses/TaskClass";
 import {
@@ -21,7 +20,7 @@ export const allCommands: {
       id: string,
       projectData: AnyObject | ProjectObject[],
       newData: string,
-      dispatch: any
+      dispatch: typeof store.dispatch
     ) => Promise<string>
   ];
 } = {
@@ -69,14 +68,14 @@ export async function executeCommands(
   dispatch: Dispatch
 ) {
   let id = startId;
-  let commandList: string[] = commands.split("\n");
+  const commandList: string[] = commands.split("\n");
   let projectData: ProjectObject[];
 
   for (let i = 0; i < commandList.length; i++) {
     projectData = store.getState().projects;
-    let currentData = findTaskById(projectData, id);
+    const currentData = findTaskById(projectData, id);
 
-    let pieces: string[] = commandList[i].split(" ");
+    const pieces: string[] = commandList[i].split(" ");
 
     if (pieces.length === 0 || !currentData) continue;
 
@@ -110,7 +109,7 @@ async function addTask(
   id: string,
   projectData: AnyObject | ProjectObject[],
   newData: string,
-  dispatch: any
+  dispatch: typeof store.dispatch
 ): Promise<string> {
   if (!(projectData as AnyObject).id.includes("-")) {
     // This is a project object
@@ -146,7 +145,7 @@ async function changeTaskDescription(
 }
 
 async function goToParent(id: string): Promise<string> {
-  let pieces = id.split("-");
+  const pieces = id.split("-");
   if (pieces.length > 0) {
     pieces.pop();
   }
@@ -167,8 +166,7 @@ async function deleteTask(
 async function openLink(
   id: string,
   data: AnyObject | ProjectObject[],
-  index: string,
-  _: Dispatch
+  index: string
 ): Promise<string> {
   const attachedDocs = (data as AnyObject).attachedDocs;
   const idx = Number(index);

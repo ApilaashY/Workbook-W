@@ -7,7 +7,7 @@ import {
   updateProfile,
   type UserCredential,
 } from "firebase/auth";
-import type { FirebaseError } from "firebase/app";
+import { FirebaseError } from "firebase/app";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, fdb } from "@/lib/firebase";
 import Link from "next/link";
@@ -38,7 +38,7 @@ function SignupForm() {
     }
 
     try {
-      let user: UserCredential = await createUserWithEmailAndPassword(
+      const user: UserCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
@@ -55,7 +55,9 @@ function SignupForm() {
       });
 
       router.push("/app");
-    } catch (error: FirebaseError | any) {
+    } catch (error: FirebaseError | unknown) {
+      if (!(error instanceof FirebaseError)) return;
+
       if (error.code === "auth/wrong-password") {
         alert("Incorrect password. Please try again.");
       } else if (error.code === "auth/user-not-found") {

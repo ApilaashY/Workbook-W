@@ -43,7 +43,7 @@ export function findTaskById(
 }
 
 export function popLastTask(id: string): string {
-  let pieces: string[] = id.split("-");
+  const pieces: string[] = id.split("-");
   if (pieces.length > 0) {
     pieces.pop();
   }
@@ -51,7 +51,7 @@ export function popLastTask(id: string): string {
 }
 
 function createIdTrail(id: string, data: ProjectObject[]): string {
-  let parts = id.split("-");
+  const parts = id.split("-");
   let total = parts[0];
   let current = parts[0];
   let currentData = data.find((proj) => proj.id === parts[0]);
@@ -98,7 +98,7 @@ const projectSlice = createSlice({
   ] as ProjectObject[],
   reducers: {
     addProject: (state, action: { payload: ProjectObject }) => {
-      let index = state.findIndex((proj) => proj.id === action.payload.id);
+      const index = state.findIndex((proj) => proj.id === action.payload.id);
 
       if (index !== -1) {
         state[index] = ProjectClass.fromMap(action.payload).toMap();
@@ -112,13 +112,15 @@ const projectSlice = createSlice({
         payload: {
           id: string;
           category: "attachedDocs" | "tasks";
-          data: any;
+          data: unknown;
         };
       }
     ) => {
-      let index = state.findIndex((project) => project.id == action.payload.id);
+      const index = state.findIndex(
+        (project) => project.id == action.payload.id
+      );
 
-      let currentData = state[index];
+      const currentData = state[index];
 
       state[index] = ProjectClass.fromMap({
         ...currentData,
@@ -129,7 +131,7 @@ const projectSlice = createSlice({
       state,
       action: { payload: { id: string; data: string } }
     ) => {
-      let proj = state.find((proj) => proj.id === action.payload.id);
+      const proj = state.find((proj) => proj.id === action.payload.id);
 
       if (proj) {
         proj.tasks = [
@@ -144,7 +146,7 @@ const projectSlice = createSlice({
       }
     },
     addTask: (state, action: { payload: { id: string; data: string } }) => {
-      let task = findTaskById(state, action.payload.id) as
+      const task = findTaskById(state, action.payload.id) as
         | TaskObject
         | undefined;
 
@@ -159,7 +161,7 @@ const projectSlice = createSlice({
       }
     },
     deleteTask: (state, action: { payload: { id: string } }) => {
-      let parentTask = findTaskById(state, popLastTask(action.payload.id)) as
+      const parentTask = findTaskById(state, popLastTask(action.payload.id)) as
         | ProjectObject
         | TaskObject
         | undefined;
@@ -183,8 +185,14 @@ const projectSlice = createSlice({
       action: {
         payload: {
           id: string;
-          category: "title" | "description" | "progress" | "tasks" | "dueDate";
-          data: any;
+          category:
+            | "title"
+            | "description"
+            | "progress"
+            | "tasks"
+            | "dueDate"
+            | "attachedDocs";
+          data: unknown;
         };
       }
     ) => {
@@ -213,7 +221,7 @@ const projectSlice = createSlice({
         }
       }
 
-      let index: number = previousData!.tasks.findIndex(
+      const index: number = previousData!.tasks.findIndex(
         (obj) => obj == currentData
       );
 
@@ -252,7 +260,7 @@ const updateProjectAsync = createAsyncThunk(
     }: {
       id: string;
       category: "attachedDocs" | "tasks";
-      data: any;
+      data: unknown;
     },
     thunkAPI
   ) => {
@@ -291,8 +299,14 @@ const updateTaskAsync = createAsyncThunk(
       data,
     }: {
       id: string;
-      category: "title" | "description" | "progress" | "tasks" | "dueDate";
-      data: any;
+      category:
+        | "title"
+        | "description"
+        | "progress"
+        | "tasks"
+        | "dueDate"
+        | "attachedDocs";
+      data: unknown;
     },
     thunkAPI
   ) => {
@@ -302,7 +316,11 @@ const updateTaskAsync = createAsyncThunk(
   }
 );
 
-export async function addProjectTask(id: string, data: string, dispatch: any) {
+export async function addProjectTask(
+  id: string,
+  data: string,
+  dispatch: typeof store.dispatch
+) {
   await dispatch(addProjectTaskAsync({ id, data }));
   update(
     ref(db, `projects/${createIdTrail(id, store.getState().projects)}`),
@@ -313,8 +331,8 @@ export async function addProjectTask(id: string, data: string, dispatch: any) {
 export async function updateProject(
   id: string,
   category: "attachedDocs" | "tasks",
-  data: any,
-  dispatch: any
+  data: unknown,
+  dispatch: typeof store.dispatch
 ) {
   await dispatch(updateProjectAsync({ id, category, data }));
   update(
@@ -323,7 +341,11 @@ export async function updateProject(
   );
 }
 
-export async function addTask(id: string, data: string, dispatch: any) {
+export async function addTask(
+  id: string,
+  data: string,
+  dispatch: typeof store.dispatch
+) {
   await dispatch(addTaskAsync({ id, data }));
   update(
     ref(db, `projects/${createIdTrail(id, store.getState().projects)}`),
@@ -333,9 +355,15 @@ export async function addTask(id: string, data: string, dispatch: any) {
 
 export async function updateTask(
   id: string,
-  category: "title" | "description" | "progress" | "tasks" | "dueDate",
-  data: any,
-  dispatch: any
+  category:
+    | "title"
+    | "description"
+    | "progress"
+    | "tasks"
+    | "dueDate"
+    | "attachedDocs",
+  data: unknown,
+  dispatch: typeof store.dispatch
 ) {
   await dispatch(updateTaskAsync({ id, category, data }));
   update(
@@ -344,7 +372,7 @@ export async function updateTask(
   );
 }
 
-export async function deleteTask(id: string, dispatch: any) {
+export async function deleteTask(id: string, dispatch: typeof store.dispatch) {
   await dispatch(deleteTaskAsync({ id }));
 
   update(

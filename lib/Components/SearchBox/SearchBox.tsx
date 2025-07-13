@@ -10,10 +10,10 @@ export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
   const [page, setPage] = useState<number>(1);
 
   function breakText(search: string, query: string): [string, string, string] {
-    let lowerSearch = search.toLowerCase();
-    let lowerQuery = query.toLowerCase();
-    let leftIndex = lowerSearch.indexOf(lowerQuery);
-    let rightIndex = leftIndex + lowerQuery.length - 1;
+    const lowerSearch = search.toLowerCase();
+    const lowerQuery = query.toLowerCase();
+    const leftIndex = lowerSearch.indexOf(lowerQuery);
+    const rightIndex = leftIndex + lowerQuery.length - 1;
     let leftSpace = false,
       rightSpace = false;
     let left = leftIndex,
@@ -43,7 +43,7 @@ export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
     search: string
   ): [string, string, string, string, TaskClass][] {
     let matches: [string, string, string, string, TaskClass][] = [];
-    let query: string = search.trim().toLowerCase();
+    const query: string = search.trim().toLowerCase();
     let currentLevel = taskList;
 
     setPage(1);
@@ -53,7 +53,7 @@ export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
     while (currentLevel.length > 0) {
       let nextLevel: TaskClass[] = [];
       for (let i = 0; i < currentLevel.length; i++) {
-        let currentTask = currentLevel[i];
+        const currentTask = currentLevel[i];
         if (currentTask.title.toLowerCase().includes(query)) {
           matches = [
             ...matches,

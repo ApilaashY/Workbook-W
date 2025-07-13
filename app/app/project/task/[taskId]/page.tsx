@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   closestCenter,
   DndContext,
+  DragEndEvent,
   PointerSensor,
   useSensor,
   useSensors,
@@ -39,7 +40,15 @@ import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 
-function SortableTask({ task, color, dragging, ...props }: any) {
+function SortableTask({
+  task,
+  color,
+  ...props
+}: {
+  task: TaskClass;
+  color: string;
+  dragging?: boolean;
+}) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task.id });
   const router = useRouter();
@@ -91,7 +100,7 @@ export default function Task({
   const [dragging, setDragging] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
-  let projectData: ProjectClass[] = useSelector(
+  const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
   const goBack = useRef(false);
@@ -106,9 +115,7 @@ export default function Task({
 
   useEffect(() => {
     if (goBack.current) router.push("/app");
-  }, [goBack.current]);
-
-  const projectInfo: TaskClass | undefined = findTaskById(projectData, id);
+  }, [goBack, router]);
 
   useEffect(() => {
     const newTask = findTaskById(projectData, id as string);
@@ -195,7 +202,7 @@ export default function Task({
     if (!window.confirm("Are you sure you want to delete this task?")) return;
 
     await deleteTask(task.id, dispatch);
-    let lastTask: string = popLastTask(task.id);
+    const lastTask: string = popLastTask(task.id);
     router.push(
       !lastTask.includes("-")
         ? `/app/project/${lastTask}`
@@ -203,16 +210,16 @@ export default function Task({
     );
   }
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndEvent) {
     if (!task) return; // Early return if task is undefined
 
     setDragging(false);
     const { active, over } = event;
-    if (active.id !== over.id) {
-      let id1 = task.tasks.findIndex((task) => task.id === active.id);
-      let id2 = task.tasks.findIndex((task) => task.id === over.id);
+    if (over && active.id !== over.id) {
+      const id1 = task.tasks.findIndex((task) => task.id === active.id);
+      const id2 = task.tasks.findIndex((task) => task.id === over.id);
 
-      let newArr = arrayMove(task.tasks, id1, id2);
+      const newArr = arrayMove(task.tasks, id1, id2);
 
       updateTask(id, "tasks", newArr, dispatch);
     }

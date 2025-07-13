@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./AttachedDocs.css";
 import { useDispatch } from "react-redux";
+import { updateProject, updateTask } from "@/lib/store";
 
 export function AttachedDocs({
   links,
@@ -8,7 +9,7 @@ export function AttachedDocs({
   id,
 }: {
   links: [string, string][];
-  updateFunction: any;
+  updateFunction: typeof updateTask | typeof updateProject;
   id: string;
 }) {
   const [openField, setOpenField] = useState<boolean>(false);

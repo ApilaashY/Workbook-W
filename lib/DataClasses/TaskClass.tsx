@@ -27,7 +27,7 @@ export class TaskClass {
     tasks?: TaskClass[],
     taskCount?: number,
     attachedDocs?: [string, string][],
-    dueDate?: string | undefined,
+    dueDate?: string | undefined
   ) {
     this.title = title.trim();
     this.id = id.trim();
@@ -40,7 +40,7 @@ export class TaskClass {
   }
 
   static fromMap(allData: TaskObject): TaskClass {
-    let task: TaskClass = new TaskClass(
+    const task: TaskClass = new TaskClass(
       allData.title.trim(),
       allData.id.trim(),
       allData.description?.trim() || "",
@@ -48,7 +48,7 @@ export class TaskClass {
       allData.tasks?.map(TaskClass.fromMap) || [],
       allData.taskCount ?? allData.tasks?.length ?? 0,
       allData.attachedDocs ?? [],
-      allData.dueDate,
+      allData.dueDate
     );
     return task;
   }
@@ -80,9 +80,12 @@ export const TaskProgressTypes: string[] = [
   "Done",
 ];
 export type TaskProgress = (typeof TaskProgressTypes)[number];
-export const TaskProgressStats: Record<TaskProgress, { color: string, alertLate: boolean }> = {
+export const TaskProgressStats: Record<
+  TaskProgress,
+  { color: string; alertLate: boolean }
+> = {
   "Not Started": { color: "#808080", alertLate: true },
   "In Progress": { color: "#ffff00", alertLate: true },
-  "Scheduled": { color: "#0000ff", alertLate: true },
-  "Done": { color: "#32cb6c", alertLate: false },
+  Scheduled: { color: "#0000ff", alertLate: true },
+  Done: { color: "#32cb6c", alertLate: false },
 };
