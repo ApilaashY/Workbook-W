@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import "./ForgotPassword.css";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -23,27 +23,29 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="forgot-password-window">
-      <div className="forgot-password-card">
-        <h1>Forgot Password</h1>
-        <form onSubmit={handleForgotPassword}>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input type="submit" value="Send Password Reset Request" />
-        </form>
-        <Link
-          href={{ pathname: "/login", query: `email=${email}` }}
-          style={{ textAlign: "center", color: "blue" }}
-        >
-          Remembered your password?
-        </Link>
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="forgot-password-window">
+        <div className="forgot-password-card">
+          <h1>Forgot Password</h1>
+          <form onSubmit={handleForgotPassword}>
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input type="submit" value="Send Password Reset Request" />
+          </form>
+          <Link
+            href={{ pathname: "/login", query: `email=${email}` }}
+            style={{ textAlign: "center", color: "blue" }}
+          >
+            Remembered your password?
+          </Link>
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 }
