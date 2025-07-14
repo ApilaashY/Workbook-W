@@ -24,13 +24,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
 import { useRouter } from "next/navigation";
 import { ProjectClass } from "@/lib/DataClasses/ProjectClass";
-import {
-  addTask,
-  deleteTask,
-  popLastTask,
-  ProjectStore,
-  updateTask,
-} from "@/lib/store";
+import { addTask, deleteTask, ProjectStore, updateTask } from "@/lib/store";
 import {
   TaskClass,
   TaskProgressStats,
@@ -39,6 +33,7 @@ import {
 import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
+import { popLastTask } from "@/lib/firebase";
 
 function SortableTask({
   task,

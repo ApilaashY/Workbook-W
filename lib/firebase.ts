@@ -3,6 +3,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
+import { ProjectClass, ProjectObject } from "./DataClasses/ProjectClass";
+import { TaskClass, TaskObject } from "./DataClasses/TaskClass";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -24,3 +26,62 @@ const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export const fdb = getFirestore(app);
 export const auth = getAuth(app);
+
+export function findTaskById(
+  data: ProjectObject[],
+  id: string
+): TaskObject | ProjectObject | ProjectObject[] | undefined {
+  if (!id) return data;
+
+  const idParts = id.split("-");
+  let currentId: string = idParts[0];
+
+  let currentData: ProjectClass | TaskClass | undefined = (
+    data as ProjectClass[]
+  ).find((project) => project.id === currentId);
+
+  for (let i = 1; i < idParts.length; i++) {
+    currentId += "-" + idParts[i];
+
+    if (currentData === undefined) return undefined;
+    else if (!currentData.id.includes("-")) {
+      currentData = (currentData as ProjectClass).tasks.find(
+        (task) => task.id === currentId
+      );
+    } else {
+      currentData = (currentData as TaskClass).tasks.find(
+        (task) => task.id === currentId
+      );
+    }
+  }
+  return currentData as TaskClass | undefined;
+}
+
+export function popLastTask(id: string): string {
+  const pieces: string[] = id.split("-");
+  if (pieces.length > 0) {
+    pieces.pop();
+  }
+  return pieces.join("-");
+}
+
+export function createIdTrail(id: string, data: ProjectObject[]): string {
+  const parts = id.split("-");
+  let total = parts[0];
+  let current = parts[0];
+  let currentData = data.find((proj) => proj.id === parts[0]);
+
+  for (let i = 1; i < parts.length; i++) {
+    if (!currentData) {
+      return total;
+    }
+
+    current += "-" + parts[i];
+
+    total +=
+      "/tasks/" + currentData.tasks?.findIndex((task) => task.id === current);
+    currentData = currentData.tasks?.find((task) => task.id === current);
+  }
+
+  return total;
+}

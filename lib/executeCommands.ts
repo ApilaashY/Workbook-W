@@ -3,12 +3,12 @@ import { TaskObject } from "./DataClasses/TaskClass";
 import {
   addProjectTask,
   addTask as addTaskStore,
-  findTaskById,
   store,
   updateTask,
   deleteTask as deleteTaskStore,
 } from "./store";
 import { type Dispatch } from "@reduxjs/toolkit";
+import { findTaskById } from "./firebase";
 
 export type AnyObject = ProjectObject | TaskObject;
 

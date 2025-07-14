@@ -6,8 +6,9 @@ import Link from "next/link";
 import { ProjectClass } from "@/lib/DataClasses/ProjectClass";
 import { TaskClass } from "@/lib/DataClasses/TaskClass";
 import { allCommands, executeCommands } from "@/lib/executeCommands";
-import { findTaskById, ProjectStore, store } from "@/lib/store";
+import { ProjectStore, store } from "@/lib/store";
 import { useParams, useRouter } from "next/navigation";
+import { findTaskById } from "@/lib/firebase";
 
 interface SpeechRecognitionEvent {
   results: SpeechRecognitionResultList;

@@ -3,73 +3,25 @@ import {
   createAsyncThunk,
   createSlice,
 } from "@reduxjs/toolkit";
-import { ref, update } from "firebase/database";
 import { db } from "./firebase";
 import { ProjectClass, ProjectObject } from "./DataClasses/ProjectClass";
 import { TaskClass, TaskObject } from "./DataClasses/TaskClass";
+
+import { popLastTask, createIdTrail, findTaskById } from "./firebase";
 
 export interface ProjectStore {
   projects: ProjectClass[];
 }
 
-export function findTaskById(
-  data: ProjectObject[],
-  id: string
-): TaskObject | ProjectObject | ProjectObject[] | undefined {
-  if (!id) return data;
+export type ProjectUpdateables = "attachedDocs" | "tasks";
 
-  const idParts = id.split("-");
-  let currentId: string = idParts[0];
-
-  let currentData: ProjectClass | TaskClass | undefined = (
-    data as ProjectClass[]
-  ).find((project) => project.id === currentId);
-
-  for (let i = 1; i < idParts.length; i++) {
-    currentId += "-" + idParts[i];
-
-    if (currentData === undefined) return undefined;
-    else if (!currentData.id.includes("-")) {
-      currentData = (currentData as ProjectClass).tasks.find(
-        (task) => task.id === currentId
-      );
-    } else {
-      currentData = (currentData as TaskClass).tasks.find(
-        (task) => task.id === currentId
-      );
-    }
-  }
-  return currentData as TaskClass | undefined;
-}
-
-export function popLastTask(id: string): string {
-  const pieces: string[] = id.split("-");
-  if (pieces.length > 0) {
-    pieces.pop();
-  }
-  return pieces.join("-");
-}
-
-function createIdTrail(id: string, data: ProjectObject[]): string {
-  const parts = id.split("-");
-  let total = parts[0];
-  let current = parts[0];
-  let currentData = data.find((proj) => proj.id === parts[0]);
-
-  for (let i = 1; i < parts.length; i++) {
-    if (!currentData) {
-      return total;
-    }
-
-    current += "-" + parts[i];
-
-    total +=
-      "/tasks/" + currentData.tasks?.findIndex((task) => task.id === current);
-    currentData = currentData.tasks?.find((task) => task.id === current);
-  }
-
-  return total;
-}
+export type TaskUpdateables =
+  | "title"
+  | "description"
+  | "progress"
+  | "tasks"
+  | "dueDate"
+  | "attachedDocs";
 
 const projectSlice = createSlice({
   name: "projects",
@@ -111,7 +63,7 @@ const projectSlice = createSlice({
       action: {
         payload: {
           id: string;
-          category: "attachedDocs" | "tasks";
+          category: ProjectUpdateables;
           data: unknown;
         };
       }
@@ -141,8 +93,16 @@ const projectSlice = createSlice({
             proj.id + "-" + ProjectClass.getTaskCount(proj)
           ).toMap(),
         ];
-
-        update(ref(db, "projects/" + proj.id), { ...proj });
+        fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updatetask`, {
+          method: "POST",
+          body: JSON.stringify({
+            id: `projects/${proj.id}`,
+            data: { ...proj },
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        });
       }
     },
     addTask: (state, action: { payload: { id: string; data: string } }) => {
@@ -185,13 +145,7 @@ const projectSlice = createSlice({
       action: {
         payload: {
           id: string;
-          category:
-            | "title"
-            | "description"
-            | "progress"
-            | "tasks"
-            | "dueDate"
-            | "attachedDocs";
+          category: TaskUpdateables;
           data: unknown;
         };
       }
@@ -259,7 +213,7 @@ const updateProjectAsync = createAsyncThunk(
       data,
     }: {
       id: string;
-      category: "attachedDocs" | "tasks";
+      category: ProjectUpdateables;
       data: unknown;
     },
     thunkAPI
@@ -299,13 +253,7 @@ const updateTaskAsync = createAsyncThunk(
       data,
     }: {
       id: string;
-      category:
-        | "title"
-        | "description"
-        | "progress"
-        | "tasks"
-        | "dueDate"
-        | "attachedDocs";
+      category: TaskUpdateables;
       data: unknown;
     },
     thunkAPI
@@ -322,23 +270,35 @@ export async function addProjectTask(
   dispatch: typeof store.dispatch
 ) {
   await dispatch(addProjectTaskAsync({ id, data }));
-  update(
-    ref(db, `projects/${createIdTrail(id, store.getState().projects)}`),
-    findTaskById(store.getState().projects, id)!
-  );
+  await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updatetask`, {
+    method: "POST",
+    body: JSON.stringify({
+      id: `projects/${createIdTrail(id, store.getState().projects)}`,
+      data: findTaskById(store.getState().projects, id) || {},
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
 }
 
 export async function updateProject(
   id: string,
-  category: "attachedDocs" | "tasks",
+  category: ProjectUpdateables,
   data: unknown,
   dispatch: typeof store.dispatch
 ) {
   await dispatch(updateProjectAsync({ id, category, data }));
-  update(
-    ref(db, `projects/${id}`),
-    store.getState().projects.find((project) => project.id == id)!
-  );
+  await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updatetask`, {
+    method: "POST",
+    body: JSON.stringify({
+      id: `projects/${id}`,
+      data: store.getState().projects.find((project) => project.id == id) || {},
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
 }
 
 export async function addTask(
@@ -347,39 +307,50 @@ export async function addTask(
   dispatch: typeof store.dispatch
 ) {
   await dispatch(addTaskAsync({ id, data }));
-  update(
-    ref(db, `projects/${createIdTrail(id, store.getState().projects)}`),
-    findTaskById(store.getState().projects, id)!
-  );
+  await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updatetask`, {
+    method: "POST",
+    body: JSON.stringify({
+      id: `projects/${createIdTrail(id, store.getState().projects)}`,
+      data: findTaskById(store.getState().projects, id) || {},
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
 }
 
 export async function updateTask(
   id: string,
-  category:
-    | "title"
-    | "description"
-    | "progress"
-    | "tasks"
-    | "dueDate"
-    | "attachedDocs",
+  category: TaskUpdateables,
   data: unknown,
   dispatch: typeof store.dispatch
 ) {
   await dispatch(updateTaskAsync({ id, category, data }));
-  update(
-    ref(db, `projects/${createIdTrail(id, store.getState().projects)}`),
-    findTaskById(store.getState().projects, id)!
-  );
+  await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updatetask`, {
+    method: "POST",
+    body: JSON.stringify({
+      id: `projects/${createIdTrail(id, store.getState().projects)}`,
+      data: findTaskById(store.getState().projects, id) || {},
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
 }
 
 export async function deleteTask(id: string, dispatch: typeof store.dispatch) {
   await dispatch(deleteTaskAsync({ id }));
-
-  update(
-    ref(
-      db,
-      `projects/${createIdTrail(popLastTask(id), store.getState().projects)}`
-    ),
-    findTaskById(store.getState().projects, popLastTask(id))!
-  );
+  await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updatetask`, {
+    method: "POST",
+    body: JSON.stringify({
+      id: `projects/${createIdTrail(
+        popLastTask(id),
+        store.getState().projects
+      )}`,
+      data: findTaskById(store.getState().projects, popLastTask(id)) || {},
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
 }
