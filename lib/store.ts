@@ -3,7 +3,6 @@ import {
   createAsyncThunk,
   createSlice,
 } from "@reduxjs/toolkit";
-import { db } from "./firebase";
 import { ProjectClass, ProjectObject } from "./DataClasses/ProjectClass";
 import { TaskClass, TaskObject } from "./DataClasses/TaskClass";
 

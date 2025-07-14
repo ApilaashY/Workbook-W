@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
 
   try {
     data = await request.json();
-  } catch (error) {
+  } catch {
     return new Response("No JSON body provided");
   }
 

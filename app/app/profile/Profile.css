@@ -1,0 +1,31 @@
+.profile-list {
+  padding: 1em;
+  text-align: center;
+  background-color: var(--bubbleBackgroundColor);
+  border-radius: var(--borderRadius);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  flex: 1 1 0;
+  max-width: 600px;
+  min-width: 250px;
+}
+
+.signout-button {
+  font-size: 1rem;
+  padding: 1em;
+  cursor: pointer;
+
+  transition-duration: 0.2s;
+  background-color: transparent;
+  border: 1px solid black;
+  border-radius: var(--borderRadius);
+  font-family: inherit;
+  margin: 1em 0;
+}
+
+.signout-button:hover {
+  transition-duration: 0.2s;
+  cursor: pointer;
+  background-color: rgb(150, 150, 150);
+}

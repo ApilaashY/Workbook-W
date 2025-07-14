@@ -244,7 +244,9 @@ export default function Toolbar() {
           <button className="terrance-button" onClick={AICommands}>
             Ask Terrance
           </button>
-          <h2 className="toolbar-title">Profile</h2>
+          <Link href="/app/profile">
+            <h2 className="toolbar-title">Profile</h2>
+          </Link>
           <Link href="/app/settings">
             <h2 className="toolbar-title">Settings</h2>
           </Link>
