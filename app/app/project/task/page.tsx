@@ -4,11 +4,11 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function TaskPage() {
-    const router = useRouter();
+  const router = useRouter();
 
-    useEffect(() => {
-        router.push("/app");
-    });
+  useEffect(() => {
+    router.push("/app");
+  });
 
-    return <div></div>;
+  return <div></div>;
 }

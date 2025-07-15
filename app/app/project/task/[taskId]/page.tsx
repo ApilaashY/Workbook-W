@@ -44,6 +44,7 @@ function SortableTask({
   color: string;
   dragging?: boolean;
 }) {
+  // Hooks and attributes
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task.id });
   const router = useRouter();
@@ -90,16 +91,19 @@ export default function Task({
 }: {
   params: Promise<{ taskId: string }>;
 }) {
+  // Hooks
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  // Variables
   const [id, setId] = useState<string>("");
   const [task, setTask] = useState<TaskClass | undefined>(undefined);
   const [dragging, setDragging] = useState(false);
-  const dispatch = useDispatch();
-  const router = useRouter();
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
   const goBack = useRef(false);
-  const sensors = useSensors(useSensor(PointerSensor));
 
   // Handle async params in useEffect
   useEffect(() => {
@@ -108,6 +112,7 @@ export default function Task({
     });
   }, [params]);
 
+  // Go to app page if the id is not valid
   useEffect(() => {
     if (goBack.current) router.push("/app");
   }, [goBack, router]);
