@@ -1,41 +1,46 @@
 "use client";
 
+// This is the main page for the app portion of the website
+
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { onValue, ref, set } from "firebase/database";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { onValue, ref } from "firebase/database";
+import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import "./App.css";
 import { addProject, ProjectStore } from "@/lib/store";
 import { auth, db, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ProjectObject } from "@/lib/DataClasses/ProjectClass";
 
 export default function App() {
-  const projectData = useSelector((state: ProjectStore) => state.projects);
-  const [projects, setProjects] = useState(projectData);
+  // Hooks
   const dispatch = useDispatch();
   const router = useRouter();
-  const gotInfo = useRef(false);
 
+  // Variables
+  const projectData = useSelector((state: ProjectStore) => state.projects);
+  const [projects, setProjects] = useState(projectData);
+
+  // This use effect updates the projectData state if the Redux store changes
   useEffect(() => {
     setProjects(projectData);
   }, [projectData]);
 
+  // This sets up the projects that the current user has access to
   useEffect(() => {
-    if (gotInfo.current) return;
-    gotInfo.current = true;
-
     onAuthStateChanged(auth, (user) => {
+      // If the user is not logged in, redirect to the login page
       if (!user) {
         router.push("/login");
         return;
       }
 
+      // Get the user's projects from Firestore
       getDoc(doc(fdb, "Users", user.uid)).then((doc) => {
         const projectIds: string[] = doc.data()?.projects || [];
 
+        // Add each project to the Redux store and listen for changes from the firebase database
         projectIds.forEach((id) => {
           onValue(ref(db, `projects/${id}`), (projData) => {
             dispatch(addProject({ ...projData.val(), id: id }));
@@ -45,21 +50,30 @@ export default function App() {
     });
   });
 
+  // Function to add a new project
   async function addNewProject() {
+    // Check if the user is logged in
+    if (!auth.currentUser) {
+      alert("You must be logged in to create a project.");
+      return;
+    }
+
+    // Prompt the user for a project name and keep asking while its empty
     let name = prompt("Enter project name:");
     while (!name || name.trim() === "") {
       name = prompt("Project name cannot be empty. Please enter a valid name:");
     }
 
+    // Send api request to create a new project
     fetch("/api/database/addProject", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${await auth.currentUser?.getIdToken()}`,
+        Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
       },
       body: JSON.stringify({ title: name }),
     }).then((response) => {
-      console.log(response);
+      // If the response is not successful, alert the user
       if (response.status !== 201) {
         if (response.status === 410)
           alert("You have reached the maximum number of projects.");
@@ -67,7 +81,8 @@ export default function App() {
         return;
       }
 
-      response.json().then(({ message, projectId }) => {
+      // Add the new project to the Redux store and listen for changes
+      response.json().then(({ projectId }) => {
         onValue(ref(db, `projects/${projectId}`), (projData) => {
           dispatch(addProject({ ...projData.val(), id: projectId }));
         });
@@ -77,6 +92,7 @@ export default function App() {
 
   return (
     <div className="main-window">
+      {/* Menu that has all projects */}
       <div style={{ flex: "1 1 auto" }}>
         <div className="project-list">
           {projects.map((project) => (
@@ -88,6 +104,7 @@ export default function App() {
           ))}
         </div>
       </div>
+
       <button className="add-project-button" onClick={addNewProject}>
         +
       </button>

@@ -62,7 +62,6 @@ export async function POST(request: NextRequest) {
 
   return new Response(
     JSON.stringify({
-      message: "Project added successfully",
       projectId: newProject.id,
     }),
     {
