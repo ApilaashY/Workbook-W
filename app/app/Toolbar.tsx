@@ -1,3 +1,5 @@
+// This is the toolbar component for the app portion of the website
+
 import "./Toolbar.css";
 import { useEffect, useState } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -10,6 +12,7 @@ import { ProjectStore, store } from "@/lib/store";
 import { useParams, useRouter } from "next/navigation";
 import { findTaskById } from "@/lib/firebase";
 
+// Interfaces for speech recognition
 interface SpeechRecognitionEvent {
   results: SpeechRecognitionResultList;
 }
@@ -57,6 +60,7 @@ declare global {
   }
 }
 
+// Speech recognition function to get user input
 async function getSpeechInput(): Promise<string> {
   return new Promise((resolve) => {
     const SpeechRecognition =
@@ -84,16 +88,20 @@ async function getSpeechInput(): Promise<string> {
 }
 
 export default function Toolbar() {
+  // Hooks
   const params = useParams<{ projectId?: string; taskId?: string }>();
-  const id = params.projectId || params.taskId || "";
   const dispatch = useDispatch();
   const router = useRouter();
+
+  // Variables
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
   const [stack, setStack] = useState<(ProjectClass | TaskClass)[]>([]);
   const [hideMenu, setHideMenu] = useState<boolean>(true);
+  const id = params.projectId || params.taskId || "";
 
+  // Command to execute AI instructions
   async function AICommands() {
     const ai = new GoogleGenAI({
       apiKey: "AIzaSyBdJwUyanHls9Cw05xGm8JfK64UGwUoc4Q",
@@ -145,7 +153,9 @@ export default function Toolbar() {
       });
   }
 
+  // This use effect set up the stack of projects and tasks based on the current id to show as breadcrumbs
   useEffect(() => {
+    // Stop if the id is undefined
     if (!id || !id.includes("-")) {
       setStack([]);
       return;
@@ -154,9 +164,10 @@ export default function Toolbar() {
     const newStack = new Array<ProjectClass | TaskClass>(
       id.split("-").length - 1
     );
-
     const idParts = id.split("-");
     idParts.pop(); // Remove the current page from the list of ids
+
+    // Add the first project to the stack
     let currentId: string = idParts[0];
     let currentData: ProjectClass | TaskClass | undefined = (
       projectData as ProjectClass[]
@@ -167,6 +178,7 @@ export default function Toolbar() {
       newStack[0] = currentData;
     }
 
+    // Add every task to the stack
     for (let i = 1; i < idParts.length; i++) {
       currentId += "-" + idParts[i];
 
@@ -192,7 +204,8 @@ export default function Toolbar() {
   }, [id, projectData, router]);
 
   return (
-    <Provider store={store}>
+    <>
+      {/* Menu to toggle toolbar on mobile */}
       <div className="mobile-menu-toggle">
         <h1
           onClick={() => setHideMenu((prev) => !prev)}
@@ -201,12 +214,14 @@ export default function Toolbar() {
           ☰
         </h1>
       </div>
+      {/* Toolbar on mobile */}
       {hideMenu ? null : (
         <div
           className={`close-mobile-menu ${hideMenu ? "" : "show-toolbar-menu"}`}
           onClick={() => setHideMenu(true)}
         ></div>
       )}
+      {/* Desktop Toolbar */}
       <div className={`toolbar ${hideMenu ? "" : "show-toolbar-menu"}`}>
         <div className="toolbar-top-section">
           <Link href="/app" onClick={() => setStack([])}>
@@ -252,6 +267,6 @@ export default function Toolbar() {
           </Link> */}
         </div>
       </div>
-    </Provider>
+    </>
   );
 }

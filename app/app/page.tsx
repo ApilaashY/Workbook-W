@@ -60,7 +60,9 @@ export default function App() {
 
     // Prompt the user for a project name and keep asking while its empty
     let name = prompt("Enter project name:");
+    if (name == null) return;
     while (!name || name.trim() === "") {
+      if (name == null) return;
       name = prompt("Project name cannot be empty. Please enter a valid name:");
     }
 
