@@ -8,7 +8,6 @@
 }
 
 @media (max-width: 600px) {
-
   .project-list {
     justify-content: center;
   }
@@ -37,4 +36,22 @@
   font-size: 1.5rem;
   transition-duration: 0.2s;
   cursor: pointer;
+}
+
+.add-project-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 3rem;
+  height: 3rem;
+  background-color: var(--primary);
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.2;
+}
+
+.add-project-button:hover {
+  background-color: var(--primaryHover);
 }
