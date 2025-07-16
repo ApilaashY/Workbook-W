@@ -48,7 +48,7 @@ export default function App() {
         });
       });
     });
-  });
+  }, [dispatch, router]);
 
   // Function to add a new project
   async function addNewProject() {

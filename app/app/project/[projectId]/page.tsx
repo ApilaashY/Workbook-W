@@ -1,7 +1,7 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -34,7 +34,6 @@ function SortableTask({
 }: {
   task: ProjectClass;
   color: string;
-  dragging?: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task.id });
@@ -84,13 +83,11 @@ export default function Project({
 }) {
   const [id, setId] = useState<string>("");
   const [project, setProject] = useState<ProjectClass | undefined>(undefined);
-  const [dragging, setDragging] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
-  const goBack = useRef(false);
   const sensors = useSensors(useSensor(PointerSensor));
 
   // Handle async params in useEffect
@@ -104,10 +101,12 @@ export default function Project({
     (p) => p.id === id
   );
 
+  // Go back to the app page if the projectInfo is empty and there is a valid id
   useEffect(() => {
-    if (goBack.current) router.push("/app");
-  }, [goBack, router]);
+    if (!projectInfo && id) router.push("/app");
+  }, [projectInfo, id, router]);
 
+  // Update project state when projectData changes
   useEffect(() => {
     const newProject = projectData.find((p) => p.id === id);
     if (newProject !== undefined) {
@@ -117,7 +116,6 @@ export default function Project({
 
   // Handle the case where project is not found
   if (!projectInfo && id) {
-    goBack.current = true;
     return <div>Project not found</div>;
   }
 
@@ -146,7 +144,6 @@ export default function Project({
   function handleDragEnd(event: DragEndEvent) {
     if (!project) return; // Early return if project is undefined
 
-    setDragging(false);
     const { active, over } = event;
     if (over && active.id !== over.id) {
       const id1 = project.tasks.findIndex((task) => task.id === active.id);
@@ -165,7 +162,6 @@ export default function Project({
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
-          onDragMove={() => setDragging(true)}
           onDragEnd={handleDragEnd}
           modifiers={[restrictToVerticalAxis]}
         >
@@ -180,7 +176,6 @@ export default function Project({
                     key={task.id}
                     task={task}
                     color={TaskProgressStats[task.progress].color}
-                    dragging={dragging}
                   />
                 );
               })}
