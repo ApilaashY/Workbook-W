@@ -1,6 +1,6 @@
 "use client";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
   DndContext,
@@ -81,14 +81,16 @@ export default function Project({
 }: {
   params: Promise<{ projectId: string }>;
 }) {
+  // Hooks
+  const router = useRouter();
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  // Variables
   const [id, setId] = useState<string>("");
   const [project, setProject] = useState<ProjectClass | undefined>(undefined);
-  const dispatch = useDispatch();
-  const router = useRouter();
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
-  const sensors = useSensors(useSensor(PointerSensor));
 
   // Handle async params in useEffect
   useEffect(() => {
@@ -136,7 +138,7 @@ export default function Project({
         alert(`Task title cannot be empty`);
         data = null;
       } else {
-        addProjectTask(project.id, data, dispatch);
+        addProjectTask(project.id, data);
       }
     }
   }
@@ -151,7 +153,8 @@ export default function Project({
 
       const newArr = arrayMove(project.tasks, id1, id2);
 
-      updateProject(id, "tasks", newArr, dispatch);
+      console.log(newArr);
+      // updateProject(id, "tasks", newArr);
     }
   }
 

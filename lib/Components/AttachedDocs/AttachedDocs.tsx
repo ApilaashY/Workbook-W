@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./AttachedDocs.css";
-import { useDispatch } from "react-redux";
 import { updateProject, updateTask } from "@/lib/store";
 
 export function AttachedDocs({
@@ -15,7 +14,6 @@ export function AttachedDocs({
   const [openField, setOpenField] = useState<boolean>(false);
   const [label, setLabel] = useState<string>("");
   const [link, setLink] = useState<string>("");
-  const dispatch = useDispatch();
 
   function addLink(label: string, link: string): boolean {
     if (label.trim().length === 0) {
@@ -26,7 +24,7 @@ export function AttachedDocs({
       return false;
     }
 
-    updateFunction(id, "attachedDocs", [...link, [label, link]], dispatch);
+    updateFunction(id, "attachedDocs", [...link, [label, link]]);
     return true;
   }
 

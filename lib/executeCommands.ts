@@ -108,15 +108,14 @@ async function openTask(
 async function addTask(
   id: string,
   projectData: AnyObject | ProjectObject[],
-  newData: string,
-  dispatch: typeof store.dispatch
+  newData: string
 ): Promise<string> {
   if (!(projectData as AnyObject).id.includes("-")) {
     // This is a project object
-    await addProjectTask(id, newData, dispatch);
+    await addProjectTask(id, newData);
   } else {
     // This is a task object
-    await addTaskStore(id, newData, dispatch);
+    await addTaskStore(id, newData);
   }
 
   return id;
@@ -125,10 +124,9 @@ async function addTask(
 async function changeTaskTitle(
   id: string,
   _: AnyObject | ProjectObject[],
-  newData: string,
-  dispatch: Dispatch
+  newData: string
 ): Promise<string> {
-  await updateTask(id, "title", newData, dispatch);
+  await updateTask(id, "title", newData);
 
   return id;
 }
@@ -136,10 +134,9 @@ async function changeTaskTitle(
 async function changeTaskDescription(
   id: string,
   _: AnyObject | ProjectObject[],
-  newData: string,
-  dispatch: Dispatch
+  newData: string
 ): Promise<string> {
-  await updateTask(id, "description", newData, dispatch);
+  await updateTask(id, "description", newData);
 
   return id;
 }
@@ -155,10 +152,9 @@ async function goToParent(id: string): Promise<string> {
 async function deleteTask(
   id: string,
   _: AnyObject | ProjectObject[],
-  data: string,
-  dispatch: Dispatch
+  data: string
 ): Promise<string> {
-  await deleteTaskStore(data, dispatch);
+  await deleteTaskStore(data);
 
   return id;
 }

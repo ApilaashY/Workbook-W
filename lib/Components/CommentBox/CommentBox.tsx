@@ -2,7 +2,6 @@ import { IoMdSend } from "react-icons/io";
 import "./CommentBox.css";
 import { updateTask } from "@/lib/store";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 
 export interface Comment {
   content: string;
@@ -16,9 +15,6 @@ export function CommentBox({
   comments: Comment[];
   id: string;
 }) {
-  // Hooks
-  const dispatch = useDispatch();
-
   // Variables
   const [comment, setComment] = useState("");
 
@@ -53,12 +49,7 @@ export function CommentBox({
         <button
           className="add-comment-button"
           onClick={() => {
-            updateTask(
-              id,
-              "comments",
-              [...comments, { content: comment, sender: "You" }],
-              dispatch
-            );
+            updateTask(id, "comments", { content: comment, sender: "You" });
             setComment("");
           }}
         >

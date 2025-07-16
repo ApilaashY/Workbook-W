@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Get the task data from the database
-  let initialData = await get(ref(db, data.path));
+  const initialData = await get(ref(db, data.path));
   if (!initialData.val()) return new Response("Unknown or undefined task path");
 
   // Increment to the data list if the category is a list

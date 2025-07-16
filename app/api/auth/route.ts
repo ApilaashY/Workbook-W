@@ -1,8 +1,7 @@
 import admin from "@/lib/firebaseAdmin";
 import { NextRequest } from "next/server";
-import { updateCurrentUser } from "firebase/auth";
 
-export async function changeUsername(request: NextRequest) {
+export async function POST(request: NextRequest) {
   // Get the request's authorzation and return if not present
   const authHeader = request.headers.get("authorization");
   if (!authHeader) return new Response("Unauthorized", { status: 401 });

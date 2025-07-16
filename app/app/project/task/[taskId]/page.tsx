@@ -3,7 +3,7 @@
 import "./Task.css";
 import "../../[projectId]/Project.css";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   closestCenter,
   DndContext,
@@ -94,7 +94,6 @@ export default function Task({
 }) {
   // Hooks
   const router = useRouter();
-  const dispatch = useDispatch();
   const sensors = useSensors(useSensor(PointerSensor));
 
   // Variables
@@ -185,7 +184,7 @@ export default function Task({
       alert(`Task ${category} cannot be empty`);
       data = null;
     } else {
-      updateTask(id, category, data, dispatch);
+      updateTask(id, category, data);
     }
   }
 
@@ -202,7 +201,7 @@ export default function Task({
         alert(`Task title cannot be empty`);
         data = null;
       } else {
-        addTask(task.id, data, dispatch);
+        addTask(task.id, data);
       }
     }
   }
@@ -213,7 +212,7 @@ export default function Task({
 
     if (!window.confirm("Are you sure you want to delete this task?")) return;
 
-    await deleteTask(task.id, dispatch);
+    await deleteTask(task.id);
     const lastTask: string = popLastTask(task.id);
     router.push(
       !lastTask.includes("-")
@@ -234,7 +233,8 @@ export default function Task({
 
       const newArr = arrayMove(task.tasks, id1, id2);
 
-      updateTask(id, "tasks", newArr, dispatch);
+      console.log(newArr);
+      // updateTask(id, "tasks", newArr);
     }
   }
 
@@ -260,7 +260,7 @@ export default function Task({
         <select
           value={task.progress}
           className="task-progress-select"
-          onChange={(e) => updateTask(id, "progress", e.target.value, dispatch)}
+          onChange={(e) => updateTask(id, "progress", e.target.value)}
           style={{
             backgroundColor: TaskProgressStats[task.progress].color,
             color: TaskProgressStats[task.progress].color.startsWith("#ff")
@@ -306,9 +306,7 @@ export default function Task({
         </h3>
         <ReactDatePicker
           selected={task.dueDate ? new Date(task.dueDate) : undefined}
-          onChange={(date) =>
-            updateTask(id, "dueDate", date?.toISOString(), dispatch)
-          }
+          onChange={(date) => updateTask(id, "dueDate", date?.toISOString())}
           showTimeSelect
           dateFormat="Pp"
           placeholderText="Due Date and Time"
