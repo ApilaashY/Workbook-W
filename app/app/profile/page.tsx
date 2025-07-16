@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { FaEdit } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { updateProfile } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
 
 export default function Profile() {
   // Hooks
