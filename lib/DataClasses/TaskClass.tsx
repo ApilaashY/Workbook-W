@@ -1,3 +1,5 @@
+import { Comment } from "../Components/CommentBox/CommentBox";
+
 export interface TaskObject {
   title: string;
   description?: string;
@@ -7,6 +9,7 @@ export interface TaskObject {
   taskCount?: number;
   attachedDocs?: [string, string][];
   dueDate?: string | undefined;
+  comments?: Comment[];
 }
 
 export class TaskClass {
@@ -18,6 +21,7 @@ export class TaskClass {
   public taskCount: number;
   public attachedDocs: [string, string][];
   public dueDate: string | undefined;
+  public comments: Comment[];
 
   constructor(
     title: string,
@@ -27,7 +31,8 @@ export class TaskClass {
     tasks?: TaskClass[],
     taskCount?: number,
     attachedDocs?: [string, string][],
-    dueDate?: string | undefined
+    dueDate?: string | undefined,
+    comments?: Comment[]
   ) {
     this.title = title.trim();
     this.id = id.trim();
@@ -37,6 +42,7 @@ export class TaskClass {
     this.taskCount = taskCount ?? tasks?.length ?? 0;
     this.attachedDocs = attachedDocs ?? [];
     this.dueDate = dueDate;
+    this.comments = comments ?? [];
   }
 
   static fromMap(allData: TaskObject): TaskClass {
@@ -48,7 +54,8 @@ export class TaskClass {
       allData.tasks?.map(TaskClass.fromMap) || [],
       allData.taskCount ?? allData.tasks?.length ?? 0,
       allData.attachedDocs ?? [],
-      allData.dueDate
+      allData.dueDate,
+      allData.comments || []
     );
     return task;
   }
@@ -69,6 +76,7 @@ export class TaskClass {
       tasks: this.tasks.map((val) => val.toMap()),
       attachedDocs: this.attachedDocs,
       dueDate: this.dueDate,
+      comments: this.comments,
     };
   }
 }

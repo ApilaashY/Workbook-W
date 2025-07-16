@@ -1,0 +1,35 @@
+.comment-box {
+  background-color: rgb(253, 253, 253);
+  border-radius: var(--borderRadius);
+}
+
+.comment-list {
+  padding: 0;
+}
+
+.comment-text {
+  text-align: left;
+  margin: 0 10px;
+}
+
+.add-comment {
+  display: flex;
+  margin: 1em;
+  gap: 1em;
+}
+
+.add-comment-button {
+  background-color: var(--bubbleBackgroundColor);
+  border: none;
+  border-radius: var(--borderRadius);
+  padding: 0.5em;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.add-comment-input {
+  padding: 0.5em;
+  border-radius: var(--borderRadius);
+  font-size: 1rem;
+  flex-grow: 1;
+}

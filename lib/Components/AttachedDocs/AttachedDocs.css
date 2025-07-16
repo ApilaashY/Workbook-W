@@ -52,7 +52,7 @@
 .new-doc-form input[type="submit"]:hover,
 .new-doc-form button:hover {
   transition: 0.2s;
-  background-color: rgb(150, 150, 150);
+  background-color: var(--bubbleBackgroundHover);
 }
 
 .new-doc-form button {

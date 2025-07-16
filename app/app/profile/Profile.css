@@ -27,5 +27,5 @@
 .signout-button:hover {
   transition-duration: 0.2s;
   cursor: pointer;
-  background-color: rgb(150, 150, 150);
+  background-color: var(--bubbleBackgroundHover);
 }

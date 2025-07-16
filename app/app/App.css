@@ -30,12 +30,11 @@
   transition-duration: 0.2s;
   max-height: fit-content;
   font-size: 1.2rem;
+  cursor: pointer;
 }
 
 .project-card:hover {
-  font-size: 1.5rem;
-  transition-duration: 0.2s;
-  cursor: pointer;
+  background-color: var(--bubbleBackgroundHover);
 }
 
 .add-project-button {
