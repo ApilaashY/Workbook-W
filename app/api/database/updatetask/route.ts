@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { ref, update } from "firebase/database";
+import { get, ref, update } from "firebase/database";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -14,17 +14,30 @@ export async function POST(request: NextRequest) {
 
   // Check if the data has the required format and return an error if not
   if (
-    data.id === undefined ||
+    data.path === undefined ||
+    data.category === undefined ||
     data.data === undefined ||
-    typeof data.id !== "string" ||
-    typeof data.data !== "object" ||
-    Array.isArray(data.data) ||
-    Object.keys(data.data).length === 0
+    typeof data.path !== "string" ||
+    typeof data.category !== "string"
   ) {
     return new Response("Invalid data format");
   }
 
-  // Update the data in the Realtime Database and return a success response
-  update(ref(db, data.id), data.data);
+  // Get the task data from the database
+  let initialData = await get(ref(db, data.path));
+  if (!initialData.val()) return new Response("Unknown or undefined task path");
+
+  // Increment to the data list if the category is a list
+  // Updates the value and send it to the database
+  if (data.category in ["tasks", "comments"]) {
+    update(ref(db, data.path), {
+      [data.category]: [...initialData.val()[data.category], data.data],
+    });
+  } else {
+    update(ref(db, data.path), {
+      [data.category]: data.data,
+    });
+  }
+
   return new Response("Changes Made");
 }

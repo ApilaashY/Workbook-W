@@ -18,8 +18,8 @@ export type TaskUpdateables =
   | "title"
   | "description"
   | "progress"
-  | "tasks"
   | "dueDate"
+  | "tasks"
   | "attachedDocs"
   | "comments";
 
@@ -71,16 +71,6 @@ const projectSlice = createSlice({
             proj.id + "-" + ProjectClass.getTaskCount(proj)
           ).toMap(),
         ];
-        fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updatetask`, {
-          method: "POST",
-          body: JSON.stringify({
-            id: `projects/${proj.id}`,
-            data: { ...proj },
-          }),
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-          },
-        });
       }
     },
     addTask: (state, action: { payload: { id: string; data: string } }) => {
