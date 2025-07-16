@@ -14,8 +14,11 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function SignupForm() {
+  // Hooks
   const router = useRouter();
   const params = useSearchParams();
+
+  // Variables
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState<string>(params.get("email") || "");
   const [password, setPassword] = useState("");
@@ -23,9 +26,11 @@ function SignupForm() {
   const [hidePassword, setHidePassword] = useState(true);
   const [hideRepeatPassword, setHideRepeatPassword] = useState(true);
 
+  // Function that handles the signup process
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+    e.preventDefault(); // Prevent redirects
 
+    // Make sure the username and password are good enough
     if (username.trim().length < 0) {
       alert("Username can not be empty.");
       return;
@@ -38,24 +43,29 @@ function SignupForm() {
     }
 
     try {
+      // Create the new user
       const user: UserCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
 
+      // Set the user's username
       updateProfile(user.user, {
         displayName: username,
       });
 
+      // Create the user data document in Firestore
       await setDoc(doc(fdb, "Users", user.user.uid), {
         username: username,
         projects: [],
         projectCount: 0,
       });
 
+      // Go to the app page
       router.push("/app");
     } catch (error: FirebaseError | unknown) {
+      // Handle errors
       if (!(error instanceof FirebaseError)) return;
 
       if (error.code === "auth/wrong-password") {
@@ -68,6 +78,7 @@ function SignupForm() {
         alert("This email is already in use. Please use a different email.");
         router.push(`/login?email=${email}`);
       } else {
+        alert("An error occurred. Please try again later.");
         console.log(error);
       }
     }
@@ -164,6 +175,7 @@ function SignupForm() {
 }
 
 export default function Signup() {
+  // The Suspense is needed for the useSearchParams to work correctly
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <SignupForm />

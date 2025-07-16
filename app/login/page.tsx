@@ -9,15 +9,20 @@ import { auth } from "@/lib/firebase";
 import Link from "next/link";
 
 function LoginForm() {
+  // Hooks
   const router = useRouter();
   const params = useSearchParams();
+
+  // Variables
   const [email, setEmail] = useState(params.get("email") || "");
   const [password, setPassword] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
 
+  // Function that handles the login process
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+    e.preventDefault(); // Stop redirects
 
+    // Try to sign in with email and password, and handle errors
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/app");
@@ -94,6 +99,7 @@ function LoginForm() {
 }
 
 export default function Login() {
+  // The Suspense is needed for the useSearchParams to work correctly
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <LoginForm />

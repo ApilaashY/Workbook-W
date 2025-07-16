@@ -3,7 +3,7 @@
 // This is the main page for the app portion of the website
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";

@@ -24,29 +24,7 @@ export type TaskUpdateables =
 
 const projectSlice = createSlice({
   name: "projects",
-  initialState: [
-    // ProjectClass.fromMap({
-    //   title: "Project 1",
-    //   id: "1",
-    //   tasks: [
-    //     { id: "1-0", title: "Design UI" },
-    //     { id: "1-1", title: "Set up backend" },
-    //   ],
-    // }).toMap(),
-    // ProjectClass.fromMap({
-    //   title: "Project 2",
-    //   id: "2",
-    //   tasks: [
-    //     { id: "2-0", title: "Write documentation" },
-    //     { id: "2-1", title: "Deploy to server" },
-    //   ],
-    // }).toMap(),
-    // ProjectClass.fromMap({
-    //   title: "Project 3",
-    //   id: "3",
-    //   tasks: [{ id: "3-0", title: "Research competitors" }],
-    // }).toMap(),
-  ] as ProjectObject[],
+  initialState: [] as ProjectObject[],
   reducers: {
     addProject: (state, action: { payload: ProjectObject }) => {
       const index = state.findIndex((proj) => proj.id === action.payload.id);

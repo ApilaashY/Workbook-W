@@ -117,6 +117,7 @@ export default function Task({
     if (goBack.current) router.push("/app");
   }, [goBack, router]);
 
+  // Update the task data if changed
   useEffect(() => {
     const newTask = findTaskById(projectData, id as string);
     if (newTask !== undefined) {
@@ -137,7 +138,9 @@ export default function Task({
     return <div>Loading...</div>;
   }
 
+  // Function that finds a task by its ID
   function findTaskById(data: ProjectClass[], id: string): TaskClass {
+    // Split the ID into parts
     const idParts = id.split("-");
     let currentId: string = idParts[0];
 
@@ -145,6 +148,7 @@ export default function Task({
       data as ProjectClass[]
     ).find((project) => project.id === currentId);
 
+    // GO through the parts of the ID to find the task
     for (let i = 1; i < idParts.length; i++) {
       currentId += "-" + idParts[i];
 
@@ -162,23 +166,29 @@ export default function Task({
     return currentData as TaskClass;
   }
 
+  // Function that changes task data
   function editTaskInfo(category: "title" | "description", required: boolean) {
     if (!task) return; // Early return if task is undefined
 
+    // Get the user's new value
     let data: string | null = null;
     while (data === null) {
       data = prompt(`Enter new title ${category}`, task[category]);
       if (data === null) {
         return; // User cancelled
-      } else if (required && data.trim() === "") {
-        alert(`Task ${category} cannot be empty`);
-        data = null;
-      } else {
-        updateTask(id, category, data, dispatch);
       }
+    }
+
+    // Update the task with the new data
+    if (required && data.trim() === "") {
+      alert(`Task ${category} cannot be empty`);
+      data = null;
+    } else {
+      updateTask(id, category, data, dispatch);
     }
   }
 
+  // Function to create a new subtask
   function createNewTask() {
     if (!task) return; // Early return if task is undefined
 
@@ -196,6 +206,7 @@ export default function Task({
     }
   }
 
+  // Function to delete the current task and go back
   async function deleteTaskButton() {
     if (!task) return; // Early return if task is undefined
 
@@ -210,6 +221,7 @@ export default function Task({
     );
   }
 
+  // Function to handle task dragging changes
   function handleDragEnd(event: DragEndEvent) {
     if (!task) return; // Early return if task is undefined
 
@@ -227,6 +239,7 @@ export default function Task({
 
   return (
     <div className="project-window">
+      {/* Left Menu with task information */}
       <div className="task-stats">
         <h2
           onClick={() => editTaskInfo("title", true)}
@@ -311,6 +324,7 @@ export default function Task({
         </button>
       </div>
 
+      {/* Right Menu with subtask list */}
       <div className="task-subtask-list">
         <h2>Sub Tasks</h2>
         <DndContext

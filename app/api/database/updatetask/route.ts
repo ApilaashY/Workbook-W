@@ -4,16 +4,15 @@ import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   let data;
-  console.log("hi");
 
+  // Get the request's json data and if not possible return an error
   try {
     data = await request.json();
   } catch {
     return new Response("No JSON body provided");
   }
 
-  console.log(data);
-
+  // Check if the data has the required format and return an error if not
   if (
     data.id === undefined ||
     data.data === undefined ||
@@ -24,6 +23,8 @@ export async function POST(request: NextRequest) {
   ) {
     return new Response("Invalid data format");
   }
+
+  // Update the data in the Realtime Database and return a success response
   update(ref(db, data.id), data.data);
   return new Response("Changes Made");
 }

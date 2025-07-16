@@ -2,13 +2,13 @@
 
 import "./Toolbar.css";
 import { useEffect, useState } from "react";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { GoogleGenAI } from "@google/genai";
 import Link from "next/link";
 import { ProjectClass } from "@/lib/DataClasses/ProjectClass";
 import { TaskClass } from "@/lib/DataClasses/TaskClass";
 import { allCommands, executeCommands } from "@/lib/executeCommands";
-import { ProjectStore, store } from "@/lib/store";
+import { ProjectStore } from "@/lib/store";
 import { useParams, useRouter } from "next/navigation";
 import { findTaskById } from "@/lib/firebase";
 
