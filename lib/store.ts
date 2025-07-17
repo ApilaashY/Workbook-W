@@ -1,8 +1,7 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { ProjectClass, ProjectObject } from "./DataClasses/ProjectClass";
-import { TaskClass } from "./DataClasses/TaskClass";
 
-import { createIdTrail, findTaskById } from "./firebase";
+import { createIdTrail } from "./firebase";
 
 export interface ProjectStore {
   projects: ProjectClass[];

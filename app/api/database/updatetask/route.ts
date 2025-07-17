@@ -1,3 +1,4 @@
+import { TaskObject } from "@/lib/DataClasses/TaskClass";
 import { db } from "@/lib/firebase";
 import { get, ref, update } from "firebase/database";
 import { NextRequest } from "next/server";
@@ -23,16 +24,31 @@ export async function POST(request: NextRequest) {
     return new Response("Invalid data format");
   }
 
-  // Get the task data from the database
-  const initialData = await get(ref(db, data.path));
-  if (!initialData.val()) return new Response("Unknown or undefined task path");
-
   // Increment to the data list if the category is a list
   // Updates the value and send it to the database
-  if (data.category in ["tasks", "comments"]) {
-    update(ref(db, data.path), {
-      [data.category]: [...initialData.val()[data.category], data.data],
-    });
+  if (["tasks"].includes(data.category)) {
+    // Get the task data from the database
+    const initialData = await get(ref(db, data.path));
+    if (!initialData.val())
+      return new Response("Unknown or undefined task path");
+
+    const newData: { [key: string]: unknown } = {
+      [data.category]: [...(initialData.val()[data.category] || []), data.data],
+    };
+
+    // Increment taskCount if the category is tasks
+    if (data.category === "tasks") {
+      newData.taskCount = initialData.val().taskCount + 1;
+      newData.tasks = [
+        ...(initialData.val().tasks || []),
+        {
+          title: data.data,
+          id: `${initialData.val().id}-${initialData.val().taskCount}`,
+        } as TaskObject,
+      ];
+    }
+
+    update(ref(db, data.path), newData);
   } else {
     update(ref(db, data.path), {
       [data.category]: data.data,
