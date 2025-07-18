@@ -316,8 +316,8 @@ export default function Task({
         <h3 className="info-label">Search For Task</h3>
         <SearchBox tasks={task.tasks} />
 
-        <h3 className="info-label">Comments</h3>
-        <CommentBox comments={task.comments} id={task.id} />
+        {/* <h3 className="info-label">Comments</h3>
+        <CommentBox comments={task.comments} id={task.id} /> */}
 
         <span className="fill" />
 
