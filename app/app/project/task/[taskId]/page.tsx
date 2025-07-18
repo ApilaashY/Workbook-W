@@ -34,7 +34,7 @@ import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import { popLastTask } from "@/lib/firebase";
-import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
+// import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 
 function SortableTask({
   task,
