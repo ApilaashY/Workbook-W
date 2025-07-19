@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { ref, set } from "firebase/database";
+import { get, ref, update } from "firebase/database";
 import { db } from "@/lib/firebase";
 
 export async function POST(request: NextRequest) {
@@ -13,12 +13,24 @@ export async function POST(request: NextRequest) {
   }
 
   // Check if the data has the required format and return an error if not
-  if (data.path === undefined || typeof data.path !== "string") {
+  if (
+    data.path === undefined ||
+    data.id === undefined ||
+    typeof data.path !== "string" ||
+    typeof data.id !== "string"
+  ) {
     return new Response("Invalid data format");
   }
 
+  // Get the tasks from the database
+  const taskData = await get(ref(db, data.path));
+
   // Update the data in the path in the database to empty to delete it
-  set(ref(db, data.path), null);
+  update(ref(db, data.path), {
+    tasks: taskData
+      .val()
+      .tasks.filter((task: { id: string }) => task.id !== data.id),
+  });
 
   return new Response("Task deleted successfully");
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
   DndContext,
@@ -11,7 +11,6 @@ import {
   DragEndEvent,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
@@ -20,7 +19,12 @@ import { CSS } from "@dnd-kit/utilities";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { useRouter } from "next/navigation";
 import { ProjectClass } from "@/lib/DataClasses/ProjectClass";
-import { addProjectTask, ProjectStore, updateProject } from "@/lib/store";
+import {
+  addProjectTask,
+  ProjectStore,
+  updateProject,
+  updateTaskOrder,
+} from "@/lib/store";
 import { TaskProgressStats } from "@/lib/DataClasses/TaskClass";
 import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
@@ -84,6 +88,7 @@ export default function Project({
   // Hooks
   const router = useRouter();
   const sensors = useSensors(useSensor(PointerSensor));
+  const dispatch = useDispatch();
 
   // Variables
   const [id, setId] = useState<string>("");
@@ -143,18 +148,22 @@ export default function Project({
     }
   }
 
-  function handleDragEnd(event: DragEndEvent) {
+  async function handleDragEnd(event: DragEndEvent) {
     if (!project) return; // Early return if project is undefined
 
     const { active, over } = event;
     if (over && active.id !== over.id) {
+      // Get the indices of the active and over tasks
       const id1 = project.tasks.findIndex((task) => task.id === active.id);
       const id2 = project.tasks.findIndex((task) => task.id === over.id);
 
-      const newArr = arrayMove(project.tasks, id1, id2);
+      if (!id1 || !id2) {
+        console.error("Invalid task IDs:", active.id, over.id);
+        return;
+      }
 
-      console.log(newArr);
-      // updateProject(id, "tasks", newArr);
+      // Update the task order in the database and in the store
+      updateTaskOrder(project.id, id1, id2, dispatch);
     }
   }
 

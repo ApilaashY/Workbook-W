@@ -38,12 +38,12 @@ export async function POST(request: NextRequest) {
 
     // Increment taskCount if the category is tasks
     if (data.category === "tasks") {
-      newData.taskCount = initialData.val().taskCount + 1;
+      newData.taskCount = (initialData.val().taskCount || 0) + 1;
       newData.tasks = [
         ...(initialData.val().tasks || []),
         {
           title: data.data,
-          id: `${initialData.val().id}-${initialData.val().taskCount}`,
+          id: `${initialData.val().id}-${initialData.val().taskCount || 0}`,
         } as TaskObject,
       ];
     }

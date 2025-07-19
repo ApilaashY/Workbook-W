@@ -17,20 +17,36 @@ export async function POST(request: NextRequest) {
   const userId = decoded.uid;
 
   // Get new username name from request body
-  const { username } = await request.json();
-  if (!username) {
-    return new Response("No new username name provided", { status: 400 });
+  const { username, oldUsername } = await request.json();
+  if (!username || !oldUsername) {
+    return new Response("No new username or old username provided", {
+      status: 400,
+    });
   }
 
   // Update the user's display name in Firebase Auth
-  await admin.auth().updateUser(userId, { displayName: username });
+  try {
+    await admin.auth().updateUser(userId, { displayName: username });
+  } catch {
+    return new Response("Failed to update display name", { status: 500 });
+  }
+
+  console.log(decoded.displayName);
 
   // Update the user's display name in Firestore
-  admin
-    .firestore()
-    .collection("Users")
-    .doc(userId)
-    .update({ username: username });
+  try {
+    await admin
+      .firestore()
+      .collection("Users")
+      .doc(userId)
+      .update({ username: username });
+  } catch {
+    await admin.auth().updateUser(userId, { displayName: oldUsername });
+
+    return new Response("Failed to update username in Firestore", {
+      status: 500,
+    });
+  }
 
   return new Response("Display name updated", { status: 200 });
 }

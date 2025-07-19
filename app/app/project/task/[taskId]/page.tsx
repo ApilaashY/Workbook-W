@@ -3,7 +3,7 @@
 import "./Task.css";
 import "../../[projectId]/Project.css";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   closestCenter,
   DndContext,
@@ -13,7 +13,6 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
@@ -24,7 +23,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
 import { useRouter } from "next/navigation";
 import { ProjectClass } from "@/lib/DataClasses/ProjectClass";
-import { addTask, deleteTask, ProjectStore, updateTask } from "@/lib/store";
+import {
+  addTask,
+  deleteTask,
+  ProjectStore,
+  updateTask,
+  updateTaskOrder,
+} from "@/lib/store";
 import {
   TaskClass,
   TaskProgressStats,
@@ -95,6 +100,7 @@ export default function Task({
   // Hooks
   const router = useRouter();
   const sensors = useSensors(useSensor(PointerSensor));
+  const dispatch = useDispatch();
 
   // Variables
   const [id, setId] = useState<string>("");
@@ -155,7 +161,7 @@ export default function Task({
       if (currentData === undefined) return new TaskClass("", "");
       else if (!currentData.id.includes("-")) {
         currentData = (currentData as ProjectClass).tasks.find(
-          (task) => task.id === currentId
+          (task) => task && task.id === currentId
         );
       } else {
         currentData = (currentData as TaskClass).tasks.find(
@@ -221,20 +227,22 @@ export default function Task({
     );
   }
 
-  // Function to handle task dragging changes
-  function handleDragEnd(event: DragEndEvent) {
-    if (!task) return; // Early return if task is undefined
+  async function handleDragEnd(event: DragEndEvent) {
+    if (!task) return; // Early return if project is undefined
 
-    setDragging(false);
     const { active, over } = event;
     if (over && active.id !== over.id) {
+      // Get the indices of the active and over tasks
       const id1 = task.tasks.findIndex((task) => task.id === active.id);
       const id2 = task.tasks.findIndex((task) => task.id === over.id);
 
-      const newArr = arrayMove(task.tasks, id1, id2);
+      if (!id1 || !id2) {
+        console.error("Invalid task IDs:", active.id, over.id);
+        return;
+      }
 
-      console.log(newArr);
-      // updateTask(id, "tasks", newArr);
+      // Update the task order in the database and in the store
+      updateTaskOrder(task.id, id1, id2, dispatch);
     }
   }
 

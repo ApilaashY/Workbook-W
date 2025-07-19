@@ -27,7 +27,7 @@ export default function Profile() {
   });
 
   // Change the username
-  function updateUsername() {
+  async function updateUsername() {
     // Prompt the user for a new username
     let newUsername = prompt("Enter your new username:");
 
@@ -42,17 +42,28 @@ export default function Profile() {
 
     if (!auth.currentUser) return;
 
-    // Change the username
+    // Change the username state
+    // It will be changed back if the API request fails
+    const oldUsername = username;
+    await updateProfile(auth.currentUser, { displayName: newUsername });
     setUsername(newUsername);
-    // Send the new username to Firebase
-    updateProfile(auth.currentUser, { displayName: newUsername })
-      .then(() => {
-        alert("Username updated successfully!");
-      })
-      .catch((error) => {
-        console.error("Error updating username:", error);
-        alert("Failed to update username. Please try again.");
-      });
+
+    // Send the api request to update the username
+    const response = await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/auth`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
+      },
+      body: JSON.stringify({ username: newUsername, oldUsername: oldUsername }),
+    });
+
+    if (!response.ok) {
+      await updateProfile(auth.currentUser, { displayName: oldUsername });
+      setUsername(oldUsername);
+      alert("Failed to update username");
+      return;
+    }
   }
 
   return (

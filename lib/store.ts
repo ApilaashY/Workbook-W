@@ -1,7 +1,13 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  createAsyncThunk,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { ProjectClass, ProjectObject } from "./DataClasses/ProjectClass";
 
-import { createIdTrail } from "./firebase";
+import { createIdTrail, popLastTask } from "./firebase";
+import { TaskClass } from "./DataClasses/TaskClass";
+import { arrayMove } from "@dnd-kit/sortable";
 
 export interface ProjectStore {
   projects: ProjectClass[];
@@ -31,6 +37,45 @@ const projectSlice = createSlice({
         state.push(ProjectClass.fromMap(action.payload).toMap());
       }
     },
+    updateTaskOrder: (
+      state,
+      action: {
+        payload: {
+          id: string;
+          active: number;
+          over: number;
+        };
+      }
+    ) => {
+      const idParts = action.payload.id.split("-");
+      let currentId: string = idParts[0];
+
+      let currentData: ProjectClass | TaskClass | undefined = (
+        state as ProjectClass[]
+      ).find((project) => project.id === currentId);
+
+      for (let i = 1; i < idParts.length; i++) {
+        currentId += "-" + idParts[i];
+
+        if (currentData === undefined) return undefined;
+        else if (!currentData.id.includes("-")) {
+          currentData = (currentData as ProjectClass).tasks.find(
+            (task) => task.id === currentId
+          );
+        } else {
+          currentData = (currentData as TaskClass).tasks.find(
+            (task) => task.id === currentId
+          );
+        }
+      }
+
+      if (!currentData) return;
+      currentData.tasks = arrayMove(
+        currentData.tasks,
+        action.payload.active,
+        action.payload.over
+      );
+    },
   },
 });
 
@@ -39,6 +84,18 @@ export const store = configureStore({
     projects: projectSlice.reducer,
   },
 });
+
+export const updateTaskOrderAsync = createAsyncThunk(
+  "projects/updateTaskOrderAsync",
+  async (
+    { id, active, over }: { id: string; active: number; over: number },
+    thunkAPI
+  ) => {
+    thunkAPI.dispatch(
+      projectSlice.actions.updateTaskOrder({ id, active, over })
+    );
+  }
+);
 
 export const { addProject } = projectSlice.actions;
 
@@ -110,7 +167,31 @@ export async function deleteTask(id: string) {
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/deleteTask`, {
     method: "POST",
     body: JSON.stringify({
+      id: id,
+      path: `projects/${createIdTrail(
+        popLastTask(id),
+        store.getState().projects
+      )}`,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
+}
+
+export async function updateTaskOrder(
+  id: string,
+  active: number,
+  over: number,
+  dispatch: typeof store.dispatch
+) {
+  await dispatch(updateTaskOrderAsync({ id, active, over }));
+  await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTaskOrder`, {
+    method: "POST",
+    body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
+      active: active,
+      over: over,
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
