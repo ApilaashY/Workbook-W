@@ -47,6 +47,8 @@ export async function POST(request: NextRequest) {
     return new Response("Error adding project", { status: 500 });
   }
 
+  console.log(userData.data());
+
   // Return if the user has reached the maximum number of projects
   if (userData.data()?.projects.length >= maxProjects) {
     return new Response("Error adding project: Maximum projects reached", {
