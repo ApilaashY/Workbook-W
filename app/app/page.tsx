@@ -114,7 +114,7 @@ export default function App() {
 
       <button
         className="add-project-button"
-        style={!emailVerified ? { backgroundColor: "#ff1e1eff" } : {}}
+        // style={!emailVerified ? { backgroundColor: "#ff1e1eff" } : {}}
         onClick={addNewProject}
       >
         +

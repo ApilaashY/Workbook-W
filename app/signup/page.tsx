@@ -64,12 +64,12 @@ function SignupForm() {
       });
 
       // Send email verification
-      await sendEmailVerification(user.user, {
-        url: `${window.location.origin}/app`, // Redirect URL after verification
-        handleCodeInApp: false,
-      });
+      // await sendEmailVerification(user.user, {
+      //   url: `${window.location.origin}/app`, // Redirect URL after verification
+      //   handleCodeInApp: false,
+      // });
 
-      alert("Account created successfully! Please verify your email.");
+      // alert("Account created successfully! Please verify your email.");
 
       // Go to the app page
       router.push("/app");
