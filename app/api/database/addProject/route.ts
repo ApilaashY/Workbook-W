@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
   }
 
   console.log("Check");
+  console.log(admin);
 
   // Get the user's data from Firestore and return if the user does not exist or cannot be retrieved
   const userData = await admin
