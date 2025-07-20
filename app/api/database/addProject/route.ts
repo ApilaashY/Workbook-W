@@ -37,6 +37,8 @@ export async function POST(request: NextRequest) {
     return new Response("Invalid project data", { status: 410 });
   }
 
+  console.log("Check");
+
   // Get the user's data from Firestore and return if the user does not exist or cannot be retrieved
   const userData = await admin
     .firestore()
