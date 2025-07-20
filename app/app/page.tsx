@@ -3,7 +3,7 @@
 // This is the main page for the app portion of the website
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { onValue, ref } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
@@ -20,7 +20,7 @@ export default function App() {
 
   // Variables
   const projectData = useSelector((state: ProjectStore) => state.projects);
-  const [emailVerified, setEmailVerified] = useState(true);
+  // const [emailVerified, setEmailVerified] = useState(true);
 
   // This sets up the projects that the current user has access to
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function App() {
       }
 
       // If the user is logged in, get their projects from Firestore
-      setEmailVerified(user.emailVerified);
+      // setEmailVerified(user.emailVerified);
 
       // Get the user's projects from Firestore
       getDoc(doc(fdb, "Users", user.uid)).then((doc) => {

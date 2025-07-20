@@ -4,7 +4,6 @@ import { Suspense, useState } from "react";
 import "./Signup.css";
 import {
   createUserWithEmailAndPassword,
-  sendEmailVerification,
   updateProfile,
   type UserCredential,
 } from "firebase/auth";
