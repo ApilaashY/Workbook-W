@@ -3,11 +3,15 @@ import type { TaskClass } from "../../DataClasses/TaskClass";
 import "./SearchBox.css";
 import Link from "next/link";
 
+type categories = "All" | "Title" | "Description" | "Progress" | "Due Date";
+
 export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
   const [results, setResults] = useState<
     [string, string, string, string, TaskClass][]
   >([]);
   const [page, setPage] = useState<number>(1);
+  const [category, setCategory] = useState<categories>("All");
+  const [search, setSearch] = useState<string>("");
 
   function breakText(search: string, query: string): [string, string, string] {
     const lowerSearch = search.toLowerCase();
@@ -40,7 +44,8 @@ export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
 
   function searchTasks(
     taskList: TaskClass[],
-    search: string
+    search: string,
+    searchCategory: categories
   ): [string, string, string, string, TaskClass][] {
     let matches: [string, string, string, string, TaskClass][] = [];
     const query: string = search.trim().toLowerCase();
@@ -54,12 +59,18 @@ export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
       let nextLevel: TaskClass[] = [];
       for (let i = 0; i < currentLevel.length; i++) {
         const currentTask = currentLevel[i];
-        if (currentTask.title.toLowerCase().includes(query)) {
+        if (
+          (searchCategory == "All" || searchCategory == "Title") &&
+          currentTask.title.toLowerCase().includes(query)
+        ) {
           matches = [
             ...matches,
             ["Title", ...breakText(currentTask.title, query), currentTask],
           ];
-        } else if (currentTask.description.toLowerCase().includes(query)) {
+        } else if (
+          (searchCategory == "All" || searchCategory == "Description") &&
+          currentTask.description.toLowerCase().includes(query)
+        ) {
           matches = [
             ...matches,
             [
@@ -68,7 +79,10 @@ export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
               currentTask,
             ],
           ];
-        } else if (currentTask.progress.toLowerCase().includes(query)) {
+        } else if (
+          (searchCategory == "All" || searchCategory == "Progress") &&
+          currentTask.progress.toLowerCase().includes(query)
+        ) {
           matches = [
             ...matches,
             [
@@ -77,7 +91,10 @@ export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
               currentTask,
             ],
           ];
-        } else if (currentTask.dueDate?.toLowerCase().includes(query)) {
+        } else if (
+          (searchCategory == "All" || searchCategory == "Due Date") &&
+          currentTask.dueDate?.toLowerCase().includes(query)
+        ) {
           matches = [
             ...matches,
             ["Due Date", ...breakText(currentTask.dueDate, query), currentTask],
@@ -105,11 +122,31 @@ export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
 
   return (
     <div className="search-box">
-      <input
-        placeholder="Search"
-        className="search-field"
-        onChange={(e) => setResults(searchTasks(tasks, e.target.value))}
-      />
+      <div>
+        <select
+          className="search-select"
+          onChange={(e) => {
+            setCategory(e.target.value as categories);
+            setResults(
+              searchTasks(tasks, search, e.target.value as categories)
+            );
+          }}
+        >
+          <option>All</option>
+          <option>Title</option>
+          <option>Description</option>
+          <option>Progress</option>
+          <option>Due Date</option>
+        </select>
+        <input
+          placeholder="Search"
+          className="search-field"
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setResults(searchTasks(tasks, e.target.value, category));
+          }}
+        />
+      </div>
       {results
         .slice(
           (page - 1) * 3,

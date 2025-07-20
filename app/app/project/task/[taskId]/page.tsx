@@ -236,7 +236,7 @@ export default function Task({
       const id1 = task.tasks.findIndex((task) => task.id === active.id);
       const id2 = task.tasks.findIndex((task) => task.id === over.id);
 
-      if (!id1 || !id2) {
+      if (id1 === -1 || id2 === -1) {
         console.error("Invalid task IDs:", active.id, over.id);
         return;
       }
