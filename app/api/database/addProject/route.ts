@@ -9,22 +9,22 @@ const maxProjects = 2; // Max number of a projects a user can have
 
 export async function POST(request: NextRequest) {
   // Get the request's authorzation and return if not present
-  const authHeader = request.headers.get("authorization");
-  if (!authHeader) return new Response("Unauthorized", { status: 401 });
+  // const authHeader = request.headers.get("authorization");
+  // if (!authHeader) return new Response("Unauthorized", { status: 401 });
 
-  console.log(authHeader);
+  // console.log(authHeader);
 
-  // Verify the token and get the user ID
-  const token = authHeader.split(" ")[1];
-  let decoded: DecodedIdToken;
-  try {
-    decoded = await admin.auth().verifyIdToken(token);
-    console.log(decoded);
-  } catch {
-    console.error("Invalid token");
-    return new Response("Invalid token", { status: 401 });
-  }
-  const userId = decoded.uid;
+  // // Verify the token and get the user ID
+  // const token = authHeader.split(" ")[1];
+  // let decoded: DecodedIdToken;
+  // try {
+  //   decoded = await admin.auth().verifyIdToken(token);
+  //   console.log(decoded);
+  // } catch {
+  //   console.error("Invalid token");
+  //   return new Response("Invalid token", { status: 401 });
+  // }
+  // const userId = decoded.uid;
 
   // Return if the user is not verified
   // if (!decoded.email_verified) {
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
   // }
 
   // Get new project title from the request body and return if the title is not present
-  const { title } = await request.json();
+  const { title, userId } = await request.json();
   if (!title) {
     return new Response("Invalid project data", { status: 410 });
   }
