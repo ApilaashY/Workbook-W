@@ -56,12 +56,12 @@ export default function App() {
       return;
     }
 
-    if (!emailVerified) {
-      alert(
-        "You must verify your email before creating a project. If you have already verified your email please reload the page."
-      );
-      return;
-    }
+    // if (!emailVerified) {
+    //   alert(
+    //     "You must verify your email before creating a project. If you have already verified your email please reload the page."
+    //   );
+    //   return;
+    // }
 
     // Prompt the user for a project name and keep asking while its empty
     let name = prompt("Enter project name:");
