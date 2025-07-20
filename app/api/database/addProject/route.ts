@@ -1,6 +1,7 @@
 import { ProjectObject } from "@/lib/DataClasses/ProjectClass";
 import { db } from "@/lib/firebase";
 import admin from "@/lib/firebaseAdmin";
+import { DecodedIdToken } from "firebase-admin/auth";
 import { ref, set } from "firebase/database";
 import { NextRequest } from "next/server";
 
@@ -13,13 +14,18 @@ export async function POST(request: NextRequest) {
 
   // Verify the token and get the user ID
   const token = authHeader.split(" ")[1];
-  let decoded;
+  let decoded: DecodedIdToken;
   try {
     decoded = await admin.auth().verifyIdToken(token);
   } catch {
     return new Response("Invalid token", { status: 401 });
   }
   const userId = decoded.uid;
+
+  // Return if the user is not verified
+  if (!decoded.email_verified) {
+    return new Response("Email not verified", { status: 403 });
+  }
 
   // Get new project title from the request body and return if the title is not present
   const { title } = await request.json();

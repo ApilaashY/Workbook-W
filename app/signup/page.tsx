@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import "./Signup.css";
 import {
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   updateProfile,
   type UserCredential,
 } from "firebase/auth";
@@ -31,7 +32,7 @@ function SignupForm() {
     e.preventDefault(); // Prevent redirects
 
     // Make sure the username and password are good enough
-    if (username.trim().length < 0) {
+    if (username.trim().length <= 0) {
       alert("Username can not be empty.");
       return;
     } else if (password !== repeatPassword) {
@@ -51,7 +52,7 @@ function SignupForm() {
       );
 
       // Set the user's username
-      updateProfile(user.user, {
+      await updateProfile(user.user, {
         displayName: username,
       });
 
@@ -61,6 +62,14 @@ function SignupForm() {
         projects: [],
         projectCount: 0,
       });
+
+      // Send email verification
+      await sendEmailVerification(user.user, {
+        url: `${window.location.origin}/app`, // Redirect URL after verification
+        handleCodeInApp: false,
+      });
+
+      alert("Account created successfully! Please verify your email.");
 
       // Go to the app page
       router.push("/app");

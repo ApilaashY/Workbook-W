@@ -265,6 +265,7 @@ export default function Task({
             : task.description}
         </h2>
 
+        <h3 className="info-label">Progress Status:</h3>
         <select
           value={task.progress}
           className="task-progress-select"
@@ -283,7 +284,7 @@ export default function Task({
           ))}
         </select>
 
-        <h3 className="info-label">Status of all Subtasks</h3>
+        <h3 className="info-label">Check Status of all Subtasks:</h3>
         <ProgressStatus project={task} />
 
         <h3 className="info-label">Attached Links</h3>

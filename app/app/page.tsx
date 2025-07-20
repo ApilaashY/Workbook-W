@@ -20,12 +20,7 @@ export default function App() {
 
   // Variables
   const projectData = useSelector((state: ProjectStore) => state.projects);
-  const [projects, setProjects] = useState(projectData);
-
-  // This use effect updates the projectData state if the Redux store changes
-  useEffect(() => {
-    setProjects(projectData);
-  }, [projectData]);
+  const [emailVerified, setEmailVerified] = useState(true);
 
   // This sets up the projects that the current user has access to
   useEffect(() => {
@@ -35,6 +30,9 @@ export default function App() {
         router.push("/login");
         return;
       }
+
+      // If the user is logged in, get their projects from Firestore
+      setEmailVerified(user.emailVerified);
 
       // Get the user's projects from Firestore
       getDoc(doc(fdb, "Users", user.uid)).then((doc) => {
@@ -58,6 +56,13 @@ export default function App() {
       return;
     }
 
+    if (!emailVerified) {
+      alert(
+        "You must verify your email before creating a project. If you have already verified your email please reload the page."
+      );
+      return;
+    }
+
     // Prompt the user for a project name and keep asking while its empty
     let name = prompt("Enter project name:");
     if (name == null) return;
@@ -71,7 +76,7 @@ export default function App() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
+        Authorization: `Bearer ${await auth.currentUser.getIdToken(true)}`,
       },
       body: JSON.stringify({ title: name }),
     }).then((response) => {
@@ -97,7 +102,7 @@ export default function App() {
       {/* Menu that has all projects */}
       <div style={{ flex: "1 1 auto" }}>
         <div className="project-list">
-          {projects.map((project) => (
+          {projectData.map((project) => (
             <Link href={`/app/project/${project.id}`} key={project.id}>
               <div className="project-card">
                 <h3>{project.title}</h3>
@@ -107,7 +112,11 @@ export default function App() {
         </div>
       </div>
 
-      <button className="add-project-button" onClick={addNewProject}>
+      <button
+        className="add-project-button"
+        style={!emailVerified ? { backgroundColor: "#ff1e1eff" } : {}}
+        onClick={addNewProject}
+      >
         +
       </button>
     </div>
