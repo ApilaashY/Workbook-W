@@ -211,6 +211,22 @@ export default function Project({
           id={id}
         />
 
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
+          crossOrigin="anonymous"
+        ></script>
+        {/* <!-- Window --> */}
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block" }}
+          data-ad-client="ca-pub-4914732861439858"
+          data-ad-slot="2849358681"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
         <h3 className="info-label">Search For Task</h3>
         <SearchBox tasks={project.tasks} />
       </div>
