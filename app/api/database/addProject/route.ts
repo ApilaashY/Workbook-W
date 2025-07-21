@@ -1,9 +1,7 @@
 import { ProjectObject } from "@/lib/DataClasses/ProjectClass";
-import { db } from "@/lib/firebase";
 import admin from "@/lib/firebaseAdmin";
 import { DecodedIdToken } from "firebase-admin/auth";
 // import { DecodedIdToken } from "firebase-admin/auth";
-import { ref, set } from "firebase/database";
 import { NextRequest } from "next/server";
 
 const maxProjects = 2; // Max number of a projects a user can have
