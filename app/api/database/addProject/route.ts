@@ -80,6 +80,7 @@ export async function POST(request: NextRequest) {
   const newProject: ProjectObject = {
     title: title,
     id: (userId ?? "") + "_" + (userData.data()?.projectCount || 0),
+    people: [userId],
   };
 
   // Add the new project to the Realtime Database

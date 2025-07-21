@@ -6,6 +6,7 @@ export interface ProjectObject {
   tasks?: TaskObject[];
   taskCount?: number;
   attachedDocs?: [string, string][];
+  people: string[];
 }
 
 export class ProjectClass {
@@ -14,19 +15,22 @@ export class ProjectClass {
   public tasks: TaskClass[];
   public taskCount: number;
   public attachedDocs: [string, string][];
+  public people: string[];
 
   constructor(
     title: string,
     id: string,
     tasks: TaskClass[],
     taskCount: number,
-    attachedDocs: [string, string][]
+    attachedDocs: [string, string][],
+    people: string[]
   ) {
     this.title = title;
     this.id = id;
     this.tasks = tasks ?? [];
     this.taskCount = taskCount;
     this.attachedDocs = attachedDocs;
+    this.people = people;
   }
 
   static fromMap(allData: ProjectObject): ProjectClass {
@@ -35,7 +39,8 @@ export class ProjectClass {
       allData.id || "0",
       (allData.tasks || []).map((task) => TaskClass.fromMap(task)),
       allData.taskCount ?? allData.tasks?.length ?? 0,
-      allData.attachedDocs ?? []
+      allData.attachedDocs ?? [],
+      allData.people
     );
     return project;
   }
@@ -53,6 +58,7 @@ export class ProjectClass {
       tasks: this.tasks.map((val) => val.toMap()),
       taskCount: this.taskCount,
       attachedDocs: this.attachedDocs,
+      people: this.people,
     };
   }
 }
