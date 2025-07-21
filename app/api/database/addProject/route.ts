@@ -1,7 +1,9 @@
 import { ProjectObject } from "@/lib/DataClasses/ProjectClass";
+import { db } from "@/lib/firebase";
 import admin from "@/lib/firebaseAdmin";
 import { DecodedIdToken } from "firebase-admin/auth";
 // import { DecodedIdToken } from "firebase-admin/auth";
+import { ref, set } from "firebase/database";
 import { NextRequest } from "next/server";
 
 const maxProjects = 2; // Max number of a projects a user can have
@@ -82,7 +84,7 @@ export async function POST(request: NextRequest) {
 
   // Add the new project to the Realtime Database
   try {
-    await admin.database().ref(`projects/${newProject.id}`).set(newProject);
+    await set(ref(db, `projects/${newProject.id}`), newProject);
   } catch (err) {
     console.error("Realtime DB error:", err);
 
