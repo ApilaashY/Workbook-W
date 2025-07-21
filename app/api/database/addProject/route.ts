@@ -30,9 +30,9 @@ export async function POST(request: NextRequest) {
   const userId = decoded.uid;
 
   // Return if the user is not verified
-  if (!decoded.email_verified) {
-    return new Response("Email not verified", { status: 403 });
-  }
+  // if (!decoded.email_verified) {
+  //   return new Response("Email not verified", { status: 403 });
+  // }
 
   // Get new project title from the request body and return if the title is not present
   const { title } = await request.json();
