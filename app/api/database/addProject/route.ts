@@ -66,7 +66,8 @@ export async function POST(request: NextRequest) {
   // and increment the project count
   await admin
     .firestore()
-    .doc(`Users/${userId}`)
+    .collection(`Users`)
+    .doc(userId)
     .update({
       projectCount: (userData.data()?.projectCount || 0) + 1,
       projects: [
@@ -83,14 +84,15 @@ export async function POST(request: NextRequest) {
 
   // Add the new project to the Realtime Database
   try {
-    await set(ref(db, `projects/${newProject.id}`), newProject);
+    await admin.database().ref(`projects/${newProject.id}`).set(newProject);
   } catch (err) {
     console.error("Realtime DB error:", err);
 
     // If the project can not be added, remove the reference from the user's data in Firestore
     await admin
       .firestore()
-      .doc(`Users/${userId}`)
+      .collection(`Users`)
+      .doc(userId)
       .update({
         projectCount: userData.data()?.projectCount || 0,
         projects: [...(userData.data()?.projects || [])],
