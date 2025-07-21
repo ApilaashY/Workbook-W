@@ -14,6 +14,8 @@ export async function POST(request: NextRequest) {
   if (!authHeader) return new Response("Unauthorized", { status: 401 });
 
   console.log(authHeader);
+  console.log(admin);
+  console.log("Check 2");
 
   // Verify the token and get the user ID
   const token = authHeader.split(" ")[1];
