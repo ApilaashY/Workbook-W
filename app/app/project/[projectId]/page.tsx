@@ -25,7 +25,7 @@ import {
   updateProject,
   updateTaskOrder,
 } from "@/lib/store";
-import { TaskProgressStats } from "@/lib/DataClasses/TaskClass";
+import { TaskClass, TaskProgressStats } from "@/lib/DataClasses/TaskClass";
 import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
@@ -36,7 +36,7 @@ function SortableTask({
   color,
   ...props
 }: {
-  task: ProjectClass;
+  task: TaskClass;
   color: string;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =

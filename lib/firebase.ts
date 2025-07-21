@@ -65,7 +65,9 @@ export function createIdTrail(id: string, data: ProjectObject[]): string {
   const parts = id.split("-");
   let total = parts[0];
   let current = parts[0];
-  let currentData = data.find((proj) => proj.id === parts[0]);
+  let currentData: ProjectObject | TaskObject | undefined = data.find(
+    (proj) => proj.id === parts[0]
+  );
 
   for (let i = 1; i < parts.length; i++) {
     if (!currentData) {
