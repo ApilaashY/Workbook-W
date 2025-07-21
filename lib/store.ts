@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { ProjectClass, ProjectObject } from "./DataClasses/ProjectClass";
 
-import { createIdTrail, popLastTask } from "./firebase";
+import { auth, createIdTrail, popLastTask } from "./firebase";
 import { TaskClass } from "./DataClasses/TaskClass";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -100,6 +100,8 @@ export const updateTaskOrderAsync = createAsyncThunk(
 export const { addProject } = projectSlice.actions;
 
 export async function addProjectTask(id: string, data: string) {
+  const token = await auth.currentUser?.getIdToken();
+
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateProject`, {
     method: "POST",
     body: JSON.stringify({
@@ -109,6 +111,7 @@ export async function addProjectTask(id: string, data: string) {
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`, // Add this line
     },
   });
 }
@@ -118,6 +121,8 @@ export async function updateProject(
   category: ProjectUpdateables,
   data: unknown
 ) {
+  const token = await auth.currentUser?.getIdToken();
+
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateProject`, {
     method: "POST",
     body: JSON.stringify({
@@ -127,11 +132,14 @@ export async function updateProject(
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`, // Add this line
     },
   });
 }
 
 export async function addTask(id: string, data: string) {
+  const token = await auth.currentUser?.getIdToken();
+
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTask`, {
     method: "POST",
     body: JSON.stringify({
@@ -141,6 +149,7 @@ export async function addTask(id: string, data: string) {
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`,
     },
   });
 }
@@ -150,6 +159,8 @@ export async function updateTask(
   category: TaskUpdateables,
   data: unknown
 ) {
+  const token = await auth.currentUser?.getIdToken();
+
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTask`, {
     method: "POST",
     body: JSON.stringify({
@@ -159,11 +170,14 @@ export async function updateTask(
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`,
     },
   });
 }
 
 export async function deleteTask(id: string) {
+  const token = await auth.currentUser?.getIdToken();
+
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/deleteTask`, {
     method: "POST",
     body: JSON.stringify({
@@ -175,6 +189,7 @@ export async function deleteTask(id: string) {
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`,
     },
   });
 }
@@ -185,6 +200,8 @@ export async function updateTaskOrder(
   over: number,
   dispatch: typeof store.dispatch
 ) {
+  const token = await auth.currentUser?.getIdToken();
+
   await dispatch(updateTaskOrderAsync({ id, active, over }));
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTaskOrder`, {
     method: "POST",
@@ -195,6 +212,7 @@ export async function updateTaskOrder(
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`, // Add this line
     },
   });
 }
