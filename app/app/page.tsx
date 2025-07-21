@@ -78,7 +78,7 @@ export default function App() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${await auth.currentUser.getIdToken(true)}`,
       },
-      body: JSON.stringify({ title: name, userId: auth.currentUser.uid }),
+      body: JSON.stringify({ title: name }),
     }).then((response) => {
       // If the response is not successful, alert the user
       if (response.status !== 201) {
