@@ -23,8 +23,8 @@ export async function POST(request: NextRequest) {
   try {
     decoded = await admin.auth().verifyIdToken(token);
     console.log(decoded);
-  } catch {
-    console.error("Invalid token");
+  } catch (tokenError) {
+    console.error("Invalid token", tokenError);
     return new Response("Invalid token", { status: 401 });
   }
   const userId = decoded.uid;
