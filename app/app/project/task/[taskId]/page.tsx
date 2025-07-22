@@ -39,6 +39,7 @@ import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import { popLastTask } from "@/lib/firebase";
+import { Priority } from "@/lib/Components/Priority/Priority";
 // import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 
 function SortableTask({
@@ -321,6 +322,9 @@ export default function Task({
           placeholderText="Due Date and Time"
           className="date-picker"
         />
+
+        <h3 className="info-label">Priority:</h3>
+        <Priority priority={task.priority} id={task.id} />
 
         <h3 className="info-label">Search For Task</h3>
         <SearchBox tasks={task.tasks} />

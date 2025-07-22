@@ -25,7 +25,11 @@ import {
   updateProject,
   updateTaskOrder,
 } from "@/lib/store";
-import { TaskClass, TaskProgressStats } from "@/lib/DataClasses/TaskClass";
+import {
+  PriorityStats,
+  TaskClass,
+  TaskProgressStats,
+} from "@/lib/DataClasses/TaskClass";
 import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
@@ -96,6 +100,8 @@ export default function Project({
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
+  const [sortBy, setSortBy] = useState<string>("Creation Date");
+  const [ascending, setAscending] = useState<boolean>(false);
 
   // Handle async params in useEffect
   useEffect(() => {
@@ -167,10 +173,62 @@ export default function Project({
     }
   }
 
+  function sortTasks(tasks: TaskClass[]) {
+    let dup = [...tasks];
+    if (sortBy === "Creation Date") {
+      return dup.sort((a, b) => {
+        return ascending
+          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+    } else if (sortBy === "Alphabetical") {
+      return dup.sort((a, b) => {
+        return ascending
+          ? a.title.localeCompare(b.title)
+          : b.title.localeCompare(a.title);
+      });
+    } else if (sortBy === "Priority") {
+      return dup.sort((a, b) => {
+        return ascending
+          ? PriorityStats[a.priority].value - PriorityStats[b.priority].value
+          : PriorityStats[b.priority].value - PriorityStats[a.priority].value;
+      });
+    } else if (sortBy === "Due Date") {
+      return dup.sort((a, b) => {
+        return ascending
+          ? new Date(a.dueDate || "").getTime() -
+              new Date(b.dueDate || "").getTime()
+          : new Date(b.dueDate || "").getTime() -
+              new Date(a.dueDate || "").getTime();
+      });
+    }
+    return dup; // Default case
+  }
+
   return (
     <div className="project-window">
       <div className="project-task-list">
-        <h2>Project Task List</h2>
+        <div className="project-task-list-header">
+          <h2>Project Task List</h2>
+          <div className="project-task-list-header-controls">
+            <select
+              className="sort-select"
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="Creation Date">Creation Date</option>
+              <option value="Alphabetical">Alphabetical</option>
+              <option value="Priority">Priority</option>
+              <option value="Due Date">Due Date</option>
+            </select>
+            <h3
+              style={{ cursor: "pointer" }}
+              onClick={() => setAscending((prev) => !prev)}
+            >
+              {!ascending ? "⬆" : "⬇"}
+            </h3>
+          </div>
+        </div>
+
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -182,7 +240,7 @@ export default function Project({
             strategy={verticalListSortingStrategy}
           >
             <div className="project-task-list-only">
-              {project.tasks.map((task) => {
+              {sortTasks(project.tasks).map((task) => {
                 return (
                   <SortableTask
                     key={task.id}

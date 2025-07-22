@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
         {
           title: data.data,
           id: `${initialData.val().id}-${initialData.val().taskCount || 0}`,
+          createdAt: new Date().toISOString(),
         } as TaskObject,
       ];
     }

@@ -10,6 +10,8 @@ export interface TaskObject {
   attachedDocs?: [string, string][];
   dueDate?: string | undefined;
   comments?: Comment[];
+  priority?: string;
+  createdAt?: string;
 }
 
 export class TaskClass {
@@ -22,6 +24,8 @@ export class TaskClass {
   public attachedDocs: [string, string][];
   public dueDate: string | undefined;
   public comments: Comment[];
+  public priority: string;
+  public createdAt: string;
 
   constructor(
     title: string,
@@ -32,7 +36,9 @@ export class TaskClass {
     taskCount?: number,
     attachedDocs?: [string, string][],
     dueDate?: string | undefined,
-    comments?: Comment[]
+    comments?: Comment[],
+    priority?: string,
+    createdAt?: string
   ) {
     this.title = title.trim();
     this.id = id.trim();
@@ -43,6 +49,8 @@ export class TaskClass {
     this.attachedDocs = attachedDocs ?? [];
     this.dueDate = dueDate;
     this.comments = comments ?? [];
+    this.priority = priority ?? "Medium";
+    this.createdAt = createdAt ?? new Date().toISOString();
   }
 
   static fromMap(allData: TaskObject): TaskClass {
@@ -55,7 +63,9 @@ export class TaskClass {
       allData.taskCount ?? allData.tasks?.length ?? 0,
       allData.attachedDocs ?? [],
       allData.dueDate,
-      allData.comments || []
+      allData.comments || [],
+      allData.priority || "Medium",
+      allData.createdAt || new Date().toISOString()
     );
     return task;
   }
@@ -77,6 +87,8 @@ export class TaskClass {
       attachedDocs: this.attachedDocs,
       dueDate: this.dueDate,
       comments: this.comments,
+      priority: this.priority,
+      createdAt: this.createdAt,
     };
   }
 }
@@ -90,10 +102,26 @@ export const TaskProgressTypes: string[] = [
 export type TaskProgress = (typeof TaskProgressTypes)[number];
 export const TaskProgressStats: Record<
   TaskProgress,
-  { color: string; alertLate: boolean }
+  { color: string; alertLate: boolean; value: number }
 > = {
-  "Not Started": { color: "#808080", alertLate: true },
-  "In Progress": { color: "#ffff00", alertLate: true },
-  Scheduled: { color: "#0000ff", alertLate: true },
-  Done: { color: "#32cb6c", alertLate: false },
+  "Not Started": { color: "#808080", alertLate: true, value: 0 },
+  "In Progress": { color: "#ffff00", alertLate: true, value: 1 },
+  Scheduled: { color: "#0000ff", alertLate: true, value: 2 },
+  Done: { color: "#32cb6c", alertLate: false, value: 3 },
+};
+
+export const PriorityTypes: string[] = [
+  "None",
+  "Low",
+  "Medium",
+  "High",
+  "Critical",
+];
+export type Priorities = (typeof PriorityTypes)[number];
+export const PriorityStats: Record<Priorities, { value: number }> = {
+  None: { value: 0 },
+  Low: { value: 1 },
+  Medium: { value: 2 },
+  High: { value: 3 },
+  Critical: { value: 4 },
 };

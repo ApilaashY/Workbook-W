@@ -83,3 +83,21 @@
 .info-label {
   margin-bottom: 0;
 }
+
+.project-task-list-header {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.project-task-list-header-controls {
+  display: flex;
+  flex-direction: row;
+}
+
+.sort-select {
+  font-size: 1rem;
+  margin: 0.5em;
+  border-radius: var(--borderRadius);
+}

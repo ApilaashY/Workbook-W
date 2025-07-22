@@ -22,7 +22,8 @@ export type TaskUpdateables =
   | "dueDate"
   | "tasks"
   | "attachedDocs"
-  | "comments";
+  | "comments"
+  | "priority";
 
 const projectSlice = createSlice({
   name: "projects",
