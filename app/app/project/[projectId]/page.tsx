@@ -174,7 +174,7 @@ export default function Project({
   }
 
   function sortTasks(tasks: TaskClass[]) {
-    let dup = [...tasks];
+    const dup = [...tasks];
     if (sortBy === "Creation Date") {
       return dup.sort((a, b) => {
         return ascending
