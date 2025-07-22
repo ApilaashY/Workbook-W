@@ -12,13 +12,23 @@ function arrayMove(array: unknown[], from: number, to: number) {
 export async function POST(request: NextRequest) {
   const { path, active, over } = await request.json();
 
+  console.log(path, active, over);
+
   // Check if id, active, and over are valid
-  if (!path || !active || !over) {
+  if (!path || active === undefined || over === undefined) {
     return new Response("Invalid data", { status: 400 });
   }
 
   // Get the task order from the database
-  const taskOrder = await get(ref(db, path));
+  let taskOrder;
+  try {
+    taskOrder = await get(ref(db, path));
+  } catch (error) {
+    console.error(error);
+    return new Response("Failed to fetch task order", { status: 500 });
+  }
+
+  console.log(taskOrder);
 
   try {
     update(ref(db, path), {

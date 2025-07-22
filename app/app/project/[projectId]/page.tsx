@@ -100,7 +100,7 @@ export default function Project({
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
-  const [sortBy, setSortBy] = useState<string>("Creation Date");
+  const [sortBy, setSortBy] = useState<string>("Custom");
   const [ascending, setAscending] = useState<boolean>(false);
 
   // Handle async params in useEffect
@@ -215,6 +215,7 @@ export default function Project({
               className="sort-select"
               onChange={(e) => setSortBy(e.target.value)}
             >
+              <option value="Custom">Custom</option>
               <option value="Creation Date">Creation Date</option>
               <option value="Alphabetical">Alphabetical</option>
               <option value="Priority">Priority</option>
@@ -229,29 +230,52 @@ export default function Project({
           </div>
         </div>
 
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-        >
-          <SortableContext
-            items={project.tasks}
-            strategy={verticalListSortingStrategy}
+        {sortBy !== "Custom" ? (
+          <div className="project-task-list-only">
+            {sortTasks(project.tasks).map((task) => {
+              return (
+                <button
+                  style={{
+                    border: `2px solid ${
+                      TaskProgressStats[task.progress].color
+                    }`,
+                    marginBottom: "0.5em",
+                    width: "100%",
+                  }}
+                  className="project-task-item"
+                  onClick={() => router.push(`/app/project/task/${task.id}`)}
+                  key={task.id}
+                >
+                  <span>{task.title}</span>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
           >
-            <div className="project-task-list-only">
-              {sortTasks(project.tasks).map((task) => {
-                return (
-                  <SortableTask
-                    key={task.id}
-                    task={task}
-                    color={TaskProgressStats[task.progress].color}
-                  />
-                );
-              })}
-            </div>
-          </SortableContext>
-        </DndContext>
+            <SortableContext
+              items={project.tasks}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="project-task-list-only">
+                {sortTasks(project.tasks).map((task) => {
+                  return (
+                    <SortableTask
+                      key={task.id}
+                      task={task}
+                      color={TaskProgressStats[task.progress].color}
+                    />
+                  );
+                })}
+              </div>
+            </SortableContext>
+          </DndContext>
+        )}
         <button className="add-task-button" onClick={createNewTask}>
           Add Task
         </button>

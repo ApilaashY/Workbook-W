@@ -98,6 +98,6 @@
 
 .sort-select {
   font-size: 1rem;
-  margin: 0.5em;
+  margin: 0.5em 1em;
   border-radius: var(--borderRadius);
 }
