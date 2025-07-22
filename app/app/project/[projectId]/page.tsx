@@ -221,12 +221,14 @@ export default function Project({
               <option value="Priority">Priority</option>
               <option value="Due Date">Due Date</option>
             </select>
-            <h3
-              style={{ cursor: "pointer" }}
-              onClick={() => setAscending((prev) => !prev)}
-            >
-              {!ascending ? "⬆" : "⬇"}
-            </h3>
+            {sortBy === "Custom" ? null : (
+              <h3
+                style={{ cursor: "pointer" }}
+                onClick={() => setAscending((prev) => !prev)}
+              >
+                {!ascending ? "⬆" : "⬇"}
+              </h3>
+            )}
           </div>
         </div>
 
