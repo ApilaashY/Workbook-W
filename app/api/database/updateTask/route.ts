@@ -9,8 +9,10 @@ export async function POST(request: NextRequest) {
   try {
     data = await request.json();
   } catch {
-    return new Response("No JSON body provided");
+    return new Response("No JSON body provided", { status: 400 });
   }
+
+  console.log("Check 1");
 
   // Check if the data has the required format and return an error if not
   if (
@@ -20,8 +22,9 @@ export async function POST(request: NextRequest) {
     typeof data.path !== "string" ||
     typeof data.category !== "string"
   ) {
-    return new Response("Invalid data format");
+    return new Response("Invalid data format", { status: 400 });
   }
+  console.log("Check 2");
 
   // Increment to the data list if the category is a list
   // Updates the value and send it to the database
@@ -29,7 +32,7 @@ export async function POST(request: NextRequest) {
     // Get the task data from the database
     const initialData = await admin.database().ref(data.path).get();
     if (!initialData.val())
-      return new Response("Unknown or undefined task path");
+      return new Response("Unknown or undefined task path", { status: 404 });
 
     const newData: { [key: string]: unknown } = {
       [data.category]: [...(initialData.val()[data.category] || []), data.data],
@@ -50,6 +53,8 @@ export async function POST(request: NextRequest) {
 
     admin.database().ref(data.path).update(newData);
   } else {
+    console.log("Check 3");
+
     admin
       .database()
       .ref(data.path)
@@ -58,5 +63,7 @@ export async function POST(request: NextRequest) {
       });
   }
 
-  return new Response("Changes Made");
+  console.log("Check 4");
+
+  return new Response("Changes Made", { status: 200 });
 }
