@@ -55,6 +55,9 @@ export async function POST(request: NextRequest) {
   } else {
     console.log("Check 3");
 
+    console.log(data.path);
+    console.log(data.category, data.data);
+
     admin
       .database()
       .ref(data.path)
