@@ -15,7 +15,7 @@ if (!admin.apps.length) {
       clientEmail,
       privateKey: privateKey.replace(/\\n/g, "\n"),
     }),
-    databaseURL: "https://workbook-b27a1.firebaseio.com/",
+    databaseURL: "https://workbook-b27a1-default-rtdb.firebaseio.com/",
   });
 }
 

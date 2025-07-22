@@ -1,5 +1,4 @@
-import { db } from "@/lib/firebase";
-import { get, ref, update } from "firebase/database";
+import admin from "@/lib/firebaseAdmin";
 import { NextRequest } from "next/server";
 
 function arrayMove(array: unknown[], from: number, to: number) {
@@ -12,8 +11,6 @@ function arrayMove(array: unknown[], from: number, to: number) {
 export async function POST(request: NextRequest) {
   const { path, active, over } = await request.json();
 
-  console.log(path, active, over);
-
   // Check if id, active, and over are valid
   if (!path || active === undefined || over === undefined) {
     return new Response("Invalid data", { status: 400 });
@@ -22,18 +19,19 @@ export async function POST(request: NextRequest) {
   // Get the task order from the database
   let taskOrder;
   try {
-    taskOrder = await get(ref(db, path));
+    taskOrder = await admin.database().ref(path).get();
   } catch (error) {
     console.error(error);
     return new Response("Failed to fetch task order", { status: 500 });
   }
 
-  console.log(taskOrder);
-
   try {
-    update(ref(db, path), {
-      tasks: arrayMove(taskOrder.val().tasks || [], active, over),
-    });
+    admin
+      .database()
+      .ref(path)
+      .update({
+        tasks: arrayMove(taskOrder.val().tasks || [], active, over),
+      });
   } catch {
     return new Response("Failed to update task order", { status: 500 });
   }

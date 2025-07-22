@@ -1,6 +1,5 @@
 import { TaskObject } from "@/lib/DataClasses/TaskClass";
-import { db } from "@/lib/firebase";
-import { get, ref, update } from "firebase/database";
+import admin from "@/lib/firebaseAdmin";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -28,7 +27,7 @@ export async function POST(request: NextRequest) {
   // Updates the value and send it to the database
   if (["tasks", "comments"].includes(data.category)) {
     // Get the task data from the database
-    const initialData = await get(ref(db, data.path));
+    const initialData = await admin.database().ref(data.path).get();
     if (!initialData.val())
       return new Response("Unknown or undefined task path");
 
@@ -48,11 +47,14 @@ export async function POST(request: NextRequest) {
       ];
     }
 
-    update(ref(db, data.path), newData);
+    admin.database().ref(data.path).update(newData);
   } else {
-    update(ref(db, data.path), {
-      [data.category]: data.data,
-    });
+    admin
+      .database()
+      .ref(data.path)
+      .update({
+        [data.category]: data.data,
+      });
   }
 
   return new Response("Changes Made");

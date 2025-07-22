@@ -1,9 +1,6 @@
 import { ProjectObject } from "@/lib/DataClasses/ProjectClass";
-import { db } from "@/lib/firebase";
 import admin from "@/lib/firebaseAdmin";
 import { DecodedIdToken } from "firebase-admin/auth";
-// import { DecodedIdToken } from "firebase-admin/auth";
-import { ref, set } from "firebase/database";
 import { NextRequest } from "next/server";
 
 const maxProjects = 2; // Max number of a projects a user can have
@@ -13,16 +10,11 @@ export async function POST(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   if (!authHeader) return new Response("Unauthorized", { status: 401 });
 
-  console.log(authHeader);
-  console.log(admin);
-  console.log("Check 2");
-
   // Verify the token and get the user ID
   const token = authHeader.split(" ")[1];
   let decoded: DecodedIdToken;
   try {
     decoded = await admin.auth().verifyIdToken(token);
-    console.log(decoded);
   } catch (tokenError) {
     console.error("Invalid token", tokenError);
     return new Response("Invalid token", { status: 401 });
@@ -40,9 +32,6 @@ export async function POST(request: NextRequest) {
     return new Response("Invalid project data", { status: 410 });
   }
 
-  console.log("Check");
-  console.log(admin);
-
   // Get the user's data from Firestore and return if the user does not exist or cannot be retrieved
   const userData = await admin
     .firestore()
@@ -52,8 +41,6 @@ export async function POST(request: NextRequest) {
   if (!userData.exists) {
     return new Response("Error adding project", { status: 500 });
   }
-
-  console.log(userData.data());
 
   // Return if the user has reached the maximum number of projects
   if (userData.data()?.projects.length >= maxProjects) {
@@ -85,7 +72,7 @@ export async function POST(request: NextRequest) {
 
   // Add the new project to the Realtime Database
   try {
-    await set(ref(db, `projects/${newProject.id}`), newProject);
+    await admin.database().ref(`projects/${newProject.id}`).set(newProject);
   } catch (err) {
     console.error("Realtime DB error:", err);
 
