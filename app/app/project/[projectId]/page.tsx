@@ -34,6 +34,7 @@ import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import "./Project.css";
+import { PeopleList } from "@/lib/Components/PeopleList/PeopleList";
 
 function SortableTask({
   task,
@@ -313,6 +314,9 @@ export default function Project({
 
         <h3 className="info-label">Search For Task</h3>
         <SearchBox tasks={project.tasks} />
+
+        <h3 className="info-label">People Involved</h3>
+        <PeopleList people={project.people ?? {}} projectId={project.id} />
       </div>
     </div>
   );

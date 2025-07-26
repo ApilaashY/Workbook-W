@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     return new Response("Failed to update display name", { status: 500 });
   }
 
-  console.log(decoded.displayName);
+  console.log("Name: " + username);
 
   // Update the user's display name in Firestore
   try {
@@ -40,6 +40,14 @@ export async function POST(request: NextRequest) {
       .collection("Users")
       .doc(userId)
       .update({ username: username });
+
+    let data = await admin.firestore().collection("Users").doc(userId).get();
+    for (const project in data.data()?.projects ?? []) {
+      await admin
+        .database()
+        .ref(`projects/${project}/people`)
+        .update({ [userId]: username });
+    }
   } catch {
     await admin.auth().updateUser(userId, { displayName: oldUsername });
 

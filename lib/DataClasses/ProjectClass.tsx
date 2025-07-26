@@ -6,7 +6,7 @@ export interface ProjectObject {
   tasks?: TaskObject[];
   taskCount?: number;
   attachedDocs?: [string, string][];
-  people: string[];
+  people: Record<string, string>;
 }
 
 export class ProjectClass {
@@ -15,7 +15,7 @@ export class ProjectClass {
   public tasks: TaskClass[];
   public taskCount: number;
   public attachedDocs: [string, string][];
-  public people: string[];
+  public people: Record<string, string>;
 
   constructor(
     title: string,
@@ -23,7 +23,7 @@ export class ProjectClass {
     tasks: TaskClass[],
     taskCount: number,
     attachedDocs: [string, string][],
-    people: string[]
+    people: Record<string, string>
   ) {
     this.title = title;
     this.id = id;
