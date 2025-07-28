@@ -21,7 +21,7 @@ export function PeopleList({
     }
 
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_LINK}/api/coop/addPerson`,
+      `${process.env.NEXT_PUBLIC_LINK}/api/coop/addPersonInvite`,
       {
         method: "POST",
         headers: {
@@ -35,7 +35,7 @@ export function PeopleList({
     if (response.ok) {
       alert(`Sent invite to ${email}`);
     } else {
-      alert("Failed to add person. Please try again.");
+      alert((await response.text()) || "Failed to send invite");
     }
   }
 
