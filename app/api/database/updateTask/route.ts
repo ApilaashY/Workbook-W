@@ -51,14 +51,14 @@ export async function POST(request: NextRequest) {
       ];
     }
 
-    admin.database().ref(data.path).update(newData);
+    await admin.database().ref(data.path).update(newData);
   } else {
     console.log("Check 3");
 
     console.log(data.path);
     console.log(data.category, data.data);
 
-    admin
+    await admin
       .database()
       .ref(data.path)
       .update({

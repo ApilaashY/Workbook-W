@@ -114,6 +114,7 @@ export async function addProjectTask(id: string, data: string) {
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateProject`, {
     method: "POST",
+    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       category: "tasks",
@@ -135,6 +136,7 @@ export async function updateProject(
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateProject`, {
     method: "POST",
+    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       category: category,
@@ -152,6 +154,7 @@ export async function addTask(id: string, data: string) {
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTask`, {
     method: "POST",
+    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       category: "tasks",
@@ -173,6 +176,7 @@ export async function updateTask(
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTask`, {
     method: "POST",
+    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       category: category,
@@ -182,6 +186,8 @@ export async function updateTask(
       "Content-type": "application/json; charset=UTF-8",
       Authorization: `Bearer ${token}`,
     },
+  }).then((response) => {
+    console.log(response);
   });
 }
 
@@ -190,6 +196,7 @@ export async function deleteTask(id: string) {
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/deleteTask`, {
     method: "POST",
+    mode: "no-cors",
     body: JSON.stringify({
       id: id,
       path: `projects/${createIdTrail(
@@ -215,6 +222,7 @@ export async function updateTaskOrder(
   await dispatch(updateTaskOrderAsync({ id, active, over }));
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTaskOrder`, {
     method: "POST",
+    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       active: active,
