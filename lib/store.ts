@@ -186,8 +186,6 @@ export async function updateTask(
       "Content-type": "application/json; charset=UTF-8",
       Authorization: `Bearer ${token}`,
     },
-  }).then((response) => {
-    console.log(response);
   });
 }
 

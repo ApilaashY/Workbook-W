@@ -1,4 +1,3 @@
-import { TaskObject } from "@/lib/DataClasses/TaskClass";
 import admin from "@/lib/firebaseAdmin";
 import { NextRequest } from "next/server";
 
@@ -23,32 +22,34 @@ export async function POST(request: NextRequest) {
     return new Response("Invalid data format", { status: 400 });
   }
 
+  // Early path validation to prevent unnecessary database calls
+  if (!data.path.startsWith("projects/")) {
+    return new Response("Invalid path", { status: 400 });
+  }
+
   // Increment to the data list if the category is a list
   // Updates the value and send it to the database
   if (["tasks"].includes(data.category)) {
-    // Get the task data from the database
-    const initialData = await admin.database().ref(data.path).get();
-    if (!initialData.val())
-      return new Response("Unknown or undefined task path", { status: 404 });
+    // Use transaction to atomically update without separate read
+    await admin
+      .database()
+      .ref(data.path)
+      .transaction((currentData) => {
+        if (!currentData) return null; // Abort if path doesn't exist
 
-    const newData: { [key: string]: unknown } = {
-      [data.category]: [...(initialData.val()[data.category] || []), data.data],
-    };
-
-    // Increment taskCount if the category is tasks
-    if (data.category === "tasks") {
-      newData.taskCount = (initialData.val().taskCount || 0) + 1;
-      newData.tasks = [
-        ...(initialData.val().tasks || []),
-        {
+        const taskCount = (currentData.taskCount || 0) + 1;
+        const newTask = {
           title: data.data,
-          id: `${initialData.val().id}-${initialData.val().taskCount || 0}`,
+          id: `${currentData.id}-${taskCount}`,
           createdAt: new Date().toISOString(),
-        } as TaskObject,
-      ];
-    }
+        };
 
-    await admin.database().ref(data.path).update(newData);
+        return {
+          ...currentData,
+          taskCount,
+          tasks: [...(currentData.tasks || []), newTask],
+        };
+      });
   } else {
     await admin
       .database()

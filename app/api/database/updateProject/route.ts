@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     data = await request.json();
   } catch {
-    return new Response("No JSON body provided");
+    return new Response("No JSON body provided", { status: 400 });
   }
 
   // Check if the data has the required format and return an error if not
@@ -20,42 +20,69 @@ export async function POST(request: NextRequest) {
     typeof data.path !== "string" ||
     typeof data.category !== "string"
   ) {
-    return new Response("Invalid data format");
+    return new Response("Invalid data format", { status: 400 });
+  }
+
+  // Early path validation to prevent unnecessary database calls
+  if (!data.path.startsWith("projects/")) {
+    return new Response("Invalid path", { status: 400 });
   }
 
   // Increment to the data list if the category is a list
   // Updates the value and send it to the database
-  if (["tasks", "comments"].includes(data.category)) {
-    // Get the task data from the database
-    const initialData = await admin.database().ref(data.path).get();
-    if (!initialData.val())
-      return new Response("Unknown or undefined task path");
+  try {
+    if (["tasks", "comments"].includes(data.category)) {
+      // Use transaction for atomic updates - eliminates race conditions and reduces network calls
+      await admin
+        .database()
+        .ref(data.path)
+        .transaction((currentData) => {
+          if (!currentData) return null; // Abort transaction if path doesn't exist
 
-    const newData: { [key: string]: unknown } = {
-      [data.category]: [...(initialData.val()[data.category] || []), data.data],
-    };
+          // Ensure the category array exists
+          const existingList = Array.isArray(currentData[data.category])
+            ? currentData[data.category]
+            : [];
 
-    // Increment taskCount if the category is tasks
-    if (data.category === "tasks") {
-      newData.taskCount = (initialData.val().taskCount || 0) + 1;
-      newData.tasks = [
-        ...(initialData.val().tasks || []),
-        {
-          title: data.data,
-          id: `${initialData.val().id}-${initialData.val().taskCount || 0}`,
-        } as TaskObject,
-      ];
+          const updatedData = {
+            ...currentData,
+            [data.category]: [...existingList, data.data],
+          };
+
+          // Handle task-specific logic
+          if (data.category === "tasks") {
+            const taskCount = (currentData.taskCount || 0) + 1;
+            const newTask: TaskObject = {
+              title: data.data,
+              id: `${currentData.id}-${taskCount}`,
+              createdAt: new Date().toISOString(), // Add timestamp for better tracking
+            };
+
+            updatedData.taskCount = taskCount;
+            updatedData.tasks = [...existingList, newTask];
+          }
+
+          return updatedData;
+        });
+    } else {
+      // Simple update for non-list categories
+      await admin
+        .database()
+        .ref(data.path)
+        .update({
+          [data.category]: data.data,
+        });
     }
 
-    await admin.database().ref(data.path).update(newData);
-  } else {
-    await admin
-      .database()
-      .ref(data.path)
-      .update({
-        [data.category]: data.data,
-      });
+    return new Response("Changes Made", {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain",
+        "Cache-Control": "no-cache",
+      },
+    });
+  } catch (error) {
+    console.error("Database update failed:", error);
+    return new Response("Database update failed", { status: 500 });
   }
-
-  return new Response("Changes Made");
 }
