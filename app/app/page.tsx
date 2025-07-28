@@ -37,11 +37,19 @@ export default function App() {
       // Get the user's projects from Firestore
       getDoc(doc(fdb, "Users", user.uid)).then((doc) => {
         const projectIds: string[] = doc.data()?.projects || [];
+        const inviteIds: string[] = doc.data()?.invites || [];
 
         // Add each project to the Redux store and listen for changes from the firebase database
         projectIds.forEach((id) => {
           onValue(ref(db, `projects/${id}`), (projData) => {
-            dispatch(addProject({ ...projData.val(), id: id }));
+            dispatch(addProject({ ...projData.val(), id: id, invite: false }));
+          });
+        });
+
+        // Add each invite project to the Redux store and listen for changes from the firebase database
+        inviteIds.forEach((id) => {
+          onValue(ref(db, `projects/${id}`), (projData) => {
+            dispatch(addProject({ ...projData.val(), id: id, invite: true }));
           });
         });
       });
@@ -97,18 +105,54 @@ export default function App() {
     });
   }
 
+  async function acceptInvite(id: string) {
+    // Check if the user is logged in
+    if (!auth.currentUser) {
+      alert("You must be logged in to accept an invite.");
+      return;
+    }
+
+    // Send api request to accept the invite
+    fetch("/api/database/acceptInvite", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await auth.currentUser.getIdToken(true)}`,
+      },
+      body: JSON.stringify({ projectId: id }),
+    }).then((response) => {
+      if (response.status !== 200) {
+        alert("Failed to accept invite. Please try again.");
+        return;
+      }
+    });
+  }
+
   return (
     <div className="main-window">
       {/* Menu that has all projects */}
       <div style={{ flex: "1 1 auto" }}>
         <div className="project-list">
-          {projectData.map((project) => (
-            <Link href={`/app/project/${project.id}`} key={project.id}>
-              <div className="project-card">
+          {projectData.map((project) =>
+            project.invite ? (
+              <div
+                key={project.id}
+                className="project-card"
+                style={{
+                  backgroundColor: "rgba(255, 255, 198, 1)",
+                }}
+                onClick={() => acceptInvite(project.id)}
+              >
                 <h3>{project.title}</h3>
               </div>
-            </Link>
-          ))}
+            ) : (
+              <Link href={`/app/project/${project.id}`} key={project.id}>
+                <div className="project-card">
+                  <h3>{project.title}</h3>
+                </div>
+              </Link>
+            )
+          )}
         </div>
       </div>
 

@@ -7,6 +7,7 @@ export interface ProjectObject {
   taskCount?: number;
   attachedDocs?: [string, string][];
   people: Record<string, string>;
+  invite: boolean;
 }
 
 export class ProjectClass {
@@ -16,6 +17,7 @@ export class ProjectClass {
   public taskCount: number;
   public attachedDocs: [string, string][];
   public people: Record<string, string>;
+  public invite: boolean;
 
   constructor(
     title: string,
@@ -23,7 +25,8 @@ export class ProjectClass {
     tasks: TaskClass[],
     taskCount: number,
     attachedDocs: [string, string][],
-    people: Record<string, string>
+    people: Record<string, string>,
+    invite: boolean
   ) {
     this.title = title;
     this.id = id;
@@ -31,6 +34,7 @@ export class ProjectClass {
     this.taskCount = taskCount;
     this.attachedDocs = attachedDocs;
     this.people = people;
+    this.invite = invite;
   }
 
   static fromMap(allData: ProjectObject): ProjectClass {
@@ -40,7 +44,8 @@ export class ProjectClass {
       (allData.tasks || []).map((task) => TaskClass.fromMap(task)),
       allData.taskCount ?? allData.tasks?.length ?? 0,
       allData.attachedDocs ?? [],
-      allData.people
+      allData.people,
+      allData.invite ?? false
     );
     return project;
   }
@@ -59,6 +64,7 @@ export class ProjectClass {
       taskCount: this.taskCount,
       attachedDocs: this.attachedDocs,
       people: this.people,
+      invite: this.invite,
     };
   }
 }

@@ -8,6 +8,7 @@ import { ProjectClass, ProjectObject } from "./DataClasses/ProjectClass";
 import { auth, createIdTrail, popLastTask } from "./firebase";
 import { TaskClass } from "./DataClasses/TaskClass";
 import { arrayMove } from "@dnd-kit/sortable";
+import { clear } from "console";
 
 export interface ProjectStore {
   projects: ProjectClass[];
@@ -77,6 +78,9 @@ const projectSlice = createSlice({
         action.payload.over
       );
     },
+    clearProjects: (state) => {
+      state.filter(() => false); // Clear the state by filtering all items
+    },
   },
 });
 
@@ -85,6 +89,8 @@ export const store = configureStore({
     projects: projectSlice.reducer,
   },
 });
+
+export const { addProject, clearProjects } = projectSlice.actions;
 
 export const updateTaskOrderAsync = createAsyncThunk(
   "projects/updateTaskOrderAsync",
@@ -97,8 +103,6 @@ export const updateTaskOrderAsync = createAsyncThunk(
     );
   }
 );
-
-export const { addProject } = projectSlice.actions;
 
 export async function addProjectTask(id: string, data: string) {
   const token = await auth.currentUser?.getIdToken();

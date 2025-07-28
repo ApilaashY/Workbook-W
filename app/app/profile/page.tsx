@@ -6,10 +6,13 @@ import { useRouter } from "next/navigation";
 import { FaEdit } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { updateProfile } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { clearProjects } from "@/lib/store";
 
 export default function Profile() {
   // Hooks
   const router = useRouter();
+  const dispatch = useDispatch();
 
   // Variables
   const [username, setUsername] = useState(auth.currentUser?.displayName || "");
@@ -80,7 +83,13 @@ export default function Profile() {
           {username}
           <FaEdit onClick={updateUsername} style={{ cursor: "pointer" }} />
         </h1>
-        <button onClick={() => auth.signOut()} className="signout-button">
+        <button
+          onClick={() => {
+            dispatch(clearProjects());
+            auth.signOut();
+          }}
+          className="signout-button"
+        >
           Sign Out
         </button>
       </div>
