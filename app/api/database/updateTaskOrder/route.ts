@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    admin
+    await admin
       .database()
       .ref(path)
       .update({

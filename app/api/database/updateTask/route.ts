@@ -12,8 +12,6 @@ export async function POST(request: NextRequest) {
     return new Response("No JSON body provided", { status: 400 });
   }
 
-  console.log("Check 1");
-
   // Check if the data has the required format and return an error if not
   if (
     data.path === undefined ||
@@ -24,7 +22,6 @@ export async function POST(request: NextRequest) {
   ) {
     return new Response("Invalid data format", { status: 400 });
   }
-  console.log("Check 2");
 
   // Increment to the data list if the category is a list
   // Updates the value and send it to the database
@@ -53,11 +50,6 @@ export async function POST(request: NextRequest) {
 
     await admin.database().ref(data.path).update(newData);
   } else {
-    console.log("Check 3");
-
-    console.log(data.path);
-    console.log(data.category, data.data);
-
     await admin
       .database()
       .ref(data.path)
@@ -65,8 +57,6 @@ export async function POST(request: NextRequest) {
         [data.category]: data.data,
       });
   }
-
-  console.log("Check 4");
 
   return new Response("Changes Made", { status: 200 });
 }

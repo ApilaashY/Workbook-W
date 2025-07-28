@@ -47,9 +47,9 @@ export async function POST(request: NextRequest) {
       ];
     }
 
-    admin.database().ref(data.path).update(newData);
+    await admin.database().ref(data.path).update(newData);
   } else {
-    admin
+    await admin
       .database()
       .ref(data.path)
       .update({

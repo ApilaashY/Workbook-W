@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   const taskData = await admin.database().ref(data.path).get();
 
   // Update the data in the path in the database to empty to delete it
-  admin
+  await admin
     .database()
     .ref(data.path)
     .update({
