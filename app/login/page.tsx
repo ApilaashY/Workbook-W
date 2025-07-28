@@ -18,6 +18,13 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
 
+  // If the user is already logged in, redirect to the app page
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      router.push("/app");
+    }
+  });
+
   // Function that handles the login process
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); // Stop redirects

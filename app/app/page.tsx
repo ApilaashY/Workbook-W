@@ -147,7 +147,11 @@ export default function App() {
                 <h3>{project.title}</h3>
               </div>
             ) : (
-              <Link href={`/app/project/${project.id}`} key={project.id}>
+              <Link
+                href={`/app/project/${project.id}`}
+                key={project.id}
+                prefetch={true}
+              >
                 <div className="project-card">
                   <h3>{project.title}</h3>
                 </div>

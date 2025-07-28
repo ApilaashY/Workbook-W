@@ -26,6 +26,13 @@ function SignupForm() {
   const [hidePassword, setHidePassword] = useState(true);
   const [hideRepeatPassword, setHideRepeatPassword] = useState(true);
 
+  // If the user is already logged in, redirect to the app page
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      router.push("/app");
+    }
+  });
+
   // Function that handles the signup process
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); // Prevent redirects

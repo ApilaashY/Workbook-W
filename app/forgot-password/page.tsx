@@ -15,6 +15,13 @@ function ForgotPasswordForm() {
   // Variables
   const [email, setEmail] = useState(params.get("email") || "");
 
+  // If the user is already logged in, redirect to the app page
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      router.push("/app");
+    }
+  });
+
   // Function that handles the password reset process
   async function handleForgotPassword(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); // Prevent redirects
