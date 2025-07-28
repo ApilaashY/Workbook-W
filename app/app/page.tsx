@@ -8,7 +8,7 @@ import { onValue, ref } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import "./App.css";
-import { addProject, ProjectStore } from "@/lib/store";
+import { addProject, flipInvite, ProjectStore } from "@/lib/store";
 import { auth, db, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -113,7 +113,7 @@ export default function App() {
     }
 
     // Send api request to accept the invite
-    fetch("/api/database/acceptInvite", {
+    fetch("/api/coop/acceptInvite", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -125,6 +125,7 @@ export default function App() {
         alert("Failed to accept invite. Please try again.");
         return;
       }
+      dispatch(flipInvite(id));
     });
   }
 

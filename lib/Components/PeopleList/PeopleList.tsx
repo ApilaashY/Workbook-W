@@ -20,7 +20,7 @@ export function PeopleList({
       email = prompt("Email cannot be empty. Please enter a valid email:");
     }
 
-    let response = await fetch(
+    const response = await fetch(
       `${process.env.NEXT_PUBLIC_LINK}/api/coop/addPersonInvite`,
       {
         method: "POST",

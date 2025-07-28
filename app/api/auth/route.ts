@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       .doc(userId)
       .update({ username: username });
 
-    let data = await admin.firestore().collection("Users").doc(userId).get();
+    const data = await admin.firestore().collection("Users").doc(userId).get();
     for (const project in data.data()?.projects ?? []) {
       await admin
         .database()

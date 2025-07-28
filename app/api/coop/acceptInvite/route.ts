@@ -19,39 +19,53 @@ export async function POST(request: NextRequest) {
   }
 
   // Get email of the user to be added
-  const { email, projectId } = await request.json();
+  const { projectId } = await request.json();
 
-  if (!email || !projectId) {
-    return new Response("Email and projectId are required", { status: 400 });
+  if (!projectId) {
+    return new Response("ProjectId is required", { status: 400 });
   }
 
-  // Get user's uid
-  const uidData = await admin.auth().getUserByEmail(email);
-  if (!uidData) {
+  // Get the user data from Firestore
+  const userData = await admin
+    .firestore()
+    .collection("Users")
+    .doc(decoded.uid)
+    .get();
+  if (!userData.exists) {
     return new Response("User not found", { status: 404 });
   }
 
-  // Check if the user is already part of the project
-  const projectRef = await admin
-    .firestore()
-    .collection("projects")
-    .doc(projectId)
-    .get();
-  if (projectRef.exists) {
-    const projectData = projectRef.data();
-    if (projectData?.people?.[uidData.uid]) {
-      return new Response("User is already part of the project", {
-        status: 400,
-      });
-    }
-  } else {
-    return new Response("Project not found", { status: 404 });
+  // Check if the user is invited to the project
+  if (!userData.data()?.invites?.includes(projectId)) {
+    return new Response("User not invited to this project", { status: 403 });
   }
 
-  const uid = uidData.uid;
-  // Send the user an invite to the project
+  const invites = (userData.data()?.invites || []).filter(
+    (id: string) => id !== projectId
+  );
+  const projects = [...(userData.data()?.projects || []), projectId];
+
+  // Update the user data in Firestore
+  await admin.firestore().collection("Users").doc(decoded.uid).update({
+    invites: invites,
+    projects: projects,
+  });
+
+  console.log(decoded);
+
+  // Add the user to the project in Firestore
   await admin
     .database()
-    .ref(`requests/${uid}`)
-    .update({ [projectId]: true });
+    .ref(`projects/${projectId}/people`)
+    .update({
+      [decoded.uid]: decoded.name || decoded.email || "Unknown User",
+    });
+  await admin
+    .database()
+    .ref(`projects/${projectId}/invites`)
+    .update({
+      [decoded.uid]: null,
+    });
+
+  return new Response("Invite accepted", { status: 200 });
 }

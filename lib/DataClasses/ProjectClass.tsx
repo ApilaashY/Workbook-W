@@ -7,7 +7,7 @@ export interface ProjectObject {
   taskCount?: number;
   attachedDocs?: [string, string][];
   people: Record<string, string>;
-  invite: boolean;
+  invite?: boolean;
 }
 
 export class ProjectClass {

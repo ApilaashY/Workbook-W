@@ -1,5 +1,4 @@
 import admin from "@/lib/firebaseAdmin";
-import { DecodedIdToken } from "firebase-admin/auth";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -10,9 +9,9 @@ export async function POST(request: NextRequest) {
 
   // Verify the token and get the user ID
   const token = authHeader.split(" ")[1];
-  let decoded: DecodedIdToken;
+  // let decoded: DecodedIdToken;
   try {
-    decoded = await admin.auth().verifyIdToken(token);
+    await admin.auth().verifyIdToken(token);
   } catch (tokenError) {
     console.error("Invalid token", tokenError);
     return new Response("Invalid token", { status: 401 });
@@ -33,7 +32,7 @@ export async function POST(request: NextRequest) {
   console.log("User data:", uidData);
 
   // Get the user's data
-  let userData = await admin
+  const userData = await admin
     .firestore()
     .collection("Users")
     .doc(uidData.uid)
@@ -45,8 +44,8 @@ export async function POST(request: NextRequest) {
     return new Response("User data not found", { status: 404 });
   }
 
-  let projectList = userData.data()?.projects || [];
-  let inviteList = userData.data()?.invites || [];
+  const projectList = userData.data()?.projects || [];
+  const inviteList = userData.data()?.invites || [];
 
   // Check if the user is already part of the project
   if (projectList.includes(projectId)) {
