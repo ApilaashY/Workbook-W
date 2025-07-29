@@ -121,3 +121,9 @@
   border-radius: var(--borderRadius);
   padding: 0 0.5em;
 }
+
+.task-description {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.4;
+}

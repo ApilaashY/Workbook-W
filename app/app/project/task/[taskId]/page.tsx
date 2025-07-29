@@ -189,6 +189,7 @@ export default function Task({
         task[category],
         category === "description"
       );
+
       if (data === null) {
         return; // User cancelled
       }
@@ -267,7 +268,7 @@ export default function Task({
         </h2>
         <h2
           onClick={() => editTaskInfo("description", false)}
-          className="task-information-text"
+          className="task-information-text task-description"
         >
           {task.description.trim().length === 0
             ? "No Description"
