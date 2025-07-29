@@ -1,7 +1,7 @@
 import { IoMdSend } from "react-icons/io";
 import "./CommentBox.css";
 import { useState } from "react";
-import { auth, createIdTrail } from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
 
 export interface Comment {
   content: string;

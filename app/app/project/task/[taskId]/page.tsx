@@ -160,7 +160,7 @@ export default function Task({
         }
       }
     );
-  }, [task]);
+  }, [task, dispatch, projectData]);
 
   // Handle the case where we should redirect
   if (goBack.current) {
