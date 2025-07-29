@@ -86,6 +86,33 @@ const projectSlice = createSlice({
         state[index].invite = !state[index].invite;
       }
     },
+    updateCommentData: (state, action) => {
+      const idParts = action.payload.id.split("-");
+      let currentId: string = idParts[0];
+
+      let currentData: ProjectClass | TaskClass | undefined = (
+        state as ProjectClass[]
+      ).find((project) => project.id === currentId);
+
+      for (let i = 1; i < idParts.length; i++) {
+        currentId += "-" + idParts[i];
+
+        if (currentData === undefined) return undefined;
+        else if (!currentData.id.includes("-")) {
+          currentData = (currentData as ProjectClass).tasks.find(
+            (task) => task.id === currentId
+          );
+        } else {
+          currentData = (currentData as TaskClass).tasks.find(
+            (task) => task.id === currentId
+          );
+        }
+      }
+
+      if (!currentData) return;
+
+      currentData.comments = action.payload.comments;
+    },
   },
 });
 
@@ -95,7 +122,8 @@ export const store = configureStore({
   },
 });
 
-export const { addProject, clearProjects, flipInvite } = projectSlice.actions;
+export const { addProject, clearProjects, flipInvite, updateCommentData } =
+  projectSlice.actions;
 
 export const updateTaskOrderAsync = createAsyncThunk(
   "projects/updateTaskOrderAsync",
@@ -114,7 +142,6 @@ export async function addProjectTask(id: string, data: string) {
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateProject`, {
     method: "POST",
-    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       category: "tasks",
@@ -136,7 +163,6 @@ export async function updateProject(
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateProject`, {
     method: "POST",
-    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       category: category,
@@ -154,7 +180,6 @@ export async function addTask(id: string, data: string) {
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTask`, {
     method: "POST",
-    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       category: "tasks",
@@ -176,7 +201,6 @@ export async function updateTask(
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTask`, {
     method: "POST",
-    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       category: category,
@@ -194,7 +218,6 @@ export async function deleteTask(id: string) {
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/deleteTask`, {
     method: "POST",
-    mode: "no-cors",
     body: JSON.stringify({
       id: id,
       path: `projects/${createIdTrail(
@@ -220,7 +243,6 @@ export async function updateTaskOrder(
   await dispatch(updateTaskOrderAsync({ id, active, over }));
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTaskOrder`, {
     method: "POST",
-    mode: "no-cors",
     body: JSON.stringify({
       path: `projects/${createIdTrail(id, store.getState().projects)}`,
       active: active,

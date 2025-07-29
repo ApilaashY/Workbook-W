@@ -27,6 +27,7 @@ import {
   addTask,
   deleteTask,
   ProjectStore,
+  updateCommentData,
   updateTask,
   updateTaskOrder,
 } from "@/lib/store";
@@ -38,9 +39,11 @@ import {
 import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
-import { popLastTask } from "@/lib/firebase";
+import { createIdTrail, db, popLastTask } from "@/lib/firebase";
 import { Priority } from "@/lib/Components/Priority/Priority";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
+import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
+import { onValue, ref } from "firebase/database";
 // import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 
 function SortableTask({
@@ -112,6 +115,7 @@ export default function Task({
     (state: ProjectStore) => state.projects
   );
   const goBack = useRef(false);
+  const gotComments = useRef(false);
 
   // Handle async params in useEffect
   useEffect(() => {
@@ -135,6 +139,28 @@ export default function Task({
       goBack.current = true;
     }
   }, [projectData, id]);
+
+  // Get comments for the task
+  useEffect(() => {
+    if (!task || gotComments.current) return;
+
+    gotComments.current = true; // Prevent multiple subscriptions
+
+    onValue(
+      ref(db, `comments/${createIdTrail(task.id, projectData)}/comments`),
+      (snapshot) => {
+        const comments = snapshot.val() || {};
+        if (comments) {
+          dispatch(
+            updateCommentData({
+              id: task.id,
+              comments: Object.values(comments),
+            })
+          );
+        }
+      }
+    );
+  }, [task]);
 
   // Handle the case where we should redirect
   if (goBack.current) {
@@ -200,6 +226,7 @@ export default function Task({
       alert(`Task ${category} cannot be empty`);
       data = null;
     } else {
+      task[category] = data.trim();
       updateTask(id, category, data);
     }
   }
@@ -338,8 +365,15 @@ export default function Task({
         <h3 className="info-label">Search For Task</h3>
         <SearchBox tasks={task.tasks} />
 
-        {/* <h3 className="info-label">Comments</h3>
-        <CommentBox comments={task.comments} id={task.id} /> */}
+        <h3 className="info-label">Comments</h3>
+        <CommentBox
+          comments={task.comments}
+          projectLink={createIdTrail(task.id, projectData)}
+          people={
+            projectData.find((project) => project.id == task.id.split("-")[0])
+              ?.people || {}
+          }
+        />
 
         <span className="fill" />
 

@@ -1,4 +1,5 @@
 import { TaskClass, type TaskObject } from "./TaskClass";
+import { Comment } from "../Components/CommentBox/CommentBox";
 
 export interface ProjectObject {
   title: string;
@@ -8,6 +9,7 @@ export interface ProjectObject {
   attachedDocs?: [string, string][];
   people: Record<string, string>;
   invite?: boolean;
+  comments?: Comment[];
 }
 
 export class ProjectClass {
@@ -18,6 +20,7 @@ export class ProjectClass {
   public attachedDocs: [string, string][];
   public people: Record<string, string>;
   public invite: boolean;
+  public comments?: Comment[];
 
   constructor(
     title: string,
@@ -26,7 +29,8 @@ export class ProjectClass {
     taskCount: number,
     attachedDocs: [string, string][],
     people: Record<string, string>,
-    invite: boolean
+    invite: boolean,
+    comments: Comment[]
   ) {
     this.title = title;
     this.id = id;
@@ -35,6 +39,7 @@ export class ProjectClass {
     this.attachedDocs = attachedDocs;
     this.people = people;
     this.invite = invite;
+    this.comments = comments;
   }
 
   static fromMap(allData: ProjectObject): ProjectClass {
@@ -45,7 +50,8 @@ export class ProjectClass {
       allData.taskCount ?? allData.tasks?.length ?? 0,
       allData.attachedDocs ?? [],
       allData.people,
-      allData.invite ?? false
+      allData.invite ?? false,
+      allData.comments ?? []
     );
     return project;
   }
