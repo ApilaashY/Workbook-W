@@ -11,6 +11,7 @@ import { TaskClass } from "@/lib/DataClasses/TaskClass";
 import { ProjectStore } from "@/lib/store";
 import { useParams, useRouter } from "next/navigation";
 // import { findTaskById } from "@/lib/firebase";
+// import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
 
 // Interfaces for speech recognition
 interface SpeechRecognitionEvent {
@@ -125,7 +126,7 @@ export default function Toolbar() {
   //   // + "In the general response, speak as if you did the things the instructions are supposed to do, do not mention how you created or wrote a list of instructions. "
 
   //   const spoken = await getSpeechInput();
-  //   const userInput = spoken || prompt("Enter your command") || "";
+  //   const userInput = spoken || promptMessage("Enter your command") || "";
 
   //   console.log(userInput);
 
@@ -146,7 +147,7 @@ export default function Toolbar() {
   //     })
   //     .then((response) => {
   //       console.log(response.text);
-  //       if (prompt("Enter anything to execute commands: ") != null) {
+  //       if (promptMessage("Enter anything to execute commands: ") != null) {
   //         executeCommands(id, response.text || "", dispatch);
   //       }
   //     });

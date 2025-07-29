@@ -35,6 +35,7 @@ import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import "./Project.css";
 import { PeopleList } from "@/lib/Components/PeopleList/PeopleList";
+import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
 
 function SortableTask({
   task,
@@ -138,12 +139,12 @@ export default function Project({
     return <div>Loading...</div>;
   }
 
-  function createNewTask() {
+  async function createNewTask() {
     if (!project) return; // Early return if project is undefined
 
     let data: string | null | undefined = null;
     while (data === null) {
-      data = prompt("Enter title of new task")?.trim();
+      data = (await promptMessage("Enter title of new task"))?.trim();
       if (data === null || data === undefined) {
         return; // User cancelled
       } else if (data === "") {

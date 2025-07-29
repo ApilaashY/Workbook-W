@@ -40,6 +40,7 @@ import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import { popLastTask } from "@/lib/firebase";
 import { Priority } from "@/lib/Components/Priority/Priority";
+import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
 // import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 
 function SortableTask({
@@ -174,13 +175,20 @@ export default function Task({
   }
 
   // Function that changes task data
-  function editTaskInfo(category: "title" | "description", required: boolean) {
+  async function editTaskInfo(
+    category: "title" | "description",
+    required: boolean
+  ) {
     if (!task) return; // Early return if task is undefined
 
     // Get the user's new value
     let data: string | null = null;
     while (data === null) {
-      data = prompt(`Enter new title ${category}`, task[category]);
+      data = await promptMessage(
+        `Enter new title ${category}`,
+        task[category],
+        category === "description"
+      );
       if (data === null) {
         return; // User cancelled
       }
@@ -196,12 +204,12 @@ export default function Task({
   }
 
   // Function to create a new subtask
-  function createNewTask() {
+  async function createNewTask() {
     if (!task) return; // Early return if task is undefined
 
     let data: string | null | undefined = null;
     while (data === null) {
-      data = prompt("Enter title of new subtask")?.trim();
+      data = (await promptMessage("Enter title of new subtask"))?.trim();
       if (data === null || data === undefined) {
         return; // User cancelled
       } else if (data === "") {

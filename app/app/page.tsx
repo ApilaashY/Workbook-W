@@ -12,6 +12,7 @@ import { addProject, flipInvite, ProjectStore } from "@/lib/store";
 import { auth, db, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
 
 export default function App() {
   // Hooks
@@ -72,11 +73,13 @@ export default function App() {
     // }
 
     // Prompt the user for a project name and keep asking while its empty
-    let name = prompt("Enter project name:");
+    let name = await promptMessage("Enter project name:");
     if (name == null) return;
     while (!name || name.trim() === "") {
       if (name == null) return;
-      name = prompt("Project name cannot be empty. Please enter a valid name:");
+      name = await promptMessage(
+        "Project name cannot be empty. Please enter a valid name:"
+      );
     }
 
     // Send api request to create a new project
@@ -111,6 +114,8 @@ export default function App() {
       alert("You must be logged in to accept an invite.");
       return;
     }
+
+    if (!confirm("Are you sure you want to accept this invite?")) return;
 
     // Send api request to accept the invite
     fetch("/api/coop/acceptInvite", {

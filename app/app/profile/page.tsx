@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { updateProfile } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { clearProjects } from "@/lib/store";
+import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
 
 export default function Profile() {
   // Hooks
@@ -32,13 +33,13 @@ export default function Profile() {
   // Change the username
   async function updateUsername() {
     // Prompt the user for a new username
-    let newUsername = prompt("Enter your new username:");
+    let newUsername = await promptMessage("Enter your new username:");
 
     if (newUsername == null) return;
 
     while (!newUsername || newUsername.trim() === "") {
       if (newUsername == null) return;
-      newUsername = prompt(
+      newUsername = await promptMessage(
         "Username cannot be empty. Please enter a valid username:"
       );
     }
