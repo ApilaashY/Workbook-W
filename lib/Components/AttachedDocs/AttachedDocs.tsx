@@ -24,7 +24,7 @@ export function AttachedDocs({
       return false;
     }
 
-    updateFunction(id, "attachedDocs", [...link, [label, link]]);
+    updateFunction(id, "attachedDocs", [...links, [label, link]]);
     return true;
   }
 
