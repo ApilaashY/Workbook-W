@@ -44,7 +44,7 @@ export function AttachedDocs({
             }}
           >
             <input
-              placeholder="Document Name"
+              placeholder="Link Name"
               onChange={(e) => setLabel(e.target.value)}
             />
             <input
