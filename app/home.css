@@ -1,0 +1,21 @@
+nav {
+  background-color: transparent;
+  color: var(--primary);
+  padding: 1em 5em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+nav h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1em;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}

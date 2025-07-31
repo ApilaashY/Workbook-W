@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workbook - Project Management</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .homepage {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      /* Header */
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #3b82f6;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: #6b7280;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: #3b82f6;
+      }
+
+      .cta-button {
+        background: #3b82f6;
+        color: white !important;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s;
+      }
+
+      .cta-button:hover {
+        background: #2563eb;
+      }
+
+      /* Hero Section */
+      .hero {
+        padding: 8rem 0 4rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        overflow: hidden;
+      }
+
+      .hero-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+
+      .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+      }
+
+      .highlight {
+        color: #60a5fa;
+      }
+
+      .hero-subtitle {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+      }
+
+      .btn-secondary:hover {
+        background: white;
+        color: #3b82f6;
+      }
+
+      .btn-large {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: #3b82f6;
+        border: 2px solid #3b82f6;
+      }
+
+      .btn-outline:hover {
+        background: #3b82f6;
+        color: white;
+      }
+
+      /* Hero Mockup */
+      .hero-image {
+        display: flex;
+        justify-content: center;
+      }
+
+      .mockup-browser {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .browser-bar {
+        background: #f3f4f6;
+        padding: 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .browser-dots {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .browser-dots span {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #d1d5db;
+      }
+
+      .browser-dots span:first-child {
+        background: #ef4444;
+      }
+
+      .browser-dots span:nth-child(2) {
+        background: #f59e0b;
+      }
+
+      .browser-dots span:third-child {
+        background: #10b981;
+      }
+
+      .browser-content {
+        padding: 1.5rem;
+        background: white;
+        color: #333;
+      }
+
+      .project-card-demo {
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
+      }
+
+      .project-card-demo h3 {
+        color: #1f2937;
+        margin-bottom: 1rem;
+      }
+
+      .task-demo {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .task-item {
+        padding: 0.5rem;
+        background: #f9fafb;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+      }
+
+      /* Features Section */
+      .features {
+        padding: 5rem 0;
+        background: #f9fafb;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        color: #1f2937;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        transition: transform 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #1f2937;
+      }
+
+      .feature-card p {
+        color: #6b7280;
+      }
+
+      /* Stats Section */
+      .stats {
+        padding: 3rem 0;
+        background: #1f2937;
+        color: white;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        text-align: center;
+      }
+
+      .stat-item h3 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: #60a5fa;
+      }
+
+      .stat-item p {
+        opacity: 0.8;
+      }
+
+      /* About Section */
+      .about {
+        padding: 5rem 0;
+      }
+
+      .about-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+
+      .about-text h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #1f2937;
+      }
+
+      .about-text p {
+        font-size: 1.1rem;
+        color: #6b7280;
+        margin-bottom: 2rem;
+      }
+
+      .about-features {
+        list-style: none;
+      }
+
+      .about-features li {
+        padding: 0.5rem 0;
+        color: #374151;
+        font-weight: 500;
+      }
+
+      .team-illustration {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        font-size: 4rem;
+      }
+
+      .person {
+        background: #f3f4f6;
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      .person-2 {
+        animation-delay: -1s;
+      }
+
+      .person-3 {
+        animation-delay: -2s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* Pricing Section */
+      .pricing {
+        padding: 5rem 0;
+        background: #f9fafb;
+      }
+
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .pricing-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        position: relative;
+        transition: transform 0.3s;
+      }
+
+      .pricing-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .pricing-card.featured {
+        border: 2px solid #3b82f6;
+        transform: scale(1.05);
+      }
+
+      .popular-badge {
+        position: absolute;
+        top: -0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #3b82f6;
+        color: white;
+        padding: 0.25rem 1rem;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .pricing-card h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #1f2937;
+      }
+
+      .price {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #3b82f6;
+        margin-bottom: 2rem;
+      }
+
+      .price span {
+        font-size: 1rem;
+        color: #6b7280;
+        font-weight: 400;
+      }
+
+      .pricing-card ul {
+        list-style: none;
+        margin-bottom: 2rem;
+      }
+
+      .pricing-card li {
+        padding: 0.5rem 0;
+        color: #374151;
+      }
+
+      /* CTA Section */
+      .cta {
+        padding: 5rem 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+      }
+
+      .cta h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .cta p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+      }
+
+      /* Footer */
+      .footer {
+        background: #1f2937;
+        color: white;
+        padding: 3rem 0 1rem;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .footer-section h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-section a {
+        color: #d1d5db;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-section a:hover {
+        color: #60a5fa;
+      }
+
+      .footer-bottom {
+        border-top: 1px solid #374151;
+        padding-top: 1rem;
+        text-align: center;
+        color: #9ca3af;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+
+        .hero-title {
+          font-size: 2.5rem;
+        }
+
+        .about-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+
+        .nav-links {
+          gap: 1rem;
+        }
+
+        .nav-links a:not(.cta-button) {
+          display: none;
+        }
+
+        .container {
+          padding: 0 1rem;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .pricing-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .team-illustration {
+          font-size: 3rem;
+        }
+
+        .person {
+          width: 80px;
+          height: 80px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="homepage">
+      <!-- className → class -->
+      <header class="header">
+        <!-- className → class -->
+        <div class="container">
+          <div class="nav">
+            <h1 class="logo">Workbook</h1>
+            <nav class="nav-links">
+              <a href="#features">Features</a>
+              <a href="#about">About</a>
+              <a href="#pricing">Pricing</a>
+              <a href="http://localhost:3000/app" class="cta-button">
+                <!-- Link → a, className → class -->
+                Get Started
+              </a>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <!-- Hero Section -->
+      <!-- JSX comment → HTML comment -->
+      <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <div>
+              <h1 class="hero-title">
+                Manage Projects Like a <span class="highlight">Pro</span>
+              </h1>
+              <p class="hero-subtitle">
+                Streamline your workflow, collaborate with your team, and
+                deliver projects on time with our intuitive project management
+                platform.
+              </p>
+              <div class="hero-buttons">
+                <a href="/app" class="btn btn-primary"> Start Free Trial </a>
+                <button
+                  class="btn btn-secondary"
+                  onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})"
+                >
+                  Learn More
+                </button>
+              </div>
+            </div>
+            <div class="hero-image">
+              <div class="mockup-browser">
+                <div class="browser-bar">
+                  <div class="browser-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+                <div class="browser-content">
+                  <div class="project-card-demo">
+                    <h3>Sample Project</h3>
+                    <div class="task-demo">
+                      <div class="task-item">✓ Design wireframes</div>
+                      <div class="task-item">⏳ Develop frontend</div>
+                      <div class="task-item">⏳ Backend integration</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section id="features" class="features">
+        <div class="container">
+          <h2 class="section-title">Everything you need to succeed</h2>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">📋</div>
+              <h3>Task Management</h3>
+              <p>
+                Create, organize, and track tasks with drag-and-drop
+                functionality and progress tracking.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">👥</div>
+              <h3>Team Collaboration</h3>
+              <p>
+                Invite team members, assign tasks, and collaborate in real-time
+                with comments and notifications.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📅</div>
+              <h3>Due Dates & Scheduling</h3>
+              <p>
+                Set deadlines, track progress, and never miss important
+                milestones with our scheduling system.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📎</div>
+              <h3>File Attachments</h3>
+              <p>
+                Attach documents, links, and resources directly to your projects
+                and tasks for easy access.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔍</div>
+              <h3>Advanced Search</h3>
+              <p>
+                Quickly find any project, task, or comment with our powerful
+                search and filtering capabilities.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🤖</div>
+              <h3>AI-Powered</h3>
+              <p>
+                Get intelligent suggestions and automate repetitive tasks with
+                our built-in AI assistant.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="stats">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <h3>10,000+</h3>
+              <p>Projects Completed</p>
+            </div>
+            <div class="stat-item">
+              <h3>50,000+</h3>
+              <p>Happy Users</p>
+            </div>
+            <div class="stat-item">
+              <h3>99.9%</h3>
+              <p>Uptime</p>
+            </div>
+            <div class="stat-item">
+              <h3>24/7</h3>
+              <p>Support</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="about">
+        <div class="container">
+          <div class="about-content">
+            <div class="about-text">
+              <h2>Built for modern teams</h2>
+              <p>
+                Workbook was designed from the ground up to help teams of all
+                sizes manage their projects more effectively. Whether you're a
+                startup or an enterprise, our platform scales with your needs.
+              </p>
+              <ul class="about-features">
+                <li>✓ Real-time collaboration</li>
+                <li>✓ Secure cloud storage</li>
+                <li>✓ Mobile-responsive design</li>
+                <li>✓ Integration-ready</li>
+              </ul>
+            </div>
+            <div class="about-image">
+              <div class="team-illustration">
+                <div class="person person-1">👨‍💻</div>
+                <div class="person person-2">👩‍💼</div>
+                <div class="person person-3">👨‍🎨</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing Section -->
+      <section id="pricing" class="pricing">
+        <div class="container">
+          <h2 class="section-title">Simple, transparent pricing</h2>
+          <div class="pricing-grid">
+            <div class="pricing-card">
+              <h3>Free</h3>
+              <div class="price">$0<span>/month</span></div>
+              <ul>
+                <li>Up to 3 projects</li>
+                <li>5 team members</li>
+                <li>Basic features</li>
+                <li>Community support</li>
+              </ul>
+              <a href="/app" class="btn btn-outline"> Get Started </a>
+            </div>
+            <div class="pricing-card featured">
+              <div class="popular-badge">Most Popular</div>
+              <h3>Pro</h3>
+              <div class="price">$10<span>/month</span></div>
+              <ul>
+                <li>Unlimited projects</li>
+                <li>Unlimited team members</li>
+                <li>Advanced features</li>
+                <li>Priority support</li>
+                <li>AI assistant</li>
+              </ul>
+              <a href="/app" class="btn btn-primary"> Start Free Trial </a>
+            </div>
+            <div class="pricing-card">
+              <h3>Enterprise</h3>
+              <div class="price">Custom</div>
+              <ul>
+                <li>Custom integrations</li>
+                <li>Dedicated support</li>
+                <li>Advanced security</li>
+                <li>Training included</li>
+              </ul>
+              <button class="btn btn-outline">Contact Sales</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="cta">
+        <div class="container">
+          <h2>Ready to get started?</h2>
+          <p>
+            Join thousands of teams already using Workbook to manage their
+            projects.
+          </p>
+          <a href="/app" class="btn btn-primary btn-large">
+            Start Your Free Trial
+          </a>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <div class="footer-section">
+              <h4>Workbook</h4>
+              <p>
+                The modern way to manage projects and collaborate with your
+                team.
+              </p>
+            </div>
+            <div class="footer-section">
+              <h4>Product</h4>
+              <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="/app">App</a></li>
+              </ul>
+            </div>
+            <div class="footer-section">
+              <h4>Company</h4>
+              <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Careers</a></li>
+              </ul>
+            </div>
+            <div class="footer-section">
+              <h4>Support</h4>
+              <ul>
+                <li><a href="#">Help Center</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Privacy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <p>&copy; 2025 Workbook. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
