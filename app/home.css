@@ -5,10 +5,12 @@ nav {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  gap: 1em;
+  flex-wrap: wrap;
 }
 
 nav h1 {
-  font-size: 1.5em;
+  font-size: 2rem;
   font-weight: bold;
 }
 
@@ -18,4 +20,111 @@ nav h1 {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+}
+
+.starter {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2em;
+  color: white;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1em;
+}
+
+.starter h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .starter h1 {
+    text-align: center;
+  }
+}
+
+.starter p {
+  font-size: 1.2rem;
+  margin-bottom: 1em;
+}
+
+.highlight {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+/* Hero Mockup */
+.hero-image {
+  display: flex;
+  justify-content: center;
+}
+
+.mockup-browser {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  width: 100%;
+  max-width: 400px;
+  margin: 2em;
+}
+
+.browser-bar {
+  background: #f3f4f6;
+  padding: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.browser-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.browser-dots span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d1d5db;
+}
+
+.browser-dots span:first-child {
+  background: #ef4444;
+}
+
+.browser-dots span:nth-child(2) {
+  background: #f59e0b;
+}
+
+.browser-dots span:nth-child(3) {
+  background: #10b981;
+}
+
+.browser-content {
+  padding: 1.5rem;
+  background: white;
+  color: #333;
+}
+
+.project-card-demo {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.project-card-demo h3 {
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.task-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.task-item {
+  padding: 0.5rem;
+  background: #f9fafb;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
 }
