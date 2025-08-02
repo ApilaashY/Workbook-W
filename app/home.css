@@ -161,7 +161,7 @@ nav {
   flex-direction: column;
   text-align: center;
   background-color: #f9fafb;
-  margin: 2em 0;
+  margin: 2em 1em;
 }
 
 .feature-list {
