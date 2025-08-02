@@ -9,24 +9,7 @@
   align-items: stretch;
 }
 
-.project-task-list {
-  padding: 1em;
-  text-align: center;
-  background-color: var(--bubbleBackgroundColor);
-  border-radius: var(--borderRadius);
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  flex: 1 1 0;
-  max-width: 600px;
-  min-width: 250px;
-  max-height: 90vh;
-  max-height: 90svh;
-  overflow-y: auto;
-  box-sizing: border-box;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-}
-
+.project-task-list,
 .project-task-summary {
   padding: 1em;
   display: flex;
@@ -39,11 +22,17 @@
   max-height: 90svh;
   overflow-y: auto;
   box-sizing: border-box;
+  text-align: center;
+}
+
+.project-task-list {
+  background-color: var(--bubbleBackgroundColor);
+  border-radius: var(--borderRadius);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .project-info-card {
   padding: 1em;
-  text-align: center;
   background-color: var(--bubbleBackgroundColor);
   border-radius: var(--borderRadius);
   display: flex;
