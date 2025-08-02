@@ -1,4 +1,17 @@
-.task-stats,
+.task-stats {
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  flex: 1 1 0;
+  max-width: 600px;
+  min-width: 250px;
+  max-height: 90vh;
+  max-height: 90svh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
 .task-subtask-list {
   padding: 1em;
   text-align: center;
@@ -14,6 +27,18 @@
   max-height: 90svh;
   overflow-y: auto;
   box-sizing: border-box;
+}
+
+.task-info-card {
+  padding: 1em;
+  text-align: center;
+  background-color: var(--bubbleBackgroundColor);
+  border-radius: var(--borderRadius);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  box-sizing: border-box;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 600px) {

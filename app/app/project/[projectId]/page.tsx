@@ -286,16 +286,23 @@ export default function Project({
       </div>
 
       <div className="project-task-summary">
-        <h2>Task Summary</h2>
-        <h3 className="info-label">Status of all Tasks</h3>
-        <ProgressStatus project={project} />
+        <div className="project-info-card">
+          <h2>Task Summary</h2>
+        </div>
 
-        <h3 className="info-label">Attached Links</h3>
-        <AttachedDocs
-          links={project.attachedDocs}
-          updateFunction={updateProject}
-          id={id}
-        />
+        <div className="project-info-card">
+          <h3 className="info-label">Status of all Tasks</h3>
+          <ProgressStatus project={project} />
+        </div>
+
+        <div className="project-info-card">
+          <h3 className="info-label">Attached Links</h3>
+          <AttachedDocs
+            links={project.attachedDocs}
+            updateFunction={updateProject}
+            id={id}
+          />
+        </div>
 
         <script
           async
@@ -313,11 +320,15 @@ export default function Project({
         ></ins>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
-        <h3 className="info-label">Search For Task</h3>
-        <SearchBox tasks={project.tasks} />
+        <div className="project-info-card">
+          <h3 className="info-label">Search For Task</h3>
+          <SearchBox tasks={project.tasks} />
+        </div>
 
-        <h3 className="info-label">People Involved</h3>
-        <PeopleList people={project.people ?? {}} projectId={project.id} />
+        <div className="project-info-card">
+          <h3 className="info-label">People Involved</h3>
+          <PeopleList people={project.people ?? {}} projectId={project.id} />
+        </div>
       </div>
     </div>
   );

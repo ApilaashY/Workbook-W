@@ -287,99 +287,120 @@ export default function Task({
     <div className="project-window">
       {/* Left Menu with task information */}
       <div className="task-stats">
-        <h2
-          onClick={() => editTaskInfo("title", true)}
-          className="task-information-text"
-        >
-          {task.title}
-        </h2>
-        <h2
-          onClick={() => editTaskInfo("description", false)}
-          className="task-information-text task-description"
-        >
-          {task.description.trim().length === 0
-            ? "No Description"
-            : task.description}
-        </h2>
+        <div className="task-info-card">
+          <h2
+            onClick={() => editTaskInfo("title", true)}
+            className="task-information-text"
+          >
+            {task.title}
+          </h2>
+        </div>
 
-        <h3 className="info-label">Progress Status:</h3>
-        <select
-          value={task.progress}
-          className="task-progress-select"
-          onChange={(e) => updateTask(id, "progress", e.target.value)}
-          style={{
-            backgroundColor: TaskProgressStats[task.progress].color,
-            color: TaskProgressStats[task.progress].color.startsWith("#ff")
-              ? "black"
-              : "white",
-          }}
-        >
-          {TaskProgressTypes.map((progressOption) => (
-            <option value={progressOption} key={progressOption}>
-              {progressOption}
-            </option>
-          ))}
-        </select>
+        <div className="task-info-card">
+          <h2
+            onClick={() => editTaskInfo("description", false)}
+            className="task-information-text task-description"
+          >
+            {task.description.trim().length === 0
+              ? "No Description"
+              : task.description}
+          </h2>
+        </div>
 
-        <h3 className="info-label">Check Status of all Subtasks:</h3>
-        <ProgressStatus project={task} />
+        <div className="task-info-card">
+          <h3 className="info-label">Progress Status:</h3>
+          <select
+            value={task.progress}
+            className="task-progress-select"
+            onChange={(e) => updateTask(id, "progress", e.target.value)}
+            style={{
+              backgroundColor: TaskProgressStats[task.progress].color,
+              color: TaskProgressStats[task.progress].color.startsWith("#ff")
+                ? "black"
+                : "white",
+            }}
+          >
+            {TaskProgressTypes.map((progressOption) => (
+              <option value={progressOption} key={progressOption}>
+                {progressOption}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <h3 className="info-label">Attached Links</h3>
-        <AttachedDocs
-          links={task.attachedDocs}
-          updateFunction={updateTask}
-          id={id}
-        />
+        <div className="task-info-card">
+          <h3 className="info-label">Check Status of all Subtasks:</h3>
+          <ProgressStatus project={task} />
+        </div>
 
-        <h3
-          className={
-            "info-label" +
-            (task.dueDate &&
-            TaskProgressStats[task.progress].alertLate &&
-            new Date(task.dueDate) < new Date(Date.now())
-              ? " late-text"
-              : "")
-          }
-          onClick={
-            task.dueDate &&
-            TaskProgressStats[task.progress].alertLate &&
-            new Date(task.dueDate) < new Date(Date.now())
-              ? () => alert("This Task is Past Its Due Date")
-              : undefined
-          }
-        >
-          Due Date
-        </h3>
-        <ReactDatePicker
-          selected={task.dueDate ? new Date(task.dueDate) : undefined}
-          onChange={(date) => updateTask(id, "dueDate", date?.toISOString())}
-          showTimeSelect
-          dateFormat="Pp"
-          placeholderText="Due Date and Time"
-          className="date-picker"
-        />
+        <div className="task-info-card">
+          <h3 className="info-label">Attached Links</h3>
+          <AttachedDocs
+            links={task.attachedDocs}
+            updateFunction={updateTask}
+            id={id}
+          />
+        </div>
 
-        <h3 className="info-label">Priority:</h3>
-        <Priority priority={task.priority} id={task.id} />
+        <div className="task-info-card">
+          <h3
+            className={
+              "info-label" +
+              (task.dueDate &&
+              TaskProgressStats[task.progress].alertLate &&
+              new Date(task.dueDate) < new Date(Date.now())
+                ? " late-text"
+                : "")
+            }
+            onClick={
+              task.dueDate &&
+              TaskProgressStats[task.progress].alertLate &&
+              new Date(task.dueDate) < new Date(Date.now())
+                ? () => alert("This Task is Past Its Due Date")
+                : undefined
+            }
+          >
+            Due Date
+          </h3>
+          <ReactDatePicker
+            selected={task.dueDate ? new Date(task.dueDate) : undefined}
+            onChange={(date) => updateTask(id, "dueDate", date?.toISOString())}
+            showTimeSelect
+            dateFormat="Pp"
+            placeholderText="Due Date and Time"
+            className="date-picker"
+          />
+        </div>
 
-        <h3 className="info-label">Search For Task</h3>
-        <SearchBox tasks={task.tasks} />
+        <div className="task-info-card">
+          <h3 className="info-label">Priority:</h3>
+          <Priority priority={task.priority} id={task.id} />
+        </div>
 
-        <h3 className="info-label">Comments</h3>
-        <CommentBox
-          comments={task.comments}
-          projectLink={createIdTrail(task.id, projectData)}
-          people={
-            projectData.find((project) => project.id == task.id.split("-")[0])
-              ?.people || {}
-          }
-        />
+        <div className="task-info-card">
+          <h3 className="info-label">Search For Task</h3>
+          <SearchBox tasks={task.tasks} />
+        </div>
+
+        <div className="task-info-card">
+          <h3 className="info-label">Comments</h3>
+          <CommentBox
+            comments={task.comments}
+            projectLink={createIdTrail(task.id, projectData)}
+            people={
+              projectData.find((project) => project.id == task.id.split("-")[0])
+                ?.people || {}
+            }
+          />
+        </div>
 
         <span className="fill" />
 
-        <button className="delete-task" onClick={deleteTaskButton}>
-          Delete Task
-        </button>
+        <div className="task-info-card">
+          <button className="delete-task" onClick={deleteTaskButton}>
+            Delete Task
+          </button>
+        </div>
       </div>
 
       {/* Right Menu with subtask list */}
