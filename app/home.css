@@ -165,8 +165,9 @@ nav {
 }
 
 .feature-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   max-width: 1200px;
   gap: 12px;
   margin: 0 auto;
