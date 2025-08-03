@@ -33,6 +33,7 @@ import {
 } from "@/lib/store";
 import {
   TaskClass,
+  TaskObject,
   TaskProgressStats,
   TaskProgressTypes,
 } from "@/lib/DataClasses/TaskClass";
@@ -131,11 +132,12 @@ export default function Task({
 
   // Update the task data if changed
   useEffect(() => {
-    const newTask = findTaskById(projectData, id as string);
-    if (newTask !== undefined) {
+    const foundTask = findTaskById(projectData, id as string);
+    if (foundTask !== undefined) {
+      // Create a new TaskClass instance from the found data
+      const newTask = TaskClass.fromMap(foundTask as TaskObject);
       setTask(newTask);
     } else if (id && projectData.length > 0) {
-      // Only trigger redirect if we have an ID and projectData has loaded, but no task found
       goBack.current = true;
     }
   }, [projectData, id]);
