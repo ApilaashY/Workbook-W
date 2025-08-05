@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Workbook",
-  description: "A project management tool for students, organiazers, and more.",
+  description:
+    "A project management tool for students, organizers, and more by Apilaash Yoharan.",
 };
 
 export default function RootLayout({
