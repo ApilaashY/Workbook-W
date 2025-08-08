@@ -12,7 +12,7 @@ import { addProject, flipInvite, ProjectStore } from "@/lib/store";
 import { auth, db, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
+import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 
 export default function App() {
   // Hooks

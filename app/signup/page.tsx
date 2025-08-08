@@ -4,14 +4,16 @@ import { Suspense, useState } from "react";
 import "./Signup.css";
 import {
   createUserWithEmailAndPassword,
+  signInWithPopup,
   updateProfile,
   type UserCredential,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, fdb } from "@/lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, fdb, provider } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 function SignupForm() {
   // Hooks
@@ -99,10 +101,36 @@ function SignupForm() {
     }
   }
 
+  function signInWithGoogle() {
+    // Implement Google sign-in logic here
+
+    signInWithPopup(auth, provider).then(async (result) => {
+      const user = result.user;
+
+      // Create the user data document in Firestore if it doesn't exist
+      if (!(await getDoc(doc(fdb, "Users", user.uid))).exists()) {
+        await setDoc(doc(fdb, "Users", user.uid), {
+          username: user.displayName,
+          projects: [],
+          projectCount: 0,
+        });
+      }
+    });
+  }
+
   return (
     <div className="signup-window">
       <div className="signup-card">
         <h1>Create your account</h1>
+        <button className="google-signup" onClick={signInWithGoogle}>
+          <Image
+            src="/google-logo.png"
+            alt="Google Logo"
+            width={20}
+            height={20}
+          />
+          Sign in with Google
+        </button>
         <form onSubmit={handleSignup}>
           <label htmlFor="username">Username:</label>
           <input

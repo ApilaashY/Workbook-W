@@ -5,8 +5,11 @@ import "./Login.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { useRouter, useSearchParams } from "next/navigation";
-import { auth } from "@/lib/firebase";
+import { auth, fdb, provider } from "@/lib/firebase";
 import Link from "next/link";
+import Image from "next/image";
+import { signInWithPopup } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function LoginForm() {
   // Hooks
@@ -45,10 +48,36 @@ function LoginForm() {
     }
   }
 
+  function signInWithGoogle() {
+    // Implement Google sign-in logic here
+
+    signInWithPopup(auth, provider).then(async (result) => {
+      const user = result.user;
+
+      // Create the user data document in Firestore if it doesn't exist
+      if (!(await getDoc(doc(fdb, "Users", user.uid))).exists()) {
+        await setDoc(doc(fdb, "Users", user.uid), {
+          username: user.displayName,
+          projects: [],
+          projectCount: 0,
+        });
+      }
+    });
+  }
+
   return (
     <div className="login-window">
       <div className="login-card">
         <h1>Login</h1>
+        <button className="google-login" onClick={signInWithGoogle}>
+          <Image
+            src="/google-logo.png"
+            alt="Google Logo"
+            width={20}
+            height={20}
+          />
+          Sign in with Google
+        </button>
         <form onSubmit={handleLogin}>
           <label htmlFor="email">Email:</label>
           <input

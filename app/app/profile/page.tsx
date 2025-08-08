@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { updateProfile } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { clearProjects } from "@/lib/store";
-import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
+import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 
 export default function Profile() {
   // Hooks
@@ -22,7 +22,7 @@ export default function Profile() {
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (!user) {
-        router.push("/app");
+        router.push("/");
         return;
       }
 

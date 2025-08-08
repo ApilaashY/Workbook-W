@@ -224,7 +224,13 @@ export default function Toolbar() {
       {/* Desktop Toolbar */}
       <div className={`toolbar ${hideMenu ? "" : "show-toolbar-menu"}`}>
         <div className="toolbar-top-section">
-          <Link href="/app" onClick={() => setStack([])}>
+          <Link
+            href="/app"
+            onClick={() => {
+              setStack([]);
+              setHideMenu(true);
+            }}
+          >
             <h2 className="toolbar-title">Projects</h2>
           </Link>
           <div className="toolbar-breadcrumbs">
@@ -246,7 +252,10 @@ export default function Toolbar() {
                         ? `/app/project/${item.id}`
                         : `/app/project/task/${item.id}`
                     }
-                    onClick={() => setStack((prev) => prev.slice(0, index))}
+                    onClick={() => {
+                      setStack((prev) => prev.slice(0, index));
+                      setHideMenu(true);
+                    }}
                   >
                     <h2 className="toolbar-title">{item.title}</h2>
                   </Link>
@@ -259,7 +268,7 @@ export default function Toolbar() {
           {/* <button className="terrance-button" onClick={AICommands}>
             Ask Terrance
           </button> */}
-          <Link href="/app/profile">
+          <Link href="/app/profile" onClick={() => setHideMenu(true)}>
             <h2 className="toolbar-title">Profile</h2>
           </Link>
           {/* <Link href="/app/settings">

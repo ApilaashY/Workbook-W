@@ -35,7 +35,7 @@ import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import "./Project.css";
 import { PeopleList } from "@/lib/Components/PeopleList/PeopleList";
-import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
+import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 
 function SortableTask({
   task,

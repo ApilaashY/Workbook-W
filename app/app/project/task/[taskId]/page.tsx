@@ -42,7 +42,7 @@ import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import { createIdTrail, db, popLastTask } from "@/lib/firebase";
 import { Priority } from "@/lib/Components/Priority/Priority";
-import { promptMessage } from "@/lib/Components/Dialogs/PromptDialogs";
+import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 import { onValue, ref } from "firebase/database";
 // import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";

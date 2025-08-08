@@ -4,6 +4,7 @@ import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
 import { ProjectClass, ProjectObject } from "./DataClasses/ProjectClass";
 import { TaskClass, TaskObject } from "./DataClasses/TaskClass";
+import { GoogleAuthProvider } from "firebase/auth/web-extension";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAF723ZDsQ8QoiDDSQS6F44sJMtJY98NBo",
@@ -21,6 +22,7 @@ const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export const fdb = getFirestore(app);
 export const auth = getAuth(app);
+export const provider = new GoogleAuthProvider();
 
 // Global functions for data manipulation
 export function findTaskById(
