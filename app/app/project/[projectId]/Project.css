@@ -11,7 +11,7 @@
 
 .project-task-list,
 .project-task-summary {
-  padding: 1em;
+  padding: 0 1em;
   display: flex;
   flex-direction: column;
   gap: 1.5em;
@@ -26,6 +26,7 @@
 }
 
 .project-task-list {
+  padding: 1em;
   background-color: var(--bubbleBackgroundColor);
   border-radius: var(--borderRadius);
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
