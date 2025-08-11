@@ -5,6 +5,7 @@ export interface TaskObject {
   description?: string;
   id: string;
   progress?: TaskProgress;
+  frequency?: TaskFrequency;
   tasks?: TaskObject[];
   taskCount?: number;
   attachedDocs?: [string, string][];
@@ -19,6 +20,7 @@ export class TaskClass {
   public description: string;
   public id: string;
   public progress: TaskProgress;
+  public frequency: TaskFrequency;
   public tasks: TaskClass[];
   public taskCount: number;
   public attachedDocs: [string, string][];
@@ -32,6 +34,7 @@ export class TaskClass {
     id: string,
     description?: string,
     progress?: TaskProgress,
+    frequency?: TaskFrequency,
     tasks?: TaskClass[],
     taskCount?: number,
     attachedDocs?: [string, string][],
@@ -43,6 +46,7 @@ export class TaskClass {
     this.title = title.trim();
     this.id = id.trim();
     this.description = (description ?? "").trim();
+    this.frequency = frequency ?? "None";
     this.progress = progress ?? "Not Started";
     this.tasks = tasks ?? [];
     this.taskCount = taskCount ?? tasks?.length ?? 0;
@@ -59,6 +63,7 @@ export class TaskClass {
       allData.id.trim(),
       allData.description?.trim() || "",
       allData.progress || "Not Started",
+      allData.frequency || "None",
       allData.tasks?.map(TaskClass.fromMap) || [],
       allData.taskCount ?? allData.tasks?.length ?? 0,
       allData.attachedDocs ?? [],
@@ -83,6 +88,7 @@ export class TaskClass {
       taskCount: this.taskCount,
       description: this.description,
       progress: this.progress,
+      frequency: this.frequency,
       tasks: this.tasks.map((val) => val.toMap()),
       attachedDocs: this.attachedDocs,
       dueDate: this.dueDate,
@@ -99,6 +105,7 @@ export const TaskProgressTypes: string[] = [
   "Scheduled",
   "Done",
 ];
+export type TaskFrequency = "Daily" | "Weekly" | "Monthly" | "Yearly" | "None";
 export type TaskProgress = (typeof TaskProgressTypes)[number];
 export const TaskProgressStats: Record<
   TaskProgress,

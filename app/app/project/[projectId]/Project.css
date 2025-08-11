@@ -74,7 +74,7 @@
 }
 
 .project-task-item:hover {
-  background-color: var(--bubbleBackgroundColorHover);
+  background-color: var(--bubbleBackgroundHover);
   transition-duration: 0.2s;
 }
 

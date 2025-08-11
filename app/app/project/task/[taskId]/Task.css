@@ -88,6 +88,7 @@
   font-size: 1rem;
   width: 100%;
   margin: 0;
+  margin-bottom: 0.5em;
 }
 
 .task-subtask-item:hover {
@@ -100,7 +101,6 @@
   flex-direction: column;
   flex: 1;
   overflow-y: auto;
-  gap: 0.5em;
 }
 
 .task-stats .fill {
@@ -112,7 +112,7 @@
   cursor: pointer;
   border-radius: var(--borderRadius);
   border: 1px solid black;
-  transition: 0.2s;
+  transition-duration: 0.2s;
   font-size: 1rem;
 }
 
@@ -141,4 +141,15 @@
   white-space: pre-wrap;
   word-wrap: break-word;
   line-height: 1.4;
+}
+
+.project-task-list-header-controls {
+  display: flex;
+  flex-direction: row;
+}
+
+.sort-select {
+  font-size: 1rem;
+  margin: 0.5em 1em;
+  border-radius: var(--borderRadius);
 }

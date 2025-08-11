@@ -22,7 +22,6 @@ const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export const fdb = getFirestore(app);
 export const auth = getAuth(app);
-export const provider = new GoogleAuthProvider();
 
 // Global functions for data manipulation
 export function findTaskById(

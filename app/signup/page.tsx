@@ -4,16 +4,19 @@ import { Suspense, useState } from "react";
 import "./Signup.css";
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   signInWithPopup,
   updateProfile,
   type UserCredential,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, fdb, provider } from "@/lib/firebase";
+import { auth, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+
+const provider = new GoogleAuthProvider();
 
 function SignupForm() {
   // Hooks

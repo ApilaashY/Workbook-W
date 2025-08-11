@@ -104,6 +104,7 @@ export default function Project({
   );
   const [sortBy, setSortBy] = useState<string>("Custom");
   const [ascending, setAscending] = useState<boolean>(false);
+  const [showOrder, setShowOrder] = useState<boolean>(false);
 
   // Handle async params in useEffect
   useEffect(() => {
@@ -211,27 +212,34 @@ export default function Project({
     <div className="project-window">
       <div className="project-task-list">
         <div className="project-task-list-header">
-          <h2>Project Task List</h2>
-          <div className="project-task-list-header-controls">
-            <select
-              className="sort-select"
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="Custom">Custom</option>
-              <option value="Creation Date">Creation Date</option>
-              <option value="Alphabetical">Alphabetical</option>
-              <option value="Priority">Priority</option>
-              <option value="Due Date">Due Date</option>
-            </select>
-            {sortBy === "Custom" ? null : (
-              <h3
-                style={{ cursor: "pointer" }}
-                onClick={() => setAscending((prev) => !prev)}
+          <h2
+            style={{ cursor: "pointer" }}
+            onClick={() => setShowOrder((prev) => !prev)}
+          >
+            Project Task List
+          </h2>
+          {showOrder ? (
+            <div className="project-task-list-header-controls">
+              <select
+                className="sort-select"
+                onChange={(e) => setSortBy(e.target.value)}
               >
-                {!ascending ? "⬆" : "⬇"}
-              </h3>
-            )}
-          </div>
+                <option value="Custom">Custom</option>
+                <option value="Creation Date">Creation Date</option>
+                <option value="Alphabetical">Alphabetical</option>
+                <option value="Priority">Priority</option>
+                <option value="Due Date">Due Date</option>
+              </select>
+              {sortBy === "Custom" ? null : (
+                <h3
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setAscending((prev) => !prev)}
+                >
+                  {!ascending ? "⬆" : "⬇"}
+                </h3>
+              )}
+            </div>
+          ) : null}
         </div>
 
         {sortBy !== "Custom" ? (
@@ -303,22 +311,6 @@ export default function Project({
             id={id}
           />
         </div>
-
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
-          crossOrigin="anonymous"
-        ></script>
-        {/* <!-- Window --> */}
-        <ins
-          className="adsbygoogle"
-          style={{ display: "block" }}
-          data-ad-client="ca-pub-4914732861439858"
-          data-ad-slot="2849358681"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
         <div className="project-info-card">
           <h3 className="info-label">Search For Task</h3>

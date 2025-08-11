@@ -1,7 +1,6 @@
 "use client";
 
 import "./Task.css";
-import "../../[projectId]/Project.css";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -32,6 +31,7 @@ import {
   updateTaskOrder,
 } from "@/lib/store";
 import {
+  PriorityStats,
   TaskClass,
   TaskObject,
   TaskProgressStats,
@@ -117,6 +117,9 @@ export default function Task({
   );
   const goBack = useRef(false);
   const gotComments = useRef(false);
+  const [sortBy, setSortBy] = useState<string>("Custom");
+  const [ascending, setAscending] = useState<boolean>(false);
+  const [showOrder, setShowOrder] = useState<boolean>(false);
 
   // Handle async params in useEffect
   useEffect(() => {
@@ -285,6 +288,38 @@ export default function Task({
     }
   }
 
+  function sortTasks(tasks: TaskClass[]) {
+    const dup = [...tasks];
+    if (sortBy === "Creation Date") {
+      return dup.sort((a, b) => {
+        return ascending
+          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+    } else if (sortBy === "Alphabetical") {
+      return dup.sort((a, b) => {
+        return ascending
+          ? a.title.localeCompare(b.title)
+          : b.title.localeCompare(a.title);
+      });
+    } else if (sortBy === "Priority") {
+      return dup.sort((a, b) => {
+        return ascending
+          ? PriorityStats[a.priority].value - PriorityStats[b.priority].value
+          : PriorityStats[b.priority].value - PriorityStats[a.priority].value;
+      });
+    } else if (sortBy === "Due Date") {
+      return dup.sort((a, b) => {
+        return ascending
+          ? new Date(a.dueDate || "").getTime() -
+              new Date(b.dueDate || "").getTime()
+          : new Date(b.dueDate || "").getTime() -
+              new Date(a.dueDate || "").getTime();
+      });
+    }
+    return dup; // Default case
+  }
+
   return (
     <div className="project-window">
       {/* Left Menu with task information */}
@@ -407,30 +442,82 @@ export default function Task({
 
       {/* Right Menu with subtask list */}
       <div className="task-subtask-list">
-        <h2>Sub Tasks</h2>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragMove={() => setDragging(true)}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-        >
-          <SortableContext
-            items={task.tasks}
-            strategy={verticalListSortingStrategy}
+        <div className="project-task-list-header">
+          <h2
+            onClick={() => setShowOrder((prev) => !prev)}
+            style={{ cursor: "pointer" }}
           >
-            <div className="task-subtask-list-items">
-              {task.tasks.map((subtask) => (
-                <SortableTask
-                  key={subtask.id}
-                  task={subtask}
-                  color={TaskProgressStats[subtask.progress].color}
-                  dragging={dragging}
-                />
-              ))}
+            Sub Tasks
+          </h2>
+          {showOrder ? (
+            <div className="project-task-list-header-controls">
+              <select
+                className="sort-select"
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="Custom">Custom</option>
+                <option value="Creation Date">Creation Date</option>
+                <option value="Alphabetical">Alphabetical</option>
+                <option value="Priority">Priority</option>
+                <option value="Due Date">Due Date</option>
+              </select>
+              {sortBy === "Custom" ? null : (
+                <h3
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setAscending((prev) => !prev)}
+                >
+                  {!ascending ? "⬆" : "⬇"}
+                </h3>
+              )}
             </div>
-          </SortableContext>
-        </DndContext>
+          ) : null}
+        </div>
+        {sortBy !== "Custom" ? (
+          <div className="project-task-list-only">
+            {sortTasks(task.tasks).map((task) => {
+              return (
+                <button
+                  style={{
+                    border: `2px solid ${
+                      TaskProgressStats[task.progress].color
+                    }`,
+                    marginBottom: "0.5em",
+                    width: "100%",
+                  }}
+                  className="project-task-item"
+                  onClick={() => router.push(`/app/project/task/${task.id}`)}
+                  key={task.id}
+                >
+                  <span>{task.title}</span>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+          >
+            <SortableContext
+              items={task.tasks}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="project-task-list-only">
+                {sortTasks(task.tasks).map((task) => {
+                  return (
+                    <SortableTask
+                      key={task.id}
+                      task={task}
+                      color={TaskProgressStats[task.progress].color}
+                    />
+                  );
+                })}
+              </div>
+            </SortableContext>
+          </DndContext>
+        )}
 
         <button className="add-subtask-button" onClick={createNewTask}>
           Add Subtask

@@ -2,14 +2,16 @@
 
 import { Suspense, useState } from "react";
 import "./Login.css";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { useRouter, useSearchParams } from "next/navigation";
-import { auth, fdb, provider } from "@/lib/firebase";
+import { auth, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import Image from "next/image";
 import { signInWithPopup } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+
+const provider = new GoogleAuthProvider();
 
 function LoginForm() {
   // Hooks
@@ -48,21 +50,20 @@ function LoginForm() {
     }
   }
 
-  function signInWithGoogle() {
+  async function signInWithGoogle() {
     // Implement Google sign-in logic here
+    let result = await signInWithPopup(auth, provider);
 
-    signInWithPopup(auth, provider).then(async (result) => {
-      const user = result.user;
+    const user = result.user;
 
-      // Create the user data document in Firestore if it doesn't exist
-      if (!(await getDoc(doc(fdb, "Users", user.uid))).exists()) {
-        await setDoc(doc(fdb, "Users", user.uid), {
-          username: user.displayName,
-          projects: [],
-          projectCount: 0,
-        });
-      }
-    });
+    // Create the user data document in Firestore if it doesn't exist
+    if (!(await getDoc(doc(fdb, "Users", user.uid))).exists()) {
+      await setDoc(doc(fdb, "Users", user.uid), {
+        username: user.displayName,
+        projects: [],
+        projectCount: 0,
+      });
+    }
   }
 
   return (
