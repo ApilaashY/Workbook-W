@@ -54,7 +54,7 @@ function LoginForm() {
   async function signInWithGoogle() {
     // Implement Google sign-in logic here
     const provider = new GoogleAuthProvider();
-    let result = await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, provider);
 
     const user = result.user;
 

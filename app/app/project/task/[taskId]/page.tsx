@@ -111,7 +111,7 @@ export default function Task({
   // Variables
   const [id, setId] = useState<string>("");
   const [task, setTask] = useState<TaskClass | undefined>(undefined);
-  const [dragging, setDragging] = useState(false);
+  // const [dragging, setDragging] = useState(false);
   const projectData: ProjectClass[] = useSelector(
     (state: ProjectStore) => state.projects
   );
