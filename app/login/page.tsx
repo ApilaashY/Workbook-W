@@ -2,16 +2,17 @@
 
 import { Suspense, useState } from "react";
 import "./Login.css";
-import { GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import Image from "next/image";
-import { signInWithPopup } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-
-const provider = new GoogleAuthProvider();
 
 function LoginForm() {
   // Hooks
@@ -52,6 +53,7 @@ function LoginForm() {
 
   async function signInWithGoogle() {
     // Implement Google sign-in logic here
+    const provider = new GoogleAuthProvider();
     let result = await signInWithPopup(auth, provider);
 
     const user = result.user;
