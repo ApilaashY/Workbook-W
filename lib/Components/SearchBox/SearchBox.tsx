@@ -5,10 +5,17 @@ import Link from "next/link";
 
 type categories = "All" | "Title" | "Description" | "Progress" | "Due Date";
 
-export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
-  const [results, setResults] = useState<
-    [string, string, string, string, TaskClass][]
-  >([]);
+export function SearchBox({
+  tasks,
+  results,
+  setResults,
+}: {
+  tasks: TaskClass[];
+  results: [string, string, string, string, TaskClass][];
+  setResults: React.Dispatch<
+    React.SetStateAction<[string, string, string, string, TaskClass][]>
+  >;
+}) {
   const [page, setPage] = useState<number>(1);
   const [category, setCategory] = useState<categories>("All");
   const [search, setSearch] = useState<string>("");
@@ -147,46 +154,6 @@ export function SearchBox({ tasks }: { tasks: TaskClass[] }) {
           }}
         />
       </div>
-      {results
-        .slice(
-          (page - 1) * 3,
-          Math.ceil(results.length / 3) == page ? undefined : page * 3
-        )
-        .map((e) => (
-          <Link href={`/app/project/task/${e[4].id}`} key={e[4].id}>
-            <div className="search-result">
-              <h2 style={{ fontWeight: 400 }}>
-                {e[0] == "Title" ? (
-                  <>
-                    {e[1]}
-                    <b>{e[2]}</b>
-                    {e[3]}
-                  </>
-                ) : (
-                  e[4].title
-                )}
-              </h2>
-              {e[0] != "Title" ? (
-                <h3 style={{ fontWeight: 400 }}>
-                  {e[0]}: {e[1]}
-                  <b>{e[2]}</b>
-                  {e[3]}
-                </h3>
-              ) : null}
-            </div>
-          </Link>
-        ))}
-
-      {results.length <= 3 ? null : (
-        <div className="change-page-menu">
-          <button onClick={backPage}>-</button>
-          <h3>
-            {" "}
-            {page}/{Math.ceil(results.length / 3)}{" "}
-          </h3>
-          <button onClick={forwardPage}>+</button>
-        </div>
-      )}
     </div>
   );
 }

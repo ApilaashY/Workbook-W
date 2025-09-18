@@ -72,6 +72,9 @@
   transition-duration: 0.2s;
   font-size: 1rem;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .project-task-item:hover {

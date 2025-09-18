@@ -45,11 +45,11 @@
   width: fit-content;
   margin: 0.5em auto;
   transition-duration: 0.2s;
+  font-weight: normal;
 }
 
 .task-information-text:hover {
   cursor: pointer;
-  font-weight: 200;
 }
 
 .task-progress-select {
@@ -62,7 +62,15 @@
   cursor: pointer;
 }
 
+.subtask-bottom-actions {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  margin: 1em 0 0;
+}
+
 .add-subtask-button {
+  flex: 1;
   padding: 1em;
   transition-duration: 0.2s;
   background-color: transparent;
@@ -70,7 +78,6 @@
   border-radius: var(--borderRadius);
   font-family: inherit;
   font-size: 1rem;
-  margin: 1em 0 0;
 }
 
 .add-subtask-button:hover {
@@ -90,6 +97,9 @@
   width: 100%;
   margin: 0;
   margin-bottom: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .task-subtask-item:hover {
@@ -141,7 +151,8 @@
 .task-description {
   white-space: pre-wrap;
   word-wrap: break-word;
-  line-height: 1.4;
+  line-height: 1.6;
+  text-align: left;
 }
 
 .project-task-list-header-controls {

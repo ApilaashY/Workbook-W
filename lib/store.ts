@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { ProjectClass, ProjectObject } from "./DataClasses/ProjectClass";
 
-import { auth, createIdTrail, popLastTask } from "./firebase";
+import { auth, createIdTrail, findTaskById, popLastTask } from "./firebase";
 import { TaskClass } from "./DataClasses/TaskClass";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -113,6 +113,15 @@ const projectSlice = createSlice({
 
       currentData.comments = action.payload.comments;
     },
+
+    updateTask: (state, action) => {
+      // Update the task on the user's side immediately
+      const task = findTaskById(state, action.payload.id);
+      if (!task) return; // If task is not found, exit the function
+
+      // Update the task property based on the category
+      (task as any)[action.payload.category] = action.payload.data;
+    },
   },
 });
 
@@ -197,6 +206,10 @@ export async function updateTask(
   category: TaskUpdateables,
   data: unknown
 ) {
+  // Update the task on the user's side immediately
+  projectSlice.actions.updateTask({ id, category, data });
+
+  // Update the task on the database side
   const token = await auth.currentUser?.getIdToken();
 
   await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/updateTask`, {

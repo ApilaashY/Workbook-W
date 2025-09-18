@@ -1,0 +1,55 @@
+.nice-checkbox {
+  /* Hide the default checkbox */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Size and shape */
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Makes it round */
+
+  /* Border and background */
+  border: 2px solid #d1d5db;
+  background-color: white;
+
+  /* Positioning and cursor */
+  position: relative;
+  cursor: pointer;
+
+  /* Smooth transitions */
+  transition: all 0.2s ease;
+}
+
+/* Hover state */
+.nice-checkbox:hover {
+  border-color: #10b981;
+}
+
+/* Checked state */
+.nice-checkbox:checked {
+  background-color: #10b981; /* Green background */
+  border-color: #10b981;
+}
+
+/* Checkmark inside the checkbox */
+.nice-checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Disabled state */
+.nice-checkbox:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nice-checkbox:disabled:hover {
+  border-color: #d1d5db;
+}

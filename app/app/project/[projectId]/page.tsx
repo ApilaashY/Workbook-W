@@ -37,6 +37,7 @@ import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import "./Project.css";
 import { PeopleList } from "@/lib/Components/PeopleList/PeopleList";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
+import { NiceCheckbox } from "@/lib/Components/NiceCheckbox/NiceCheckbox";
 
 function SortableTask({
   task,
@@ -62,6 +63,16 @@ function SortableTask({
     router.push(`/app/project/task/${task.id}`);
   }
 
+  function handleCheckBoxClick(e: React.MouseEvent<HTMLInputElement>) {
+    e.stopPropagation();
+
+    updateTask(
+      task.id,
+      "progress",
+      e.currentTarget.checked ? "Done" : "Not Started"
+    );
+  }
+
   return (
     <button
       ref={setNodeRef}
@@ -71,16 +82,9 @@ function SortableTask({
       {...attributes}
       {...props}
     >
-      <input
-        type="checkbox"
-        checked={task.progress == "Done"}
-        onClick={(e) =>
-          updateTask(
-            task.id,
-            "progress",
-            e.currentTarget.checked ? "Done" : "Not Started"
-          )
-        }
+      <NiceCheckbox
+        value={task.progress === "Done"}
+        onClick={handleCheckBoxClick}
       />
       <span>{task.title}</span>
       <span
@@ -326,7 +330,7 @@ export default function Project({
 
         <div className="project-info-card">
           <h3 className="info-label">Search For Task</h3>
-          <SearchBox tasks={project.tasks} />
+          <SearchBox tasks={project.tasks} results={[]} setResults={() => {}} />
         </div>
 
         <div className="project-info-card">
