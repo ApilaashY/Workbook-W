@@ -23,6 +23,7 @@ import {
   addProjectTask,
   ProjectStore,
   updateProject,
+  updateTask,
   updateTaskOrder,
 } from "@/lib/store";
 import {
@@ -70,6 +71,17 @@ function SortableTask({
       {...attributes}
       {...props}
     >
+      <input
+        type="checkbox"
+        checked={task.progress == "Done"}
+        onClick={(e) =>
+          updateTask(
+            task.id,
+            "progress",
+            e.currentTarget.checked ? "Done" : "Not Started"
+          )
+        }
+      />
       <span>{task.title}</span>
       <span
         {...listeners}
