@@ -1,13 +1,11 @@
 import { useState } from "react";
 import type { TaskClass } from "../../DataClasses/TaskClass";
 import "./SearchBox.css";
-import Link from "next/link";
 
 type categories = "All" | "Title" | "Description" | "Progress" | "Due Date";
 
 export function SearchBox({
   tasks,
-  results,
   setResults,
 }: {
   tasks: TaskClass[];
@@ -16,7 +14,6 @@ export function SearchBox({
     React.SetStateAction<[string, string, string, string, TaskClass][]>
   >;
 }) {
-  const [page, setPage] = useState<number>(1);
   const [category, setCategory] = useState<categories>("All");
   const [search, setSearch] = useState<string>("");
 
@@ -57,8 +54,6 @@ export function SearchBox({
     let matches: [string, string, string, string, TaskClass][] = [];
     const query: string = search.trim().toLowerCase();
     let currentLevel = taskList;
-
-    setPage(1);
 
     if (query.length == 0) return [];
 
@@ -115,16 +110,6 @@ export function SearchBox({
     }
 
     return matches;
-  }
-
-  function backPage() {
-    if (page == 1) return;
-    setPage((prev) => prev - 1);
-  }
-
-  function forwardPage() {
-    if (page == Math.ceil(results.length / 3)) return;
-    setPage((prev) => prev + 1);
   }
 
   return (

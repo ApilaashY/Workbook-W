@@ -114,13 +114,37 @@ const projectSlice = createSlice({
       currentData.comments = action.payload.comments;
     },
 
-    updateTask: (state, action) => {
+    updateTask: (
+      state,
+      action: {
+        payload: { id: string; category: TaskUpdateables; data: unknown };
+      }
+    ) => {
       // Update the task on the user's side immediately
-      const task = findTaskById(state, action.payload.id);
+      const task = findTaskById(state, action.payload.id) as TaskClass;
       if (!task) return; // If task is not found, exit the function
 
       // Update the task property based on the category
-      (task as any)[action.payload.category] = action.payload.data;
+      switch (action.payload.category) {
+        case "title":
+        case "description":
+        case "progress":
+        case "dueDate":
+        case "priority":
+          (task as TaskClass)[action.payload.category] = action.payload
+            .data as string;
+          break;
+        case "tasks":
+          (task as TaskClass)[action.payload.category] = action.payload
+            .data as TaskClass[];
+          break;
+        case "attachedDocs":
+          (task as TaskClass)[action.payload.category] = action.payload
+            .data as [string, string][];
+          break;
+        default:
+          break;
+      }
     },
   },
 });
