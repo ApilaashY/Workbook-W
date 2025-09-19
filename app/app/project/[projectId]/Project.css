@@ -77,12 +77,20 @@
   justify-content: space-between;
 }
 
+.task-bottom-actions {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  margin: 1em 0 0;
+}
+
 .project-task-item:hover {
   background-color: var(--bubbleBackgroundHover);
   transition-duration: 0.2s;
 }
 
 .add-task-button {
+  flex: 1;
   padding: 1em;
   transition-duration: 0.2s;
   background-color: transparent;

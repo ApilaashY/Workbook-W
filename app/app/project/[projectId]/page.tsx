@@ -38,15 +38,22 @@ import "./Project.css";
 import { PeopleList } from "@/lib/Components/PeopleList/PeopleList";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { NiceCheckbox } from "@/lib/Components/NiceCheckbox/NiceCheckbox";
+import { FaSearch } from "react-icons/fa";
 
 function SortableTask({
   task,
   color,
+  moveable,
+  searchDetails,
   ...props
 }: {
   task: TaskClass;
   color: string;
+  moveable: boolean;
+  searchDetails?: [string, string, string, string]; // [category, before, match, after]
+  dragging?: boolean;
 }) {
+  // Hooks and attributes
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task.id });
   const router = useRouter();
@@ -63,6 +70,7 @@ function SortableTask({
     router.push(`/app/project/task/${task.id}`);
   }
 
+  // Function to handle checkbox click without triggering parent click
   function handleCheckBoxClick(e: React.MouseEvent<HTMLInputElement>) {
     e.stopPropagation();
 
@@ -79,25 +87,49 @@ function SortableTask({
       className="project-task-item"
       style={style}
       onClick={handleClick}
-      {...attributes}
-      {...props}
+      {...(moveable ? attributes : {})}
+      {...(moveable ? props : {})}
     >
       <NiceCheckbox
-        value={task.progress === "Done"}
+        value={task.progress == "Done"}
         onClick={handleCheckBoxClick}
       />
-      <span>{task.title}</span>
-      <span
-        {...listeners}
-        style={{
-          cursor: "grab",
-          padding: "0 0.5em",
-          userSelect: "none",
-        }}
-        aria-label="Drag handle"
-      >
-        ☰
-      </span>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {searchDetails && searchDetails[0] == "Title" ? (
+          <span>
+            {searchDetails[1]}
+            <strong>{searchDetails[2]}</strong>
+            {searchDetails[3]}
+          </span>
+        ) : (
+          <span>{task.title}</span>
+        )}
+        {searchDetails && searchDetails[0] != "Title" ? (
+          <>
+            <br />
+            <p>
+              {`${searchDetails[0]}: ${searchDetails[1]}`}
+              <strong>{searchDetails[2]}</strong>
+              {`${searchDetails[3]}`}
+            </p>
+          </>
+        ) : null}
+      </div>
+      {moveable ? (
+        <span
+          {...listeners}
+          style={{
+            cursor: "grab",
+            padding: "0 0.5em",
+            userSelect: "none",
+          }}
+          aria-label="Drag handle"
+        >
+          ☰
+        </span>
+      ) : (
+        <div></div>
+      )}
     </button>
   );
 }
@@ -121,6 +153,10 @@ export default function Project({
   const [sortBy, setSortBy] = useState<string>("Custom");
   const [ascending, setAscending] = useState<boolean>(false);
   const [showOrder, setShowOrder] = useState<boolean>(false);
+  const [showSearch, setShowSearch] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<
+    [string, string, string, string, TaskClass][]
+  >([]);
 
   // Handle async params in useEffect
   useEffect(() => {
@@ -258,7 +294,21 @@ export default function Project({
           ) : null}
         </div>
 
-        {sortBy !== "Custom" ? (
+        {showSearch ? (
+          <div className="project-task-list-only">
+            {searchResults.map((result) => (
+              <SortableTask
+                key={result[4].id}
+                task={result[4]}
+                color={TaskProgressStats[result[4].progress].color}
+                moveable={false}
+                searchDetails={
+                  result.slice(0, 4) as [string, string, string, string]
+                } // [category, before, match, after]
+              />
+            ))}
+          </div>
+        ) : sortBy !== "Custom" ? (
           <div className="project-task-list-only">
             {sortTasks(project.tasks).map((task) => {
               return (
@@ -297,6 +347,7 @@ export default function Project({
                       key={task.id}
                       task={task}
                       color={TaskProgressStats[task.progress].color}
+                      moveable={true}
                     />
                   );
                 })}
@@ -304,16 +355,28 @@ export default function Project({
             </SortableContext>
           </DndContext>
         )}
-        <button className="add-task-button" onClick={createNewTask}>
-          Add Task
-        </button>
+        {showSearch ? (
+          <SearchBox
+            tasks={project.tasks}
+            results={searchResults}
+            setResults={setSearchResults}
+          />
+        ) : null}
+        <div className="task-bottom-actions">
+          <FaSearch
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setSearchResults([]);
+              setShowSearch((prev) => !prev);
+            }}
+          />
+          <button className="add-task-button" onClick={createNewTask}>
+            Add Task
+          </button>
+        </div>
       </div>
 
       <div className="project-task-summary">
-        <div className="project-info-card">
-          <h2>Task Summary</h2>
-        </div>
-
         <div className="project-info-card">
           <h3 className="info-label">Status of all Tasks</h3>
           <ProgressStatus project={project} />
@@ -326,11 +389,6 @@ export default function Project({
             updateFunction={updateProject}
             id={id}
           />
-        </div>
-
-        <div className="project-info-card">
-          <h3 className="info-label">Search For Task</h3>
-          <SearchBox tasks={project.tasks} results={[]} setResults={() => {}} />
         </div>
 
         <div className="project-info-card">
