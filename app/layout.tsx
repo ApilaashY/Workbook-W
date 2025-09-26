@@ -28,6 +28,11 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="google-adsense-account" content="ca-pub-4914732861439858" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
+          crossOrigin="anonymous"
+        ></script>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
