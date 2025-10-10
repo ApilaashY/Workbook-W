@@ -1,7 +1,7 @@
 "use client";
 
 import "./Task.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   closestCenter,
@@ -215,6 +215,22 @@ export default function Task({
       }
     );
   }, [task, dispatch, projectData]);
+
+  // Handle Escape key to close search
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && showSearch) {
+        setShowSearch(false);
+        setSearchResults([]);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [showSearch]);
 
   // Handle the case where we should redirect
   if (goBack.current) {

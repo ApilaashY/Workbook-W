@@ -133,6 +133,7 @@ export function SearchBox({
         <input
           placeholder="Search"
           className="search-field"
+          autoFocus
           onChange={(e) => {
             setSearch(e.target.value);
             setResults(searchTasks(tasks, e.target.value, category));

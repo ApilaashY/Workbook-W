@@ -182,6 +182,22 @@ export default function Project({
     }
   }, [projectData, id]);
 
+  // Handle Escape key to close search
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && showSearch) {
+        setShowSearch(false);
+        setSearchResults([]);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [showSearch]);
+
   // Handle the case where project is not found
   if (!projectInfo && id) {
     return <div>Project not found</div>;
@@ -312,20 +328,12 @@ export default function Project({
           <div className="project-task-list-only">
             {sortTasks(project.tasks).map((task) => {
               return (
-                <button
-                  style={{
-                    border: `2px solid ${
-                      TaskProgressStats[task.progress].color
-                    }`,
-                    marginBottom: "0.5em",
-                    width: "100%",
-                  }}
-                  className="project-task-item"
-                  onClick={() => router.push(`/app/project/task/${task.id}`)}
+                <SortableTask
                   key={task.id}
-                >
-                  <span>{task.title}</span>
-                </button>
+                  task={task}
+                  color={TaskProgressStats[task.progress].color}
+                  moveable={false}
+                />
               );
             })}
           </div>
