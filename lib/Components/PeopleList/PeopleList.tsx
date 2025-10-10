@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./PeopleList.css";
 import { auth } from "@/lib/firebase";
+import { promptDialog } from "../Dialogs/PromptDialog";
+import { alertDialog } from "../Dialogs/AlertDialog";
 
 export function PeopleList({
   people,
@@ -15,13 +17,20 @@ export function PeopleList({
   async function addPerson() {
     if (!auth.currentUser) return;
 
-    let email = prompt(
-      "Enter email of the person you would like to invite to this project:"
-    );
+    let email = await promptDialog({
+      title: "Invite a Person",
+      message:
+        "Enter email of the person you would like to invite to this project:",
+      placeholder: "Email",
+    });
     if (email == null) return;
     while (!email || email.trim() === "") {
       if (email == null) return;
-      email = prompt("Email cannot be empty. Please enter a valid email:");
+      email = await promptDialog({
+        title: "Invalid Email",
+        message: "Email cannot be empty. Please enter a valid email:",
+        placeholder: "Email",
+      });
     }
 
     const response = await fetch(
@@ -37,9 +46,15 @@ export function PeopleList({
     );
 
     if (response.ok) {
-      alert(`Sent invite to ${email}`);
+      alertDialog({
+        title: "Invite Sent",
+        message: `Sent invite to ${email}`,
+      });
     } else {
-      alert((await response.text()) || "Failed to send invite");
+      alertDialog({
+        title: "Error",
+        message: (await response.text()) || "Failed to send invite",
+      });
     }
   }
 
@@ -64,9 +79,15 @@ export function PeopleList({
     })
       .then((response) => {
         if (response.ok) {
-          alert(`Removed ${people[person]} from the project`);
+          alertDialog({
+            title: "Success",
+            message: `Removed ${people[person]} from the project`,
+          });
         } else {
-          alert("Failed to remove person");
+          alertDialog({
+            title: "Error",
+            message: "Failed to remove person",
+          });
         }
       })
       .catch((error) => {

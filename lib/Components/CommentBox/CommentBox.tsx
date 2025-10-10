@@ -2,6 +2,7 @@ import { IoMdSend } from "react-icons/io";
 import "./CommentBox.css";
 import { useState } from "react";
 import { auth } from "@/lib/firebase";
+import { alertDialog } from "../Dialogs/AlertDialog";
 
 export interface Comment {
   content: string;
@@ -25,7 +26,10 @@ export function CommentBox({
   async function addComment() {
     // Check if the user is logged in
     if (auth.currentUser == null) {
-      alert("You must be logged in to add a comment.");
+      alertDialog({
+        title: "Error",
+        message: "You must be logged in to add a comment.",
+      });
       return;
     }
 

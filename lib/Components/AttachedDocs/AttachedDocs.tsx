@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./AttachedDocs.css";
 import { updateProject, updateTask } from "@/lib/store";
+import { alertDialog } from "../Dialogs/AlertDialog";
 
 export function AttachedDocs({
   links,
@@ -17,10 +18,16 @@ export function AttachedDocs({
 
   function addLink(label: string, link: string): boolean {
     if (label.trim().length === 0) {
-      alert("Document Label can't be Empty");
+      alertDialog({
+        title: "Error",
+        message: "Document Label can't be Empty",
+      });
       return false;
     } else if (link.trim().length === 0) {
-      alert("Document Link can't be Empty");
+      alertDialog({
+        title: "Error",
+        message: "Document Link can't be Empty",
+      });
       return false;
     }
 
