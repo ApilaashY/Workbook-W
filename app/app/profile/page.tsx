@@ -9,6 +9,7 @@ import { updateProfile } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { clearProjects } from "@/lib/store";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
+import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
 
 export default function Profile() {
   // Hooks
@@ -65,7 +66,7 @@ export default function Profile() {
     if (!response.ok) {
       await updateProfile(auth.currentUser, { displayName: oldUsername });
       setUsername(oldUsername);
-      alert("Failed to update username");
+      alertDialog({ title: "Error", message: "Failed to update username" });
       return;
     }
   }

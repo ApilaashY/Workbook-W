@@ -15,6 +15,7 @@ import { auth, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
 
 const provider = new GoogleAuthProvider();
 
@@ -44,13 +45,22 @@ function SignupForm() {
 
     // Make sure the username and password are good enough
     if (username.trim().length <= 0) {
-      alert("Username can not be empty.");
+      alertDialog({
+        title: "Error",
+        message: "Username can not be empty.",
+      });
       return;
     } else if (password !== repeatPassword) {
-      alert("Passwords do not match. Please try again.");
+      alertDialog({
+        title: "Error",
+        message: "Passwords do not match. Please try again.",
+      });
       return;
     } else if (password.length < 8) {
-      alert("Password must be at least 8 characters long.");
+      alertDialog({
+        title: "Error",
+        message: "Password must be at least 8 characters long.",
+      });
       return;
     }
 
@@ -80,7 +90,7 @@ function SignupForm() {
       //   handleCodeInApp: false,
       // });
 
-      // alert("Account created successfully! Please verify your email.");
+      // alertDialog("Account created successfully! Please verify your email.");
 
       // Go to the app page
       router.push("/app");
@@ -89,16 +99,28 @@ function SignupForm() {
       if (!(error instanceof FirebaseError)) return;
 
       if (error.code === "auth/wrong-password") {
-        alert("Incorrect password. Please try again.");
+        alertDialog({
+          title: "Error",
+          message: "Incorrect password. Please try again.",
+        });
       } else if (error.code === "auth/user-not-found") {
-        alert(
-          "No user found with this email. Please check your email or register."
-        );
+        alertDialog({
+          title: "Error",
+          message:
+            "No user found with this email. Please check your email or register.",
+        });
       } else if (error.code === "auth/email-already-in-use") {
-        alert("This email is already in use. Please use a different email.");
+        alertDialog({
+          title: "Error",
+          message:
+            "This email is already in use. Please use a different email.",
+        });
         router.push(`/login?email=${email}`);
       } else {
-        alert("An error occurred. Please try again later.");
+        alertDialog({
+          title: "Error",
+          message: "An error occurred. Please try again later.",
+        });
         console.log(error);
       }
     }

@@ -13,6 +13,7 @@ import { auth, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import Image from "next/image";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
 
 function LoginForm() {
   // Hooks
@@ -42,11 +43,16 @@ function LoginForm() {
     } catch (error: FirebaseError | unknown) {
       if (!(error instanceof FirebaseError)) return;
       if (error.code === "auth/wrong-password") {
-        alert("Incorrect password. Please try again.");
+        alertDialog({
+          title: "Error",
+          message: "Incorrect password. Please try again.",
+        });
       } else if (error.code === "auth/user-not-found") {
-        alert(
-          "No user found with this email. Please check your email or register."
-        );
+        alertDialog({
+          title: "Error",
+          message:
+            "No user found with this email. Please check your email or register.",
+        });
       }
     }
   }

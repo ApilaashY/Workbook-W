@@ -13,6 +13,7 @@ import { auth, db, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
+import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
 
 export default function App() {
   // Hooks
@@ -61,12 +62,15 @@ export default function App() {
   async function addNewProject() {
     // Check if the user is logged in
     if (!auth.currentUser) {
-      alert("You must be logged in to create a project.");
+      alertDialog({
+        title: "Error",
+        message: "You must be logged in to create a project.",
+      });
       return;
     }
 
     // if (!emailVerified) {
-    //   alert(
+    //   alertDialog(
     //     "You must verify your email before creating a project. If you have already verified your email please reload the page."
     //   );
     //   return;
@@ -91,11 +95,18 @@ export default function App() {
       },
       body: JSON.stringify({ title: name }),
     }).then((response) => {
-      // If the response is not successful, alert the user
+      // If the response is not successful, alertDialog the user
       if (response.status !== 201) {
         if (response.status === 410)
-          alert("You have reached the maximum number of projects.");
-        else alert("Failed to create project. Please try again.");
+          alertDialog({
+            title: "Error",
+            message: "You have reached the maximum number of projects.",
+          });
+        else
+          alertDialog({
+            title: "Error",
+            message: "Failed to create project. Please try again.",
+          });
         return;
       }
 
@@ -111,7 +122,10 @@ export default function App() {
   async function acceptInvite(id: string) {
     // Check if the user is logged in
     if (!auth.currentUser) {
-      alert("You must be logged in to accept an invite.");
+      alertDialog({
+        title: "Error",
+        message: "You must be logged in to accept an invite.",
+      });
       return;
     }
 
@@ -127,7 +141,10 @@ export default function App() {
       body: JSON.stringify({ projectId: id }),
     }).then((response) => {
       if (response.status !== 200) {
-        alert("Failed to accept invite. Please try again.");
+        alertDialog({
+          title: "Error",
+          message: "Failed to accept invite. Please try again.",
+        });
         return;
       }
       dispatch(flipInvite(id));

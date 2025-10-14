@@ -39,6 +39,7 @@ import { PeopleList } from "@/lib/Components/PeopleList/PeopleList";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { NiceCheckbox } from "@/lib/Components/NiceCheckbox/NiceCheckbox";
 import { FaSearch } from "react-icons/fa";
+import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
 
 function SortableTask({
   task,
@@ -217,7 +218,7 @@ export default function Project({
       if (data === null || data === undefined) {
         return; // User cancelled
       } else if (data === "") {
-        alert(`Task title cannot be empty`);
+        alertDialog({ title: "Error", message: "Task title cannot be empty" });
         data = null;
       } else {
         addProjectTask(project.id, data);
@@ -326,16 +327,18 @@ export default function Project({
           </div>
         ) : sortBy !== "Custom" ? (
           <div className="project-task-list-only">
-            {sortTasks(project.tasks).map((task) => {
-              return (
-                <SortableTask
-                  key={task.id}
-                  task={task}
-                  color={TaskProgressStats[task.progress].color}
-                  moveable={false}
-                />
-              );
-            })}
+            {sortTasks(project.tasks.filter((task) => !task.archived)).map(
+              (task) => {
+                return (
+                  <SortableTask
+                    key={task.id}
+                    task={task}
+                    color={TaskProgressStats[task.progress].color}
+                    moveable={false}
+                  />
+                );
+              }
+            )}
           </div>
         ) : (
           <DndContext
@@ -345,20 +348,22 @@ export default function Project({
             modifiers={[restrictToVerticalAxis]}
           >
             <SortableContext
-              items={project.tasks}
+              items={project.tasks.filter((task) => !task.archived)}
               strategy={verticalListSortingStrategy}
             >
               <div className="project-task-list-only">
-                {sortTasks(project.tasks).map((task) => {
-                  return (
-                    <SortableTask
-                      key={task.id}
-                      task={task}
-                      color={TaskProgressStats[task.progress].color}
-                      moveable={true}
-                    />
-                  );
-                })}
+                {sortTasks(project.tasks.filter((task) => !task.archived)).map(
+                  (task) => {
+                    return (
+                      <SortableTask
+                        key={task.id}
+                        task={task}
+                        color={TaskProgressStats[task.progress].color}
+                        moveable={true}
+                      />
+                    );
+                  }
+                )}
               </div>
             </SortableContext>
           </DndContext>

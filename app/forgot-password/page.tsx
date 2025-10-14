@@ -6,6 +6,7 @@ import { sendPasswordResetEmail } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import Link from "next/link";
+import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
 
 function ForgotPasswordForm() {
   // Hooks
@@ -29,7 +30,10 @@ function ForgotPasswordForm() {
     // Send the password reset email
     await sendPasswordResetEmail(auth, email);
 
-    alert("Password reset email sent. Please check your inbox.");
+    alertDialog({
+      title: "Success",
+      message: "Password reset email sent. Please check your inbox.",
+    });
 
     router.push(`/login?email=${email}`); // go back to login page
   }

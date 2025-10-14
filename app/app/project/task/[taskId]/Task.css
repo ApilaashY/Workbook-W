@@ -118,7 +118,8 @@
   flex-grow: 1;
 }
 
-.delete-task {
+.archive-task {
+  flex: 1;
   padding: 1em;
   cursor: pointer;
   border-radius: var(--borderRadius);
@@ -127,7 +128,19 @@
   font-size: 1rem;
 }
 
-.delete-task:hover {
+.delete-task {
+  flex: 1;
+  padding: 1em;
+  cursor: pointer;
+  border-radius: var(--borderRadius);
+  border: 1px solid red;
+  transition-duration: 0.2s;
+  font-size: 1rem;
+  color: red;
+}
+
+.delete-task:hover,
+.archive-task:hover {
   transition-duration: 0.2s;
   cursor: pointer;
   background-color: var(--bubbleBackgroundHover);

@@ -67,7 +67,7 @@ declare global {
 //     const SpeechRecognition =
 //       window.SpeechRecognition || window.webkitSpeechRecognition;
 //     if (!SpeechRecognition) {
-//       alert("Speech recognition not supported in this browser.");
+//       alertDialog("Speech recognition not supported in this browser.");
 //       resolve("");
 //       return;
 //     }
@@ -80,7 +80,7 @@ declare global {
 //       resolve(event.results[0][0].transcript);
 //     };
 //     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-//       alert("Speech recognition error: " + event.error);
+//       alertDialog("Speech recognition error: " + event.error);
 //       resolve("");
 //     };
 //     recognition.onend = () => {};

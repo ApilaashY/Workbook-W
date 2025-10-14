@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { ProjectClass } from "@/lib/DataClasses/ProjectClass";
 import {
   addTask,
+  archiveTask,
   deleteTask,
   ProjectStore,
   updateCommentData,
@@ -47,6 +48,7 @@ import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 import { onValue, ref } from "firebase/database";
 import { NiceCheckbox } from "@/lib/Components/NiceCheckbox/NiceCheckbox";
 import { FaSearch } from "react-icons/fa";
+import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
 // import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 
 function SortableTask({
@@ -293,7 +295,10 @@ export default function Task({
 
     // Update the task with the new data
     if (required && data.trim() === "") {
-      alert(`Task ${category} cannot be empty`);
+      alertDialog({
+        title: "Error",
+        message: `Task ${category} cannot be empty`,
+      });
       data = null;
     } else {
       task[category] = data.trim();
@@ -311,7 +316,7 @@ export default function Task({
       if (data === null || data === undefined) {
         return; // User cancelled
       } else if (data === "") {
-        alert(`Task title cannot be empty`);
+        alertDialog({ title: "Error", message: "Task title cannot be empty" });
         data = null;
       } else {
         addTask(task.id, data);
@@ -326,6 +331,20 @@ export default function Task({
     if (!window.confirm("Are you sure you want to delete this task?")) return;
 
     await deleteTask(task.id);
+    const lastTask: string = popLastTask(task.id);
+    router.push(
+      !lastTask.includes("-")
+        ? `/app/project/${lastTask}`
+        : `/app/project/task/${lastTask}`
+    );
+  }
+
+  async function archiveTaskButton() {
+    if (!task) return; // Early return if task is undefined
+
+    if (!window.confirm("Are you sure you want to archive this task?")) return;
+
+    await archiveTask(task.id);
     const lastTask: string = popLastTask(task.id);
     router.push(
       !lastTask.includes("-")
@@ -464,7 +483,11 @@ export default function Task({
               task.dueDate &&
               TaskProgressStats[task.progress].alertLate &&
               new Date(task.dueDate) < new Date(Date.now())
-                ? () => alert("This Task is Past Its Due Date")
+                ? () =>
+                    alertDialog({
+                      title: "Warning",
+                      message: "This Task is Past Its Due Date",
+                    })
                 : undefined
             }
           >
@@ -500,9 +523,20 @@ export default function Task({
         <span className="fill" />
 
         <div className="task-info-card">
-          <button className="delete-task" onClick={deleteTaskButton}>
-            Delete Task
-          </button>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "1em",
+            }}
+          >
+            <button className="archive-task" onClick={archiveTaskButton}>
+              Archive Task
+            </button>
+            <button className="delete-task" onClick={deleteTaskButton}>
+              Delete Task
+            </button>
+          </div>
         </div>
       </div>
 
