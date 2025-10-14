@@ -1,7 +1,7 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -152,12 +152,59 @@ export default function Project({
     (state: ProjectStore) => state.projects
   );
   const [sortBy, setSortBy] = useState<string>("Custom");
+  const [taskClassification, setTaskClassification] =
+    useState<string>("General Tasks");
   const [ascending, setAscending] = useState<boolean>(false);
   const [showOrder, setShowOrder] = useState<boolean>(false);
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<
     [string, string, string, string, TaskClass][]
   >([]);
+
+  // Cache filtered tasks (only recalculates when project.tasks or taskClassification changes)
+  const filteredTasks = useMemo(() => {
+    if (!project) return [];
+
+    if (taskClassification === "General Tasks") {
+      return project.tasks.filter((task) => !task.archived);
+    } else if (taskClassification === "Archived") {
+      return project.tasks.filter((task) => task.archived);
+    } else {
+      return project.tasks; // "All"
+    }
+  }, [project, taskClassification]);
+
+  // Cache sorted tasks (only recalculates when filteredTasks, sortBy, or ascending changes)
+  const sortedTasks = useMemo(() => {
+    const dup = [...filteredTasks];
+
+    if (sortBy === "Creation Date") {
+      return dup.sort((a, b) => {
+        const diff =
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        return ascending ? diff : -diff;
+      });
+    } else if (sortBy === "Alphabetical") {
+      return dup.sort((a, b) => {
+        const comparison = a.title.localeCompare(b.title);
+        return ascending ? comparison : -comparison;
+      });
+    } else if (sortBy === "Priority") {
+      return dup.sort((a, b) => {
+        const diff =
+          PriorityStats[a.priority].value - PriorityStats[b.priority].value;
+        return ascending ? diff : -diff;
+      });
+    } else if (sortBy === "Due Date") {
+      return dup.sort((a, b) => {
+        const diff =
+          new Date(a.dueDate || "").getTime() -
+          new Date(b.dueDate || "").getTime();
+        return ascending ? diff : -diff;
+      });
+    }
+    return dup; // Custom
+  }, [filteredTasks, sortBy, ascending]);
 
   // Handle async params in useEffect
   useEffect(() => {
@@ -291,6 +338,14 @@ export default function Project({
             <div className="project-task-list-header-controls">
               <select
                 className="sort-select"
+                onChange={(e) => setTaskClassification(e.target.value)}
+              >
+                <option value="General Tasks">General Tasks</option>
+                <option value="Archived">Archived</option>
+                <option value="All">All</option>
+              </select>
+              <select
+                className="sort-select"
                 onChange={(e) => setSortBy(e.target.value)}
               >
                 <option value="Custom">Custom</option>
@@ -327,18 +382,16 @@ export default function Project({
           </div>
         ) : sortBy !== "Custom" ? (
           <div className="project-task-list-only">
-            {sortTasks(project.tasks.filter((task) => !task.archived)).map(
-              (task) => {
-                return (
-                  <SortableTask
-                    key={task.id}
-                    task={task}
-                    color={TaskProgressStats[task.progress].color}
-                    moveable={false}
-                  />
-                );
-              }
-            )}
+            {sortedTasks.map((task) => {
+              return (
+                <SortableTask
+                  key={task.id}
+                  task={task}
+                  color={TaskProgressStats[task.progress].color}
+                  moveable={false}
+                />
+              );
+            })}
           </div>
         ) : (
           <DndContext
@@ -348,22 +401,20 @@ export default function Project({
             modifiers={[restrictToVerticalAxis]}
           >
             <SortableContext
-              items={project.tasks.filter((task) => !task.archived)}
+              items={filteredTasks}
               strategy={verticalListSortingStrategy}
             >
               <div className="project-task-list-only">
-                {sortTasks(project.tasks.filter((task) => !task.archived)).map(
-                  (task) => {
-                    return (
-                      <SortableTask
-                        key={task.id}
-                        task={task}
-                        color={TaskProgressStats[task.progress].color}
-                        moveable={true}
-                      />
-                    );
-                  }
-                )}
+                {sortedTasks.map((task) => {
+                  return (
+                    <SortableTask
+                      key={task.id}
+                      task={task}
+                      color={TaskProgressStats[task.progress].color}
+                      moveable={true}
+                    />
+                  );
+                })}
               </div>
             </SortableContext>
           </DndContext>
