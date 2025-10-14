@@ -269,6 +269,21 @@ export async function deleteTask(id: string) {
   });
 }
 
+export async function archiveTask(id: string) {
+  const token = await auth.currentUser?.getIdToken();
+
+  await fetch(`${process.env.NEXT_PUBLIC_LINK}/api/database/archiveTask`, {
+    method: "POST",
+    body: JSON.stringify({
+      path: `projects/${createIdTrail(id, store.getState().projects)}`,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 export async function updateTaskOrder(
   id: string,
   active: number,

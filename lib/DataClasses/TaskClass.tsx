@@ -13,6 +13,7 @@ export interface TaskObject {
   comments?: Comment[];
   priority?: string;
   createdAt?: string;
+  archived?: boolean;
 }
 
 export class TaskClass {
@@ -28,6 +29,7 @@ export class TaskClass {
   public comments: Comment[];
   public priority: string;
   public createdAt: string;
+  public archived: boolean;
 
   constructor(
     title: string,
@@ -41,7 +43,8 @@ export class TaskClass {
     dueDate?: string | undefined,
     comments?: Comment[],
     priority?: string,
-    createdAt?: string
+    createdAt?: string,
+    archived?: boolean
   ) {
     this.title = title.trim();
     this.id = id.trim();
@@ -55,6 +58,7 @@ export class TaskClass {
     this.comments = comments ?? [];
     this.priority = priority ?? "Medium";
     this.createdAt = createdAt ?? new Date().toISOString();
+    this.archived = archived ?? false;
   }
 
   static fromMap(allData: TaskObject): TaskClass {
@@ -70,7 +74,8 @@ export class TaskClass {
       allData.dueDate,
       allData.comments || [],
       allData.priority || "Medium",
-      allData.createdAt || new Date().toISOString()
+      allData.createdAt || new Date().toISOString(),
+      allData.archived ?? false
     );
     return task;
   }
@@ -95,6 +100,7 @@ export class TaskClass {
       comments: this.comments,
       priority: this.priority,
       createdAt: this.createdAt,
+      archived: this.archived,
     };
   }
 }

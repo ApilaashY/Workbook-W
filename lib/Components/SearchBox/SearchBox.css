@@ -10,13 +10,20 @@
 }
 
 .search-field,
+.search-archive-button,
 .search-select {
+  background-color: rgb(253, 253, 253);
   padding: 0.5em;
   border-radius: var(--borderRadius);
   font-size: 1rem;
   margin: 1em 0.5em 0.5em;
-  border-width: 2px;
+  border: 1px solid black;
   cursor: pointer;
+}
+
+.search-archive-button:hover {
+  background-color: var(--bubbleBackgroundHover);
+  transition-duration: 0.2s;
 }
 
 h2,
