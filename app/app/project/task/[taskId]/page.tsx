@@ -49,6 +49,7 @@ import { onValue, ref } from "firebase/database";
 import { NiceCheckbox } from "@/lib/Components/NiceCheckbox/NiceCheckbox";
 import { FaSearch } from "react-icons/fa";
 import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
+import { DependentTasks } from "@/lib/Components/DependentTasks/DependentTasks";
 // import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 
 function SortableTask({
@@ -455,10 +456,10 @@ export default function Task({
           </select>
         </div>
 
-        <div className="task-info-card">
+        {/* <div className="task-info-card">
           <h3 className="info-label">Check Status of all Subtasks:</h3>
           <ProgressStatus project={task} />
-        </div>
+        </div> */}
 
         <div className="task-info-card">
           <h3 className="info-label">Attached Links</h3>
@@ -517,6 +518,15 @@ export default function Task({
               projectData.find((project) => project.id == task.id.split("-")[0])
                 ?.people || {}
             }
+          />
+        </div>
+
+        <div className="task-info-card">
+          <h3 className="info-label">Dependencies</h3>
+          <DependentTasks
+            tasks={task.dependencies ?? []}
+            updateFunction={updateTask}
+            id={id}
           />
         </div>
 

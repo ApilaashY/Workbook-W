@@ -23,7 +23,8 @@ export type TaskUpdateables =
   | "tasks"
   | "attachedDocs"
   | "comments"
-  | "priority";
+  | "priority"
+  | "dependencies";
 
 const projectSlice = createSlice({
   name: "projects",
