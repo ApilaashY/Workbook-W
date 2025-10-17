@@ -34,7 +34,13 @@ export default function RootLayout({
           crossOrigin="anonymous"
         ></script>
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      {/* suppressHydrationWarning prevents React from logging hydration mismatch
+          warnings for transient attributes injected on the client (e.g. by
+          browser extensions) that don't affect app behavior. */}
+      <body
+        className={`${geistSans.variable} ${geistMono.variable}`}
+        suppressHydrationWarning
+      >
         {children}
       </body>
       <GoogleAnalytics gaId="G-Q3E5ECQQ24" />

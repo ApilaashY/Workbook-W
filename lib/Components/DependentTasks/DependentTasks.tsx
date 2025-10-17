@@ -1,19 +1,42 @@
-import { useState } from "react";
+import { useMemo } from "react";
 import "./DependentTasks.css";
-import { store, updateProject, updateTask } from "@/lib/store";
+import { store, updateTask } from "@/lib/store";
 import { alertDialog } from "../Dialogs/AlertDialog";
-import { taskSelect, taskSelectDialog } from "../Dialogs/TaskSelectDialog";
+import { taskSelect } from "../Dialogs/TaskSelectDialog";
 import { TaskObject } from "@/lib/DataClasses/TaskClass";
+import Link from "next/link";
+import ProgressIndicator from "../ProgressIndicator/ProgressIndicator";
 
 export function DependentTasks({
-  tasks,
+  taskList,
   updateFunction,
   id,
 }: {
-  tasks: string[];
+  taskList: string[];
   updateFunction: typeof updateTask;
   id: string;
 }) {
+  const tasks = useMemo(() => {
+    return (
+      (taskList ?? [])
+        .map((val) => {
+          let task: TaskObject | undefined = store
+            .getState()
+            .projects.find((p) => val.startsWith(p.id));
+
+          // If the task is not the dependent task itself, keep looking in its subtasks
+          while (task !== undefined && task.id !== val) {
+            task = (task.tasks ?? []).find((t) => val === t.id);
+          }
+
+          if (task === undefined) return null;
+
+          return task;
+        })
+        .filter((task): task is TaskObject => task !== null) ?? []
+    );
+  }, [taskList]);
+
   function addTask(name: string | null): boolean {
     console.log(name);
 
@@ -33,24 +56,34 @@ export function DependentTasks({
 
   return (
     <div className="dependent-tasks">
+      {tasks.length > 0 && (
+        <ProgressIndicator
+          value={
+            tasks.filter((t) => t.progress === "Done").length / tasks.length
+          }
+        />
+      )}
       {tasks.map((val, index) => {
-        let task: TaskObject | undefined = store
-          .getState()
-          .projects.find((p) => val.startsWith(p.id));
-
-        // If the task is not the dependent task itself, keep looking in its subtasks
-        while (task !== undefined && task.id !== val) {
-          task = (task.tasks ?? []).find((t) => val === t.id);
-        }
-
-        if (task === undefined) return;
-
         return (
-          <button className="task-subtask-item" key={index}>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {task.title}
+          <Link
+            href={`/app/project/task/${val.id}`}
+            className="task-subtask-item"
+            key={index}
+            style={{
+              border: `2px solid ${
+                val.progress === "Done" ? "var(--primary)" : "transparent"
+              }`,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {val.title}
             </div>
-          </button>
+          </Link>
         );
       })}
       <h3
@@ -59,7 +92,7 @@ export function DependentTasks({
           addTask(
             await taskSelect(
               store.getState().projects.find((p) => p.id === id.split("-")[0]),
-              [id, ...tasks]
+              [id, ...taskList]
             )
           )
         }

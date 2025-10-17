@@ -1,0 +1,15 @@
+.progress-indicator {
+  background-color: white;
+  width: 100%;
+  padding: 0.2em;
+  border-radius: 3em;
+  height: 1em;
+}
+
+.progress-indicator .progress {
+  margin: 0;
+  background-color: var(--primary);
+  border-radius: 3em;
+  height: 1em;
+  transition: width 0.2s;
+}

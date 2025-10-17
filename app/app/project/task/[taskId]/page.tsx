@@ -38,7 +38,6 @@ import {
   TaskProgressStats,
   TaskProgressTypes,
 } from "@/lib/DataClasses/TaskClass";
-import { ProgressStatus } from "@/lib/Components/ProgressStatus/ProgressStatus";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
 import { createIdTrail, db, popLastTask } from "@/lib/firebase";
@@ -524,7 +523,7 @@ export default function Task({
         <div className="task-info-card">
           <h3 className="info-label">Dependencies</h3>
           <DependentTasks
-            tasks={task.dependencies ?? []}
+            taskList={task.dependencies ?? []}
             updateFunction={updateTask}
             id={id}
           />

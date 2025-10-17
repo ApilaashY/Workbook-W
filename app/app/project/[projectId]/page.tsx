@@ -292,38 +292,6 @@ export default function Project({
     }
   }
 
-  function sortTasks(tasks: TaskClass[]) {
-    const dup = [...tasks];
-    if (sortBy === "Creation Date") {
-      return dup.sort((a, b) => {
-        return ascending
-          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
-    } else if (sortBy === "Alphabetical") {
-      return dup.sort((a, b) => {
-        return ascending
-          ? a.title.localeCompare(b.title)
-          : b.title.localeCompare(a.title);
-      });
-    } else if (sortBy === "Priority") {
-      return dup.sort((a, b) => {
-        return ascending
-          ? PriorityStats[a.priority].value - PriorityStats[b.priority].value
-          : PriorityStats[b.priority].value - PriorityStats[a.priority].value;
-      });
-    } else if (sortBy === "Due Date") {
-      return dup.sort((a, b) => {
-        return ascending
-          ? new Date(a.dueDate || "").getTime() -
-              new Date(b.dueDate || "").getTime()
-          : new Date(b.dueDate || "").getTime() -
-              new Date(a.dueDate || "").getTime();
-      });
-    }
-    return dup; // Default case
-  }
-
   return (
     <div className="project-window">
       <div className="project-task-list">

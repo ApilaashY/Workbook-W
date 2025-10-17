@@ -68,6 +68,7 @@ function TaskSelectDialog({
         <div className="prompt-body">
           {taskStack[taskStack.length - 1].map((task, index) => (
             <button
+              key={index}
               className="task-subtask-item"
               style={value === index ? selectedStyle : {}}
               onClick={() =>
