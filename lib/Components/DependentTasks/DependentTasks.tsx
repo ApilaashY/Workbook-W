@@ -3,6 +3,7 @@ import "./DependentTasks.css";
 import { store, updateProject, updateTask } from "@/lib/store";
 import { alertDialog } from "../Dialogs/AlertDialog";
 import { taskSelect, taskSelectDialog } from "../Dialogs/TaskSelectDialog";
+import { TaskObject } from "@/lib/DataClasses/TaskClass";
 
 export function DependentTasks({
   tasks,
@@ -14,6 +15,8 @@ export function DependentTasks({
   id: string;
 }) {
   function addTask(name: string | null): boolean {
+    console.log(name);
+
     if (name === null) return false;
 
     if (name.trim().length === 0) {
@@ -29,18 +32,34 @@ export function DependentTasks({
   }
 
   return (
-    <div className="attached-docs">
-      {tasks.map((val, index) => (
-        <a href={val[1]} target="_blank" key={index}>
-          {val[0]}
-        </a>
-      ))}
+    <div className="dependent-tasks">
+      {tasks.map((val, index) => {
+        let task: TaskObject | undefined = store
+          .getState()
+          .projects.find((p) => val.startsWith(p.id));
+
+        // If the task is not the dependent task itself, keep looking in its subtasks
+        while (task !== undefined && task.id !== val) {
+          task = (task.tasks ?? []).find((t) => val === t.id);
+        }
+
+        if (task === undefined) return;
+
+        return (
+          <button className="task-subtask-item" key={index}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {task.title}
+            </div>
+          </button>
+        );
+      })}
       <h3
-        className="add-doc"
+        className="add-task"
         onClick={async () =>
           addTask(
             await taskSelect(
-              store.getState().projects.find((p) => p.id === id.split("-")[0])
+              store.getState().projects.find((p) => p.id === id.split("-")[0]),
+              [id, ...tasks]
             )
           )
         }

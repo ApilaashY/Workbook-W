@@ -1,22 +1,27 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./Dialogs.css";
-import { ProjectClass, ProjectObject } from "@/lib/DataClasses/ProjectClass";
-import { TaskClass, TaskObject } from "@/lib/DataClasses/TaskClass";
+import { ProjectObject } from "@/lib/DataClasses/ProjectClass";
+import { TaskObject } from "@/lib/DataClasses/TaskClass";
 
 interface TaskSelectDialogProps {
   tasks: ProjectObject;
+  currentTaskId: string[];
   onResolve: (value: string | null) => void;
 }
 
-function TaskSelectDialog({ tasks, onResolve }: TaskSelectDialogProps) {
+function TaskSelectDialog({
+  tasks,
+  currentTaskId,
+  onResolve,
+}: TaskSelectDialogProps) {
   const [value, setValue] = useState<number | null>(null);
   const [taskStack, setTaskStack] = useState<TaskObject[][]>([
-    tasks.tasks ?? [],
+    (tasks.tasks ?? []).filter((task) => !currentTaskId.includes(task.id)),
   ]);
 
   const handleConfirm = () => {
-    onResolve(value ? taskStack[taskStack.length - 1][value].id : null);
+    onResolve(value != null ? taskStack[taskStack.length - 1][value].id : null);
   };
 
   const handleCancel = () => {
@@ -33,13 +38,26 @@ function TaskSelectDialog({ tasks, onResolve }: TaskSelectDialogProps) {
     }
   };
 
+  const selectedStyle = {
+    border: `2px solid var(--primary)`,
+    marginBottom: "0.5em",
+    width: "100%",
+  };
+
   return (
-    <div className="prompt-overlay" onClick={handleCancel}>
+    <div
+      className="prompt-overlay"
+      onClick={handleCancel}
+      onKeyDown={handleKeyDown}
+    >
       <div className="prompt-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="prompt-header">
           <h3>
             {taskStack.length > 1 && (
-              <span onClick={() => setTaskStack((prev) => prev.slice(0, -1))}>
+              <span
+                style={{ marginRight: "1em", cursor: "pointer" }}
+                onClick={() => setTaskStack((prev) => prev.slice(0, -1))}
+              >
                 {"<"}
               </span>
             )}
@@ -48,15 +66,21 @@ function TaskSelectDialog({ tasks, onResolve }: TaskSelectDialogProps) {
         </div>
 
         <div className="prompt-body">
-          {taskStack[taskStack.length - 1].map((task) => (
+          {taskStack[taskStack.length - 1].map((task, index) => (
             <button
               className="task-subtask-item"
+              style={value === index ? selectedStyle : {}}
               onClick={() =>
                 setValue(taskStack[taskStack.length - 1].indexOf(task))
               }
               onDoubleClick={() => {
                 setValue(null);
-                setTaskStack((prev) => [...prev, task.tasks ?? []]);
+                setTaskStack((prev) => [
+                  ...prev,
+                  (task.tasks ?? []).filter(
+                    (task) => !currentTaskId.includes(task.id)
+                  ),
+                ]);
               }}
             >
               <div style={{ display: "flex", flexDirection: "column" }}>
@@ -85,7 +109,10 @@ function TaskSelectDialog({ tasks, onResolve }: TaskSelectDialogProps) {
   );
 }
 
-export function taskSelectDialog(tasks: ProjectObject): Promise<string | null> {
+export function taskSelectDialog(
+  tasks: ProjectObject,
+  currentTaskId: string[]
+): Promise<string | null> {
   return new Promise((resolve) => {
     // Create a container for the dialog
     const container = document.createElement("div");
@@ -103,15 +130,22 @@ export function taskSelectDialog(tasks: ProjectObject): Promise<string | null> {
       resolve(value);
     };
 
-    root.render(<TaskSelectDialog tasks={tasks} onResolve={handleResolve} />);
+    root.render(
+      <TaskSelectDialog
+        tasks={tasks}
+        currentTaskId={currentTaskId}
+        onResolve={handleResolve}
+      />
+    );
   });
 }
 
 // Convenience function that matches browser prompt API
 export function taskSelect(
-  tasks: ProjectObject | undefined
+  tasks: ProjectObject | undefined,
+  currentTaskId: string[]
 ): Promise<string | null> {
   if (!tasks) return Promise.resolve(null);
 
-  return taskSelectDialog(tasks);
+  return taskSelectDialog(tasks, currentTaskId);
 }
