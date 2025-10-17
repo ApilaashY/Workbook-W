@@ -13,7 +13,7 @@ import { auth, db, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
-import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
+import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
 
 export default function App() {
   // Hooks
@@ -62,10 +62,7 @@ export default function App() {
   async function addNewProject() {
     // Check if the user is logged in
     if (!auth.currentUser) {
-      alertDialog({
-        title: "Error",
-        message: "You must be logged in to create a project.",
-      });
+      alertMessage("Error", "You must be logged in to create a project.");
       return;
     }
 
@@ -98,15 +95,12 @@ export default function App() {
       // If the response is not successful, alertDialog the user
       if (response.status !== 201) {
         if (response.status === 410)
-          alertDialog({
-            title: "Error",
-            message: "You have reached the maximum number of projects.",
-          });
+          alertMessage(
+            "Error",
+            "You have reached the maximum number of projects."
+          );
         else
-          alertDialog({
-            title: "Error",
-            message: "Failed to create project. Please try again.",
-          });
+          alertMessage("Error", "Failed to create project. Please try again.");
         return;
       }
 
@@ -122,10 +116,7 @@ export default function App() {
   async function acceptInvite(id: string) {
     // Check if the user is logged in
     if (!auth.currentUser) {
-      alertDialog({
-        title: "Error",
-        message: "You must be logged in to accept an invite.",
-      });
+      alertMessage("Error", "You must be logged in to accept an invite.");
       return;
     }
 
@@ -141,10 +132,7 @@ export default function App() {
       body: JSON.stringify({ projectId: id }),
     }).then((response) => {
       if (response.status !== 200) {
-        alertDialog({
-          title: "Error",
-          message: "Failed to accept invite. Please try again.",
-        });
+        alertMessage("Error", "Failed to accept invite. Please try again.");
         return;
       }
       dispatch(flipInvite(id));

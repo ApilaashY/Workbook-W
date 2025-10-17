@@ -7,11 +7,16 @@ import { GoogleGenAI } from "@google/genai";
 import Link from "next/link";
 import { ProjectClass } from "@/lib/DataClasses/ProjectClass";
 import { TaskClass } from "@/lib/DataClasses/TaskClass";
-import { allCommands, executeCommands } from "@/lib/executeCommands";
+import {
+  allCommands,
+  commandValidator,
+  executeCommands,
+} from "@/lib/executeCommands";
 import { ProjectStore } from "@/lib/store";
 import { useParams, useRouter } from "next/navigation";
 import { findTaskById } from "@/lib/firebase";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
+import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
 
 // Interfaces for speech recognition
 interface SpeechRecognitionEvent {
@@ -105,7 +110,7 @@ export default function Toolbar() {
   // Command to execute AI instructions
   async function _AICommands() {
     const ai = new GoogleGenAI({
-      apiKey: "",
+      apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || "",
     });
 
     const systemInstruction =
@@ -127,7 +132,10 @@ export default function Toolbar() {
     // + "In the general response, speak as if you did the things the instructions are supposed to do, do not mention how you created or wrote a list of instructions. "
 
     const spoken = null; //await getSpeechInput();
-    const userInput = spoken || promptMessage("Enter your command") || "";
+    const userInput =
+      spoken || (await promptMessage("Enter your command")) || "";
+
+    if (userInput.trim() === "") return;
 
     console.log(userInput);
 
@@ -146,11 +154,21 @@ export default function Toolbar() {
           systemInstruction: systemInstruction,
         },
       })
-      .then((response) => {
+      .then(async (response) => {
         console.log(response.text);
-        if (promptMessage("Enter anything to execute commands: ") != null) {
+        // if (
+        //   (await promptMessage("Enter anything to execute commands: ")) != null
+        // ) {
+        console.log(commandValidator(response.text || ""));
+        if (!commandValidator(response.text || "")) {
+          alertMessage("Request Error", "Unsure how to perform the request");
+        } else {
           executeCommands(id, response.text || "", dispatch);
         }
+        // }
+      })
+      .catch((error) => {
+        console.error("Error generating AI content:", error);
       });
   }
 

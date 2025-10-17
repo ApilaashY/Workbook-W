@@ -39,7 +39,7 @@ import { PeopleList } from "@/lib/Components/PeopleList/PeopleList";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { NiceCheckbox } from "@/lib/Components/NiceCheckbox/NiceCheckbox";
 import { FaSearch } from "react-icons/fa";
-import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
+import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
 
 function SortableTask({
   task,
@@ -265,7 +265,7 @@ export default function Project({
       if (data === null || data === undefined) {
         return; // User cancelled
       } else if (data === "") {
-        alertDialog({ title: "Error", message: "Task title cannot be empty" });
+        alertMessage("Error", "Task title cannot be empty");
         data = null;
       } else {
         addProjectTask(project.id, data);

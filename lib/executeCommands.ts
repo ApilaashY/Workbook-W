@@ -9,6 +9,7 @@ import {
 } from "./store";
 import { type Dispatch } from "@reduxjs/toolkit";
 import { findTaskById } from "./firebase";
+import { confirmMessage } from "./Components/Dialogs/ConfirmDialog";
 
 export type AnyObject = ProjectObject | TaskObject;
 
@@ -71,21 +72,37 @@ export async function executeCommands(
   const commandList: string[] = commands.split("\n");
   let projectData: ProjectObject[];
 
-  for (let i = 0; i < commandList.length; i++) {
-    projectData = store.getState().projects;
-    const currentData = findTaskById(projectData, id);
+  try {
+    for (let i = 0; i < commandList.length; i++) {
+      if (commandList[i].trim() === "") continue;
 
-    const pieces: string[] = commandList[i].split(" ");
+      const understandableCommand = generateCommandString(commandList[i]);
 
-    if (pieces.length === 0 || !currentData) continue;
+      if (
+        understandableCommand.trim() !== "" &&
+        !(await confirmMessage("Execute Command", understandableCommand))
+      ) {
+        console.log("Command execution cancelled by user.");
+        return;
+      }
 
-    id =
-      (await allCommands[pieces[0]][2](
-        id,
-        currentData,
-        pieces.slice(1).join(" "),
-        dispatch
-      )) ?? id;
+      projectData = store.getState().projects;
+      const currentData = findTaskById(projectData, id);
+
+      const pieces: string[] = commandList[i].split(" ");
+
+      if (pieces.length === 0 || !currentData) continue;
+
+      id =
+        (await allCommands[pieces[0]][2](
+          id,
+          currentData,
+          pieces.slice(1).join(" "),
+          dispatch
+        )) ?? id;
+    }
+  } catch (e) {
+    console.error("Error executing commands:", e);
   }
 }
 
@@ -172,9 +189,55 @@ async function openLink(
     attachedDocs[idx] &&
     attachedDocs[idx][0]
   ) {
-    console.log(attachedDocs[idx]);
     window.open(attachedDocs[idx][1]);
   }
 
   return id;
+}
+
+export function commandValidator(command: string): boolean {
+  for (const piece of command.split("\n")) {
+    if (piece.trim() === "") continue;
+
+    const subpieces: string[] = piece.split(" ");
+
+    if (subpieces.length === 0) continue;
+
+    if (
+      Object.keys(allCommands).find((key) => key === subpieces[0]) === undefined
+    ) {
+      return false;
+    }
+
+    if (
+      subpieces.length - 1 !==
+      allCommands[subpieces[0]][0].split("&").length
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function generateCommandString(command: string): string {
+  const pieces: string[] = command.split(" ");
+  if (pieces.length === 0) return "";
+
+  const commandKey = pieces[0];
+  if (commandKey === "ADDTASK") {
+    return `Add task ${pieces.slice(1).join(" ")}`;
+  } else if (commandKey === "CHANGETASKDESCRIPTION") {
+    return `Change the description to ${pieces.slice(1).join(" ")}`;
+  } else if (commandKey === "CHANGETASKTITLE") {
+    return `Change the title to ${pieces.slice(1).join(" ")}`;
+  } else if (commandKey === "DELETETASK") {
+    return `Delete the task with id ${pieces.slice(1).join(" ")}`;
+  } else if (commandKey === "OPENLINK") {
+    return `Open the link at index ${
+      (parseInt(pieces.slice(1).join(" ")) ?? 0) + 1
+    }`;
+  }
+
+  return "";
 }

@@ -8,7 +8,7 @@ interface PromptDialogProps {
   defaultValue?: string;
   validator?: (value: string) => string | null;
   multiLine?: boolean;
-  onResolve: (value: string | null) => void;
+  onResolve: (value: null) => void;
 }
 
 function AlertDialog({ title, message, onResolve }: PromptDialogProps) {
@@ -36,7 +36,7 @@ interface AlertOptions {
   message?: string;
 }
 
-export function alertDialog(options: AlertOptions): Promise<string | null> {
+export function alertDialog(options: AlertOptions): Promise<null> {
   return new Promise((resolve) => {
     // Create a container for the dialog
     const container = document.createElement("div");
@@ -49,7 +49,7 @@ export function alertDialog(options: AlertOptions): Promise<string | null> {
       document.body.removeChild(container);
     };
 
-    const handleResolve = (value: string | null) => {
+    const handleResolve = (value: null) => {
       cleanup();
       resolve(value);
     };
@@ -59,10 +59,7 @@ export function alertDialog(options: AlertOptions): Promise<string | null> {
 }
 
 // Convenience function that matches browser alert API
-export function alertMessage(
-  title: string,
-  message: string
-): Promise<string | null> {
+export function alertMessage(title: string, message: string): Promise<null> {
   return alertDialog({
     title,
     message,

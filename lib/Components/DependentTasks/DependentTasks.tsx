@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import "./DependentTasks.css";
 import { store, updateTask } from "@/lib/store";
-import { alertDialog } from "../Dialogs/AlertDialog";
+import { alertMessage } from "../Dialogs/AlertDialog";
 import { taskSelect } from "../Dialogs/TaskSelectDialog";
 import { TaskObject } from "@/lib/DataClasses/TaskClass";
 import Link from "next/link";
@@ -43,10 +43,7 @@ export function DependentTasks({
     if (name === null) return false;
 
     if (name.trim().length === 0) {
-      alertDialog({
-        title: "Error",
-        message: "Task Name can't be Empty",
-      });
+      alertMessage("Error", "Task Name can't be Empty");
       return false;
     }
 
