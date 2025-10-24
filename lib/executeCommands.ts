@@ -8,7 +8,7 @@ import {
   deleteTask as deleteTaskStore,
 } from "./store";
 import { type Dispatch } from "@reduxjs/toolkit";
-import { findTaskById, popLastTask } from "./firebase";
+import { findTaskById } from "./firebase";
 import { confirmMessage } from "./Components/Dialogs/ConfirmDialog";
 
 export type AnyObject = ProjectObject | TaskObject;
@@ -230,9 +230,6 @@ function generateCommandString(command: string, id: string): string {
   if (commandKey === "ADDTASK") {
     return `Add task ${pieces.slice(1).join(" ")}`;
   } else if (commandKey === "CHANGETASKDESCRIPTION") {
-    const raw = findTaskById(store.getState().projects, id);
-    const task = Array.isArray(raw) ? undefined : raw;
-
     return `Change the description to ${pieces.slice(1).join(" ")}`;
   } else if (commandKey === "CHANGETASKTITLE") {
     const raw = findTaskById(store.getState().projects, id);

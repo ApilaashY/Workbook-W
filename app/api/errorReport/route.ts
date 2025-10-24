@@ -1,5 +1,4 @@
-import { db, fdb } from "@/lib/firebase";
-import admin from "@/lib/firebaseAdmin";
+import { fdb } from "@/lib/firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { NextRequest } from "next/server";
 
