@@ -57,7 +57,17 @@ export function SearchBox({
     const query: string = search.trim().toLowerCase();
     let currentLevel = taskList;
 
-    if (query.length == 0) return [];
+    if (query.length == 0) {
+      // Empty search with archived toggled returns all archived tasks
+      if (searchArchived) {
+        return taskList
+          .filter((t) => t.archived)
+          .map((t) => ["Title", t.title, "", "", t]);
+      }
+
+      // Empty search returns no results
+      return [];
+    }
 
     while (currentLevel.length > 0) {
       let nextLevel: TaskClass[] = [];
@@ -88,8 +98,6 @@ export function SearchBox({
 
       currentLevel = nextLevel;
     }
-
-    console.log(matches.map((m) => m[4].title));
 
     return matches;
   }

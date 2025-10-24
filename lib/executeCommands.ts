@@ -8,7 +8,7 @@ import {
   deleteTask as deleteTaskStore,
 } from "./store";
 import { type Dispatch } from "@reduxjs/toolkit";
-import { findTaskById } from "./firebase";
+import { findTaskById, popLastTask } from "./firebase";
 import { confirmMessage } from "./Components/Dialogs/ConfirmDialog";
 
 export type AnyObject = ProjectObject | TaskObject;
@@ -76,7 +76,7 @@ export async function executeCommands(
     for (let i = 0; i < commandList.length; i++) {
       if (commandList[i].trim() === "") continue;
 
-      const understandableCommand = generateCommandString(commandList[i]);
+      const understandableCommand = generateCommandString(commandList[i], id);
 
       if (
         understandableCommand.trim() !== "" &&
@@ -211,7 +211,9 @@ export function commandValidator(command: string): boolean {
 
     if (
       subpieces.length - 1 !==
-      allCommands[subpieces[0]][0].split("&").length
+      allCommands[subpieces[0]][0]
+        .split("&")
+        .filter((val) => val.trim().length > 0).length
     ) {
       return false;
     }
@@ -220,7 +222,7 @@ export function commandValidator(command: string): boolean {
   return true;
 }
 
-function generateCommandString(command: string): string {
+function generateCommandString(command: string, id: string): string {
   const pieces: string[] = command.split(" ");
   if (pieces.length === 0) return "";
 
@@ -228,14 +230,31 @@ function generateCommandString(command: string): string {
   if (commandKey === "ADDTASK") {
     return `Add task ${pieces.slice(1).join(" ")}`;
   } else if (commandKey === "CHANGETASKDESCRIPTION") {
+    const raw = findTaskById(store.getState().projects, id);
+    const task = Array.isArray(raw) ? undefined : raw;
+
     return `Change the description to ${pieces.slice(1).join(" ")}`;
   } else if (commandKey === "CHANGETASKTITLE") {
-    return `Change the title to ${pieces.slice(1).join(" ")}`;
+    const raw = findTaskById(store.getState().projects, id);
+    const task = Array.isArray(raw) ? undefined : raw;
+
+    return `Change the title ${task?.title ?? ""} to ${pieces
+      .slice(1)
+      .join(" ")}`;
   } else if (commandKey === "DELETETASK") {
-    return `Delete the task with id ${pieces.slice(1).join(" ")}`;
+    const raw = findTaskById(
+      store.getState().projects,
+      pieces.slice(1).join(" ")
+    );
+    const task = Array.isArray(raw) ? undefined : raw;
+
+    return `Delete task ${task?.title ?? ""}`;
   } else if (commandKey === "OPENLINK") {
-    return `Open the link at index ${
-      (parseInt(pieces.slice(1).join(" ")) ?? 0) + 1
+    const raw = findTaskById(store.getState().projects, id);
+    const task = Array.isArray(raw) ? undefined : raw;
+
+    return `Open link ${
+      task?.attachedDocs?.[parseInt(pieces.slice(1).join(" ")) ?? 0]?.[1] ?? ""
     }`;
   }
 

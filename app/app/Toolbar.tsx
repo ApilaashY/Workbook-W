@@ -17,6 +17,7 @@ import { useParams, useRouter } from "next/navigation";
 import { findTaskById } from "@/lib/firebase";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
+import { confirmDialog } from "@/lib/Components/Dialogs/ConfirmDialog";
 
 // Interfaces for speech recognition
 interface SpeechRecognitionEvent {
@@ -133,11 +134,13 @@ export default function Toolbar() {
 
     const spoken = null; //await getSpeechInput();
     const userInput =
-      spoken || (await promptMessage("Enter your command")) || "";
+      spoken ||
+      (await promptMessage(
+        "My name is Terrance and I am a helpful assistant currently in beta. I may can make mistakes and you may need to clarify your requests. What would you like me to do?"
+      )) ||
+      "";
 
     if (userInput.trim() === "") return;
-
-    console.log(userInput);
 
     ai.models
       .generateContent({
@@ -148,6 +151,7 @@ export default function Toolbar() {
           ". If you don't understand what to do and want to throw an error, instead of the error, please explain why or what you understand and what you need to understand the request. Here is the current project or task directory: " +
           JSON.stringify(findTaskById(projectData, id)),
         config: {
+          temperature: 0,
           thinkingConfig: {
             thinkingBudget: 0,
           },
@@ -155,19 +159,40 @@ export default function Toolbar() {
         },
       })
       .then(async (response) => {
-        console.log(response.text);
         // if (
         //   (await promptMessage("Enter anything to execute commands: ")) != null
         // ) {
+        console.log(response.text);
         console.log(commandValidator(response.text || ""));
         if (!commandValidator(response.text || "")) {
-          alertMessage("Request Error", "Unsure how to perform the request");
+          const sendError = await confirmDialog(
+            "Request Error",
+            "Unsure how to perform the request. Would you like to send an anonymous error report to help improve Terrance?"
+          );
+
+          if (sendError) {
+            fetch(`${process.env.NEXT_PUBLIC_LINK}/api/errorReport`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                message: response.text || "",
+                className: "Terrance",
+              }),
+            });
+            alertMessage(
+              "Report Sent",
+              "Thank you for helping improve Terrance!"
+            );
+          }
         } else {
           executeCommands(id, response.text || "", dispatch);
         }
         // }
       })
       .catch((error) => {
+        alertMessage("Internal Error", "Unsure how to perform the request");
         console.error("Error generating AI content:", error);
       });
   }
