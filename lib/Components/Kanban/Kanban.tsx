@@ -1,8 +1,4 @@
-import {
-  TaskClass,
-  TaskProgressStats,
-  TaskProgressTypes,
-} from "@/lib/DataClasses/TaskClass";
+import { TaskClass, TaskProgressStats } from "@/lib/DataClasses/TaskClass";
 import { NiceCheckbox } from "../NiceCheckbox/NiceCheckbox";
 import { useRouter } from "next/navigation";
 import { updateTask } from "@/lib/store";
@@ -17,7 +13,7 @@ export default function Kanban({
 }) {
   const router = useRouter();
 
-  const kanbanSections = TaskProgressTypes;
+  const kanbanSections = ["Scheduled", "Not Started", "In Progress", "Done"];
 
   function handleClick(task: TaskClass) {
     router.push(`/app/project/task/${task.id}`);
@@ -58,6 +54,7 @@ export default function Kanban({
               .filter((task) => task.progress === section)
               .map((task) => (
                 <button
+                  key={task.id}
                   className="project-task-item"
                   style={{
                     border: `2px solid ${
