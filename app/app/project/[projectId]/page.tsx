@@ -40,6 +40,8 @@ import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { NiceCheckbox } from "@/lib/Components/NiceCheckbox/NiceCheckbox";
 import { FaSearch } from "react-icons/fa";
 import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
+import Switch from "@/lib/Components/Switch/Switch";
+import Kanban from "@/lib/Components/Kanban/Kanban";
 
 function SortableTask({
   task,
@@ -160,6 +162,7 @@ export default function Project({
   const [searchResults, setSearchResults] = useState<
     [string, string, string, string, TaskClass][]
   >([]);
+  const [kanbanMode, setKanbanMode] = useState<boolean>(false);
 
   // Cache filtered tasks (only recalculates when project.tasks or taskClassification changes)
   const filteredTasks = useMemo(() => {
@@ -169,6 +172,14 @@ export default function Project({
       return project.tasks.filter((task) => !task.archived);
     } else if (taskClassification === "Archived") {
       return project.tasks.filter((task) => task.archived);
+    } else if (taskClassification === "Finished") {
+      return project.tasks.filter(
+        (task) => !task.archived && task.progress === "Done"
+      );
+    } else if (taskClassification === "Unfinished") {
+      return project.tasks.filter(
+        (task) => !task.archived && task.progress !== "Done"
+      );
     } else {
       return project.tasks; // "All"
     }
@@ -292,7 +303,9 @@ export default function Project({
     }
   }
 
-  return (
+  return kanbanMode ? (
+    <Kanban tasks={project.tasks} setKanbanMode={setKanbanMode} />
+  ) : (
     <div className="project-window">
       <div className="project-task-list">
         <div className="project-task-list-header">
@@ -304,12 +317,15 @@ export default function Project({
           </h2>
           {showOrder ? (
             <div className="project-task-list-header-controls">
+              <Switch checked={kanbanMode} updater={setKanbanMode} />
               <select
                 className="sort-select"
                 onChange={(e) => setTaskClassification(e.target.value)}
               >
                 <option value="General Tasks">General Tasks</option>
                 <option value="Archived">Archived</option>
+                <option value="Finished">Finished</option>
+                <option value="Unfinished">Unfinished</option>
                 <option value="All">All</option>
               </select>
               <select

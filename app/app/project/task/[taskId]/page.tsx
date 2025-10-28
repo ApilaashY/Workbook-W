@@ -182,6 +182,14 @@ export default function Task({
       return task.tasks.filter((task) => !task.archived);
     } else if (taskClassification === "Archived") {
       return task.tasks.filter((task) => task.archived);
+    } else if (taskClassification === "Finished") {
+      return task.tasks.filter(
+        (task) => !task.archived && task.progress === "Done"
+      );
+    } else if (taskClassification === "Unfinished") {
+      return task.tasks.filter(
+        (task) => !task.archived && task.progress !== "Done"
+      );
     } else {
       return task.tasks; // "All"
     }
@@ -613,6 +621,8 @@ export default function Task({
               >
                 <option value="General Tasks">General Tasks</option>
                 <option value="Archived">Archived</option>
+                <option value="Finished">Finished</option>
+                <option value="Unfinished">Unfinished</option>
                 <option value="All">All</option>
               </select>
               <select

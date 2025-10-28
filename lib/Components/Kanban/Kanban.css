@@ -1,0 +1,30 @@
+.kanban {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: space-evenly;
+  gap: 3vh;
+  flex: 1;
+  width: 100%;
+}
+
+.kanban-section h2 {
+  margin: 0;
+  padding: 1em;
+  background-color: white;
+  border-radius: var(--borderRadius);
+}
+
+.kanban-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  flex: 1 1 0;
+  width: 100%;
+  padding: 1em;
+  overflow-y: auto;
+  box-sizing: border-box;
+  text-align: center;
+  background-color: var(--bubbleBackgroundColor);
+  border-radius: var(--borderRadius);
+}
