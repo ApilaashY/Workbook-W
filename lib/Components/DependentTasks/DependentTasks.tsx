@@ -6,15 +6,18 @@ import { taskSelect } from "../Dialogs/TaskSelectDialog";
 import { TaskObject } from "@/lib/DataClasses/TaskClass";
 import Link from "next/link";
 import ProgressIndicator from "../ProgressIndicator/ProgressIndicator";
+import { auth } from "@/lib/firebase";
 
 export function DependentTasks({
   taskList,
   updateFunction,
   id,
+  sample,
 }: {
   taskList: string[];
   updateFunction: typeof updateTask;
   id: string;
+  sample: boolean;
 }) {
   const tasks = useMemo(() => {
     return (
@@ -38,7 +41,11 @@ export function DependentTasks({
   }, [taskList]);
 
   function addTask(name: string | null): boolean {
-    console.log(name);
+    // Check if the user is logged in
+    if (!auth.currentUser || sample) {
+      alertMessage("Error", "You must be logged in to make changes.");
+      return false;
+    }
 
     if (name === null) return false;
 

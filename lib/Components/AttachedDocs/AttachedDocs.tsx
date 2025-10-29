@@ -1,22 +1,29 @@
 import { useState } from "react";
 import "./AttachedDocs.css";
 import { updateProject, updateTask } from "@/lib/store";
-import { alertDialog } from "../Dialogs/AlertDialog";
+import { alertDialog, alertMessage } from "../Dialogs/AlertDialog";
+import { auth } from "@/lib/firebase";
 
 export function AttachedDocs({
   links,
   updateFunction,
   id,
+  sample,
 }: {
   links: [string, string][];
   updateFunction: typeof updateTask | typeof updateProject;
   id: string;
+  sample: boolean;
 }) {
   const [openField, setOpenField] = useState<boolean>(false);
   const [label, setLabel] = useState<string>("");
   const [link, setLink] = useState<string>("");
 
   function addLink(label: string, link: string): boolean {
+    if (!auth.currentUser || sample) {
+      alertMessage("Error", "You must be logged in to create a project.");
+      return false;
+    }
     if (label.trim().length === 0) {
       alertDialog({
         title: "Error",

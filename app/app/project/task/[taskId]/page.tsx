@@ -20,7 +20,7 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from "react-datepicker";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ProjectClass } from "@/lib/DataClasses/ProjectClass";
 import {
   addTask,
@@ -40,15 +40,19 @@ import {
 } from "@/lib/DataClasses/TaskClass";
 import { AttachedDocs } from "@/lib/Components/AttachedDocs/AttachedDocs";
 import { SearchBox } from "@/lib/Components/SearchBox/SearchBox";
-import { createIdTrail, db, popLastTask } from "@/lib/firebase";
+import { auth, createIdTrail, db, popLastTask } from "@/lib/firebase";
 import { Priority } from "@/lib/Components/Priority/Priority";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 import { onValue, ref } from "firebase/database";
 import { NiceCheckbox } from "@/lib/Components/NiceCheckbox/NiceCheckbox";
 import { FaSearch } from "react-icons/fa";
-import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
+import {
+  alertDialog,
+  alertMessage,
+} from "@/lib/Components/Dialogs/AlertDialog";
 import { DependentTasks } from "@/lib/Components/DependentTasks/DependentTasks";
+import { onAuthStateChanged } from "firebase/auth";
 // import { CommentBox } from "@/lib/Components/CommentBox/CommentBox";
 
 function SortableTask({
@@ -68,6 +72,7 @@ function SortableTask({
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task.id });
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -78,7 +83,11 @@ function SortableTask({
   };
 
   function handleClick() {
-    router.push(`/app/project/task/${task.id}`);
+    router.push(
+      `/app/project/task/${task.id}${
+        searchParams.get("sample") === "true" ? "?sample=true" : ""
+      }`
+    );
   }
 
   // Function to handle checkbox click without triggering parent click
@@ -154,6 +163,7 @@ export default function Task({
   const router = useRouter();
   const sensors = useSensors(useSensor(PointerSensor));
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
 
   // Variables
   const [id, setId] = useState<string>("");
@@ -226,6 +236,16 @@ export default function Task({
     }
     return dup; // Custom
   }, [filteredTasks, sortBy, ascending]);
+
+  // Check if the user is signed in
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user && searchParams.get("sample") !== "true") {
+        router.push("/login");
+        return;
+      }
+    });
+  }, [projectData, router, searchParams]);
 
   // Handle async params in useEffect
   useEffect(() => {
@@ -332,6 +352,12 @@ export default function Task({
     category: "title" | "description",
     required: boolean
   ) {
+    // Check if the user is logged in
+    if (!auth.currentUser || searchParams.get("sample") === "true") {
+      alertMessage("Error", "You must be logged in to make changes.");
+      return;
+    }
+
     if (!task) return; // Early return if task is undefined
 
     // Get the user's new value
@@ -363,6 +389,12 @@ export default function Task({
 
   // Function to create a new subtask
   async function createNewTask() {
+    // Check if the user is logged in
+    if (!auth.currentUser || searchParams.get("sample") === "true") {
+      alertMessage("Error", "You must be logged in to make changes.");
+      return;
+    }
+
     if (!task) return; // Early return if task is undefined
 
     let data: string | null | undefined = null;
@@ -381,6 +413,12 @@ export default function Task({
 
   // Function to delete the current task and go back
   async function deleteTaskButton() {
+    // Check if the user is logged in
+    if (!auth.currentUser || searchParams.get("sample") === "true") {
+      alertMessage("Error", "You must be logged in to make changes.");
+      return;
+    }
+
     if (!task) return; // Early return if task is undefined
 
     if (!window.confirm("Are you sure you want to delete this task?")) return;
@@ -389,12 +427,22 @@ export default function Task({
     const lastTask: string = popLastTask(task.id);
     router.push(
       !lastTask.includes("-")
-        ? `/app/project/${lastTask}`
-        : `/app/project/task/${lastTask}`
+        ? `/app/project/${lastTask}${
+            searchParams.get("sample") === "true" ? "?sample=true" : ""
+          }`
+        : `/app/project/task/${lastTask}${
+            searchParams.get("sample") === "true" ? "?sample=true" : ""
+          }`
     );
   }
 
   async function archiveTaskButton() {
+    // Check if the user is logged in
+    if (!auth.currentUser || searchParams.get("sample") === "true") {
+      alertMessage("Error", "You must be logged in to make changes.");
+      return;
+    }
+
     if (!task) return; // Early return if task is undefined
 
     if (!window.confirm("Are you sure you want to archive this task?")) return;
@@ -403,8 +451,12 @@ export default function Task({
     const lastTask: string = popLastTask(task.id);
     router.push(
       !lastTask.includes("-")
-        ? `/app/project/${lastTask}`
-        : `/app/project/task/${lastTask}`
+        ? `/app/project/${lastTask}${
+            searchParams.get("sample") === "true" ? "?sample=true" : ""
+          }`
+        : `/app/project/task/${lastTask}${
+            searchParams.get("sample") === "true" ? "?sample=true" : ""
+          }`
     );
   }
 
@@ -494,7 +546,14 @@ export default function Task({
           <select
             value={task.progress}
             className="task-progress-select"
-            onChange={(e) => updateTask(id, "progress", e.target.value)}
+            onChange={(e) => {
+              // Check if the user is logged in
+              if (!auth.currentUser || searchParams.get("sample") === "true") {
+                alertMessage("Error", "You must be logged in to make changes.");
+                return;
+              }
+              updateTask(id, "progress", e.target.value);
+            }}
             style={{
               backgroundColor: TaskProgressStats[task.progress].color,
               color: TaskProgressStats[task.progress].color.startsWith("#ff")
@@ -521,6 +580,7 @@ export default function Task({
             links={task.attachedDocs}
             updateFunction={updateTask}
             id={id}
+            sample={searchParams.get("sample") === "true"}
           />
         </div>
 
@@ -550,7 +610,14 @@ export default function Task({
           </h3>
           <ReactDatePicker
             selected={task.dueDate ? new Date(task.dueDate) : undefined}
-            onChange={(date) => updateTask(id, "dueDate", date?.toISOString())}
+            onChange={(date) => {
+              // Check if the user is logged in
+              if (!auth.currentUser || searchParams.get("sample") === "true") {
+                alertMessage("Error", "You must be logged in to make changes.");
+                return;
+              }
+              updateTask(id, "dueDate", date?.toISOString());
+            }}
             showTimeSelect
             dateFormat="Pp"
             placeholderText="Due Date and Time"
@@ -560,7 +627,11 @@ export default function Task({
 
         <div className="task-info-card">
           <h3 className="info-label">Priority:</h3>
-          <Priority priority={task.priority} id={task.id} />
+          <Priority
+            priority={task.priority}
+            id={task.id}
+            sample={searchParams.get("sample") === "true"}
+          />
         </div>
 
         <div className="task-info-card">
@@ -572,6 +643,7 @@ export default function Task({
               projectData.find((project) => project.id == task.id.split("-")[0])
                 ?.people || {}
             }
+            sample={searchParams.get("sample") === "true"}
           />
         </div>
 
@@ -581,6 +653,7 @@ export default function Task({
             taskList={task.dependencies ?? []}
             updateFunction={updateTask}
             id={id}
+            sample={searchParams.get("sample") === "true"}
           />
         </div>
 

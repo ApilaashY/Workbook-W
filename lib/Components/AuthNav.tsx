@@ -21,6 +21,7 @@ export default function AuthNav() {
       <>
         <Link href="/login">Login</Link>
         <Link href="/signup">Register</Link>
+        <Link href="/app?sample=true">Sample</Link>
       </>
     );
   }
@@ -29,6 +30,7 @@ export default function AuthNav() {
       <Link href="/login">Login</Link>
       <Link href="/signup">Register</Link>
       <Link href="/app">Dashboard</Link>
+      <Link href="/app?sample=true">Sample</Link>
     </>
   );
 }

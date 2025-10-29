@@ -269,7 +269,7 @@ export default function Toolbar() {
       <div className={`toolbar ${hideMenu ? "" : "show-toolbar-menu"}`}>
         <div className="toolbar-top-section">
           <Link
-            href="/app"
+            href={`/app`}
             onClick={() => {
               setStack([]);
               setHideMenu(true);

@@ -2,20 +2,25 @@ import { useState } from "react";
 import "./PeopleList.css";
 import { auth } from "@/lib/firebase";
 import { promptDialog } from "../Dialogs/PromptDialog";
-import { alertDialog } from "../Dialogs/AlertDialog";
+import { alertDialog, alertMessage } from "../Dialogs/AlertDialog";
 
 export function PeopleList({
   people,
   projectId,
+  sample,
 }: {
   people: Record<string, string>;
   projectId: string;
+  sample: boolean;
 }) {
   // Variables
   const [hover, setHover] = useState(-1);
 
   async function addPerson() {
-    if (!auth.currentUser) return;
+    if (!auth.currentUser || sample) {
+      alertMessage("Error", "You must be logged in to create a project.");
+      return;
+    }
 
     let email = await promptDialog({
       title: "Invite a Person",
@@ -59,7 +64,10 @@ export function PeopleList({
   }
 
   async function removePerson(person: string) {
-    if (!auth.currentUser) return;
+    if (!auth.currentUser || sample) {
+      alertMessage("Error", "You must be logged in to create a project.");
+      return;
+    }
 
     const confirmed = confirm(
       `Are you sure you want to remove ${people[person]} from this project?`

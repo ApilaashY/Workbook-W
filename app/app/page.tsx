@@ -3,7 +3,7 @@
 // This is the main page for the app portion of the website
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { onValue, ref } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
@@ -11,14 +11,23 @@ import "./App.css";
 import { addProject, flipInvite, ProjectStore } from "@/lib/store";
 import { auth, db, fdb } from "@/lib/firebase";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
 
 export default function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AppSuspenseWrapper />
+    </Suspense>
+  );
+}
+
+function AppSuspenseWrapper() {
   // Hooks
   const dispatch = useDispatch();
   const router = useRouter();
+  const params = useSearchParams();
 
   // Variables
   const projectData = useSelector((state: ProjectStore) => state.projects);
@@ -28,8 +37,48 @@ export default function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       // If the user is not logged in, redirect to the login page
-      if (!user) {
+      if (!user && params.get("sample") !== "true") {
         router.push("/login");
+        return;
+      }
+
+      if (!user || params.get("sample") === "true") {
+        // Load sample project
+        dispatch(
+          addProject({
+            title: "My Project",
+            tasks: [
+              {
+                id: "unique_id-0",
+                title: "Task 1",
+                description: "This is a sample task description.",
+                progress: "Done",
+                tasks: [
+                  {
+                    id: "unique_id-0-0",
+                    title: "Subtask 1",
+                    description: "This is a sample subtask description.",
+                  },
+                ],
+                taskCount: 2,
+              },
+              {
+                id: "unique_id-1",
+                title: "Task 2",
+                description: "This is a sample task description.",
+                dueDate: new Date().toISOString(),
+                priority: "High",
+                archived: false,
+              },
+            ],
+            taskCount: 1,
+            attachedDocs: [["Home Page", "https://workbook-sigma.vercel.app/"]],
+            people: {},
+            comments: [],
+            id: "unique_id",
+            invite: false,
+          })
+        );
         return;
       }
 
@@ -56,12 +105,12 @@ export default function App() {
         });
       });
     });
-  }, [dispatch, router]);
+  }, [dispatch, router, params]);
 
   // Function to add a new project
   async function addNewProject() {
     // Check if the user is logged in
-    if (!auth.currentUser) {
+    if (!auth.currentUser || params.get("sample") === "true") {
       alertMessage("Error", "You must be logged in to create a project.");
       return;
     }
@@ -158,7 +207,9 @@ export default function App() {
               </div>
             ) : (
               <Link
-                href={`/app/project/${project.id}`}
+                href={`/app/project/${project.id}${
+                  params.get("sample") === "true" ? "?sample=true" : ""
+                }`}
                 key={project.id}
                 prefetch={true}
               >

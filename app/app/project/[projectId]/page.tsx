@@ -17,7 +17,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ProjectClass } from "@/lib/DataClasses/ProjectClass";
 import {
   addProjectTask,
@@ -40,8 +40,9 @@ import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { NiceCheckbox } from "@/lib/Components/NiceCheckbox/NiceCheckbox";
 import { FaSearch } from "react-icons/fa";
 import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
-import Switch from "@/lib/Components/Switch/Switch";
 import Kanban from "@/lib/Components/Kanban/Kanban";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 function SortableTask({
   task,
@@ -60,6 +61,7 @@ function SortableTask({
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task.id });
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -70,7 +72,11 @@ function SortableTask({
   };
 
   function handleClick() {
-    router.push(`/app/project/task/${task.id}`);
+    router.push(
+      `/app/project/task/${task.id}${
+        searchParams.get("sample") === "true" ? "?sample=true" : ""
+      }`
+    );
   }
 
   // Function to handle checkbox click without triggering parent click
@@ -146,6 +152,7 @@ export default function Project({
   const router = useRouter();
   const sensors = useSensors(useSensor(PointerSensor));
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
 
   // Variables
   const [id, setId] = useState<string>("");
@@ -217,6 +224,16 @@ export default function Project({
     return dup; // Custom
   }, [filteredTasks, sortBy, ascending]);
 
+  // Check if the user is signed in
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user && searchParams.get("sample") !== "true") {
+        router.push("/login");
+        return;
+      }
+    });
+  }, [projectData, router, searchParams]);
+
   // Handle async params in useEffect
   useEffect(() => {
     params.then((resolvedParams) => {
@@ -268,6 +285,12 @@ export default function Project({
   }
 
   async function createNewTask() {
+    // Check if the user is logged in
+    if (!auth.currentUser || searchParams.get("sample") === "true") {
+      alertMessage("Error", "You must be logged in to create a project.");
+      return;
+    }
+
     if (!project) return; // Early return if project is undefined
 
     let data: string | null | undefined = null;
@@ -317,7 +340,9 @@ export default function Project({
           </h2>
           {showOrder ? (
             <div className="project-task-list-header-controls">
-              <Switch checked={kanbanMode} updater={setKanbanMode} />
+              {false && (
+                <button onClick={() => setKanbanMode(true)}>Kanban Mode</button>
+              )}
               <select
                 className="sort-select"
                 onChange={(e) => setTaskClassification(e.target.value)}
@@ -436,12 +461,17 @@ export default function Project({
             links={project.attachedDocs}
             updateFunction={updateProject}
             id={id}
+            sample={searchParams.get("sample") === "true"}
           />
         </div>
 
         <div className="project-info-card">
           <h3 className="info-label">People Involved</h3>
-          <PeopleList people={project.people ?? {}} projectId={project.id} />
+          <PeopleList
+            people={project.people ?? {}}
+            projectId={project.id}
+            sample={searchParams.get("sample") === "true"}
+          />
         </div>
       </div>
     </div>

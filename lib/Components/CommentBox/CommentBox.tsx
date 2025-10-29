@@ -2,7 +2,7 @@ import { IoMdSend } from "react-icons/io";
 import "./CommentBox.css";
 import { useState } from "react";
 import { auth } from "@/lib/firebase";
-import { alertDialog } from "../Dialogs/AlertDialog";
+import { alertDialog, alertMessage } from "../Dialogs/AlertDialog";
 
 export interface Comment {
   content: string;
@@ -13,10 +13,12 @@ export function CommentBox({
   comments,
   projectLink,
   people,
+  sample,
 }: {
   comments: Comment[];
   projectLink: string;
   people: { [key: string]: string };
+  sample: boolean;
 }) {
   // Variables
   const [comment, setComment] = useState("");
@@ -24,6 +26,12 @@ export function CommentBox({
 
   // Function to add a comment
   async function addComment() {
+    // Check if the user is logged in
+    if (sample) {
+      alertMessage("Error", "You must be logged in to make changes.");
+      return;
+    }
+
     // Check if the user is logged in
     if (auth.currentUser == null) {
       alertDialog({
