@@ -13,7 +13,7 @@ import {
   executeCommands,
 } from "@/lib/executeCommands";
 import { ProjectStore } from "@/lib/store";
-import { useParams, useRouter } from "next/navigation";
+import { ReadonlyURLSearchParams, useParams, useRouter } from "next/navigation";
 import { findTaskById } from "@/lib/firebase";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
@@ -94,7 +94,11 @@ declare global {
 //   });
 // }
 
-export default function Toolbar() {
+export default function Toolbar({
+  searchParams,
+}: {
+  searchParams: ReadonlyURLSearchParams;
+}) {
   // Hooks
   const params = useParams<{ projectId?: string; taskId?: string }>();
   const router = useRouter();
@@ -269,7 +273,9 @@ export default function Toolbar() {
       <div className={`toolbar ${hideMenu ? "" : "show-toolbar-menu"}`}>
         <div className="toolbar-top-section">
           <Link
-            href={`/app`}
+            href={`/app${
+              searchParams.get("sample") === "true" ? "?sample=true" : ""
+            }`}
             onClick={() => {
               setStack([]);
               setHideMenu(true);
@@ -293,8 +299,16 @@ export default function Toolbar() {
                   <Link
                     href={
                       !item.id.includes("-")
-                        ? `/app/project/${item.id}`
-                        : `/app/project/task/${item.id}`
+                        ? `/app/project/${item.id}${
+                            searchParams.get("sample") === "true"
+                              ? "?sample=true"
+                              : ""
+                          }`
+                        : `/app/project/task/${item.id}${
+                            searchParams.get("sample") === "true"
+                              ? "?sample=true"
+                              : ""
+                          }`
                     }
                     onClick={() => {
                       setStack((prev) => prev.slice(0, index));
@@ -312,12 +326,16 @@ export default function Toolbar() {
           <button className="terrance-button" onClick={_AICommands}>
             Ask Terrance
           </button>
-          <Link href="/app/profile" onClick={() => setHideMenu(true)}>
-            <h2 className="toolbar-title">Profile</h2>
-          </Link>
-          <Link href="/app/settings">
-            <h2 className="toolbar-title">Settings</h2>
-          </Link>
+          {searchParams.get("sample") === "true" ? null : (
+            <>
+              <Link href="/app/profile" onClick={() => setHideMenu(true)}>
+                <h2 className="toolbar-title">Profile</h2>
+              </Link>
+              <Link href="/app/settings">
+                <h2 className="toolbar-title">Settings</h2>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </>

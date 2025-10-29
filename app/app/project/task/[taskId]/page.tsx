@@ -94,6 +94,8 @@ function SortableTask({
   function handleCheckBoxClick(e: React.MouseEvent<HTMLInputElement>) {
     e.stopPropagation();
 
+    if (searchParams.get("sample") === "true") return;
+
     updateTask(
       task.id,
       "progress",
