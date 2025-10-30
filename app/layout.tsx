@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./index.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,8 @@ export default function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
           crossOrigin="anonymous"
         ></script>
+        <SpeedInsights />
+        <GoogleAnalytics gaId="G-Q3E5ECQQ24" />
       </head>
       {/* suppressHydrationWarning prevents React from logging hydration mismatch
           warnings for transient attributes injected on the client (e.g. by
@@ -47,7 +50,6 @@ export default function RootLayout({
       >
         {children}
       </body>
-      <GoogleAnalytics gaId="G-Q3E5ECQQ24" />
     </html>
   );
 }
