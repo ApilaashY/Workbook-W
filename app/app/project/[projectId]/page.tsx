@@ -1,7 +1,7 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -146,6 +146,18 @@ function SortableTask({
 }
 
 export default function Project({
+  params,
+}: {
+  params: Promise<{ projectId: string }>;
+}) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProjectSuspenseWrapper params={params} />
+    </Suspense>
+  );
+}
+
+function ProjectSuspenseWrapper({
   params,
 }: {
   params: Promise<{ projectId: string }>;

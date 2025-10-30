@@ -3,7 +3,7 @@
 // This is the main page for the app portion of the website
 
 import { useDispatch, useSelector } from "react-redux";
-import { Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { onValue, ref } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
@@ -16,14 +16,6 @@ import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
 
 export default function App() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AppSuspenseWrapper />
-    </Suspense>
-  );
-}
-
-function AppSuspenseWrapper() {
   // Hooks
   const dispatch = useDispatch();
   const router = useRouter();
