@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
+import Navbar from "@/lib/Components/Navbar/Navbar";
 
 const provider = new GoogleAuthProvider();
 
@@ -145,98 +146,101 @@ function SignupForm() {
 
   return (
     <div className="signup-window">
-      <div className="signup-card">
-        <h1>Create your account</h1>
-        <button className="google-signup" onClick={signInWithGoogle}>
-          <Image
-            src="/google-logo.png"
-            alt="Google Logo"
-            width={20}
-            height={20}
-          />
-          Sign in with Google
-        </button>
-        <form onSubmit={handleSignup}>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <label htmlFor="password">Password:</label>
-          <div style={{ position: "relative", width: "100%" }}>
+      <Navbar />
+      <div className="signup-section">
+        <div className="signup-card">
+          <h1>Create your account</h1>
+          <button className="google-signup" onClick={signInWithGoogle}>
+            <Image
+              src="/google-logo.png"
+              alt="Google Logo"
+              width={20}
+              height={20}
+            />
+            Sign in with Google
+          </button>
+          <form onSubmit={handleSignup}>
+            <label htmlFor="username">Username:</label>
             <input
-              type={hidePassword ? "password" : "text"}
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="text"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
-            <button
-              type="button"
-              onClick={() => setHidePassword((v) => !v)}
-              className="toggle-hide-password"
-              style={{
-                position: "absolute",
-                right: 0,
-                top: 0,
-                height: "100%",
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                padding: "0 0.5em",
-                transitionDuration: "0.2s",
-              }}
-            >
-              {hidePassword ? "Show" : "Hide"}
-            </button>
-          </div>
-          <label htmlFor="repeat password">Confirm Password:</label>
-          <div style={{ position: "relative", width: "100%" }}>
+            <label htmlFor="email">Email:</label>
             <input
-              type={hideRepeatPassword ? "password" : "text"}
-              name="repeat password"
-              value={repeatPassword}
-              onChange={(e) => setRepeatPassword(e.target.value)}
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button
-              type="button"
-              onClick={() => setHideRepeatPassword((v) => !v)}
-              className="toggle-hide-password"
-              style={{
-                position: "absolute",
-                right: 0,
-                top: 0,
-                height: "100%",
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                padding: "0 0.5em",
-                transitionDuration: "0.2s",
-              }}
-            >
-              {hideRepeatPassword ? "Show" : "Hide"}
-            </button>
-          </div>
-          <input type="submit" value="Create Account" />
-        </form>
-        <Link
-          href={{ pathname: "/login", query: email }}
-          style={{ textAlign: "center", color: "blue" }}
-        >
-          Already have an account?
-        </Link>
+            <label htmlFor="password">Password:</label>
+            <div style={{ position: "relative", width: "100%" }}>
+              <input
+                type={hidePassword ? "password" : "text"}
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setHidePassword((v) => !v)}
+                className="toggle-hide-password"
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  height: "100%",
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                  padding: "0 0.5em",
+                  transitionDuration: "0.2s",
+                }}
+              >
+                {hidePassword ? "Show" : "Hide"}
+              </button>
+            </div>
+            <label htmlFor="repeat password">Confirm Password:</label>
+            <div style={{ position: "relative", width: "100%" }}>
+              <input
+                type={hideRepeatPassword ? "password" : "text"}
+                name="repeat password"
+                value={repeatPassword}
+                onChange={(e) => setRepeatPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setHideRepeatPassword((v) => !v)}
+                className="toggle-hide-password"
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  height: "100%",
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                  padding: "0 0.5em",
+                  transitionDuration: "0.2s",
+                }}
+              >
+                {hideRepeatPassword ? "Show" : "Hide"}
+              </button>
+            </div>
+            <input type="submit" value="Create Account" />
+          </form>
+          <Link
+            href={{ pathname: "/login", query: email }}
+            style={{ textAlign: "center", color: "blue" }}
+          >
+            Already have an account?
+          </Link>
+        </div>
       </div>
     </div>
   );

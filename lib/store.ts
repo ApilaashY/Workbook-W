@@ -79,7 +79,7 @@ const projectSlice = createSlice({
       );
     },
     clearProjects: (state) => {
-      state.filter(() => false); // Clear the state by filtering all items
+      state.splice(0, state.length);
     },
     flipInvite: (state, action) => {
       const index = state.findIndex((proj) => proj.id === action.payload);
@@ -114,7 +114,6 @@ const projectSlice = createSlice({
 
       currentData.comments = action.payload.comments;
     },
-
     updateTask: (
       state,
       action: {
@@ -147,6 +146,55 @@ const projectSlice = createSlice({
           break;
       }
     },
+    loadSampleProject: (state) => {
+      const project: ProjectObject = {
+        title: "My Project",
+        tasks: [
+          {
+            id: "unique_id-0",
+            title: "Task 1",
+            description: "This is a sample task description.",
+            progress: "Done",
+            tasks: [
+              {
+                id: "unique_id-0-0",
+                title: "Subtask 1",
+                description: "This is a sample subtask description.",
+              },
+            ],
+            taskCount: 2,
+          },
+          {
+            id: "unique_id-1",
+            title: "Task 2",
+            description: "This is a sample task description.",
+            dueDate: new Date().toISOString(),
+            priority: "High",
+            archived: false,
+          },
+        ],
+        taskCount: 1,
+        attachedDocs: [["Home Page", "https://workbook-sigma.vercel.app/"]],
+        people: {},
+        comments: [],
+        id: "unique_id",
+        invite: false,
+      };
+
+      const index = state.findIndex((proj) => proj.id === project.id);
+
+      if (index !== -1) {
+        state[index] = ProjectClass.fromMap(project).toMap();
+      } else {
+        state.push(ProjectClass.fromMap(project).toMap());
+      }
+    },
+    removeSampleProject: (state) => {
+      const index = state.findIndex((proj) => proj.id === "unique_id");
+      if (index !== -1) {
+        state.splice(index, 1);
+      }
+    },
   },
 });
 
@@ -156,8 +204,14 @@ export const store = configureStore({
   },
 });
 
-export const { addProject, clearProjects, flipInvite, updateCommentData } =
-  projectSlice.actions;
+export const {
+  addProject,
+  clearProjects,
+  flipInvite,
+  updateCommentData,
+  loadSampleProject,
+  removeSampleProject,
+} = projectSlice.actions;
 
 export const updateTaskOrderAsync = createAsyncThunk(
   "projects/updateTaskOrderAsync",

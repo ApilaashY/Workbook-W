@@ -21,7 +21,7 @@ export function AttachedDocs({
 
   function addLink(label: string, link: string): boolean {
     if (!auth.currentUser || sample) {
-      alertMessage("Error", "You must be logged in to create a project.");
+      alertMessage("Error", "You must be logged in to add a link.");
       return false;
     }
     if (label.trim().length === 0) {

@@ -1,23 +1,11 @@
 import Link from "next/link";
 import "./home.css";
-import AuthNav from "@/lib/Components/AuthNav";
+import Navbar from "@/lib/Components/Navbar/Navbar";
 
 export default function Home() {
   return (
     <>
-      <nav>
-        <Link className="nav-name" href="/">
-          Workbook
-        </Link>
-
-        <div className="nav-links">
-          <Link href="/">Home</Link>
-          {/* <Link href="/about">About</Link>
-          <Link href="/contact">Contact</Link> */}
-
-          <AuthNav />
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="starter">
         <div className="starter-content">

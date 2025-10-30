@@ -261,8 +261,11 @@ function ProjectSuspenseWrapper({
 
   // Go back to the app page if the projectInfo is empty and there is a valid id
   useEffect(() => {
-    if (!projectInfo && id) router.push("/app");
-  }, [projectInfo, id, router]);
+    if (!projectInfo && id)
+      router.push(
+        `/app${searchParams.get("sample") === "true" ? "?sample=true" : ""}`
+      );
+  }, [projectInfo, id, router, searchParams]);
 
   // Update project state when projectData changes
   useEffect(() => {
@@ -301,7 +304,7 @@ function ProjectSuspenseWrapper({
   async function createNewTask() {
     // Check if the user is logged in
     if (!auth.currentUser || searchParams.get("sample") === "true") {
-      alertMessage("Error", "You must be logged in to create a project.");
+      alertMessage("Error", "You must be logged in to create a task.");
       return;
     }
 

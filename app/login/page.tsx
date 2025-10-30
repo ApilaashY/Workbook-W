@@ -14,6 +14,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
+import Navbar from "@/lib/Components/Navbar/Navbar";
 
 function LoginForm() {
   // Hooks
@@ -76,68 +77,71 @@ function LoginForm() {
 
   return (
     <div className="login-window">
-      <div className="login-card">
-        <h1>Login</h1>
-        <button className="google-login" onClick={signInWithGoogle}>
-          <Image
-            src="/google-logo.png"
-            alt="Google Logo"
-            width={20}
-            height={20}
-          />
-          Sign in with Google
-        </button>
-        <form onSubmit={handleLogin}>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <label htmlFor="password">Password:</label>
-          <div style={{ position: "relative", width: "100%" }}>
+      <Navbar />
+      <div className="login-section">
+        <div className="login-card">
+          <h1>Login</h1>
+          <button className="google-login" onClick={signInWithGoogle}>
+            <Image
+              src="/google-logo.png"
+              alt="Google Logo"
+              width={20}
+              height={20}
+            />
+            Sign in with Google
+          </button>
+          <form onSubmit={handleLogin}>
+            <label htmlFor="email">Email:</label>
             <input
-              type={hidePassword ? "password" : "text"}
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button
-              type="button"
-              onClick={() => setHidePassword((v) => !v)}
-              className="toggle-hide-password"
-              style={{
-                position: "absolute",
-                right: 0,
-                top: 0,
-                height: "100%",
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                padding: "0 0.5em",
-                transitionDuration: "0.2s",
-              }}
-            >
-              {hidePassword ? "Show" : "Hide"}
-            </button>
-          </div>
-          <input type="submit" value="Login" />
-        </form>
-        <Link
-          href={{ pathname: "/signup", query: `email=${email}` }}
-          style={{ textAlign: "center", color: "blue" }}
-        >
-          Don&apos;t have an account?
-        </Link>
-        <Link
-          href={{ pathname: "/forgot-password", query: `email=${email}` }}
-          style={{ textAlign: "center", color: "blue" }}
-        >
-          Forgot your password?
-        </Link>
+            <label htmlFor="password">Password:</label>
+            <div style={{ position: "relative", width: "100%" }}>
+              <input
+                type={hidePassword ? "password" : "text"}
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setHidePassword((v) => !v)}
+                className="toggle-hide-password"
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  height: "100%",
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                  padding: "0 0.5em",
+                  transitionDuration: "0.2s",
+                }}
+              >
+                {hidePassword ? "Show" : "Hide"}
+              </button>
+            </div>
+            <input type="submit" value="Login" />
+          </form>
+          <Link
+            href={{ pathname: "/signup", query: `email=${email}` }}
+            style={{ textAlign: "center", color: "blue" }}
+          >
+            Don&apos;t have an account?
+          </Link>
+          <Link
+            href={{ pathname: "/forgot-password", query: `email=${email}` }}
+            style={{ textAlign: "center", color: "blue" }}
+          >
+            Forgot your password?
+          </Link>
+        </div>
       </div>
     </div>
   );

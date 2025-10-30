@@ -3,8 +3,17 @@
   margin: 0;
   padding: 0;
   display: flex;
+  flex-direction: column;
+}
+
+.signup-section {
+  margin: 0;
+  padding: 0;
+  display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  flex: 1;
 }
 
 .signup-card {

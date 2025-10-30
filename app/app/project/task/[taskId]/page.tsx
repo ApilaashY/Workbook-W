@@ -258,8 +258,11 @@ export default function Task({
 
   // Go to app page if the id is not valid
   useEffect(() => {
-    if (goBack.current) router.push("/app");
-  }, [goBack, router]);
+    if (goBack.current)
+      router.push(
+        `/app${searchParams.get("sample") === "true" ? "?sample=true" : ""}`
+      );
+  }, [goBack, router, searchParams]);
 
   // Update the task data if changed
   useEffect(() => {

@@ -18,7 +18,7 @@ export function PeopleList({
 
   async function addPerson() {
     if (!auth.currentUser || sample) {
-      alertMessage("Error", "You must be logged in to create a project.");
+      alertMessage("Error", "You must be logged in to add a person.");
       return;
     }
 
@@ -65,7 +65,7 @@ export function PeopleList({
 
   async function removePerson(person: string) {
     if (!auth.currentUser || sample) {
-      alertMessage("Error", "You must be logged in to create a project.");
+      alertMessage("Error", "You must be logged in to remove a person.");
       return;
     }
 

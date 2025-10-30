@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import Link from "next/link";
 import { alertDialog } from "@/lib/Components/Dialogs/AlertDialog";
+import Navbar from "@/lib/Components/Navbar/Navbar";
 
 function ForgotPasswordForm() {
   // Hooks
@@ -39,26 +40,29 @@ function ForgotPasswordForm() {
   }
 
   return (
-    <div className="forgot-password-window">
-      <div className="forgot-password-card">
-        <h1>Forgot Password</h1>
-        <form onSubmit={handleForgotPassword}>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input type="submit" value="Send Password Reset Request" />
-        </form>
-        <Link
-          href={{ pathname: "/login", query: `email=${email}` }}
-          style={{ textAlign: "center", color: "blue" }}
-        >
-          Remembered your password?
-        </Link>
+    <div className="login-window">
+      <Navbar />
+      <div className="login-section">
+        <div className="forgot-password-card">
+          <h1>Forgot Password</h1>
+          <form onSubmit={handleForgotPassword}>
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input type="submit" value="Send Password Reset Request" />
+          </form>
+          <Link
+            href={{ pathname: "/login", query: `email=${email}` }}
+            style={{ textAlign: "center", color: "blue" }}
+          >
+            Remembered your password?
+          </Link>
+        </div>
       </div>
     </div>
   );

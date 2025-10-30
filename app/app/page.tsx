@@ -8,7 +8,13 @@ import { onValue, ref } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import "./App.css";
-import { addProject, flipInvite, ProjectStore } from "@/lib/store";
+import {
+  addProject,
+  flipInvite,
+  loadSampleProject,
+  ProjectStore,
+  removeSampleProject,
+} from "@/lib/store";
 import { auth, db, fdb } from "@/lib/firebase";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -36,42 +42,10 @@ export default function App() {
 
       if (!user || params.get("sample") === "true") {
         // Load sample project
-        dispatch(
-          addProject({
-            title: "My Project",
-            tasks: [
-              {
-                id: "unique_id-0",
-                title: "Task 1",
-                description: "This is a sample task description.",
-                progress: "Done",
-                tasks: [
-                  {
-                    id: "unique_id-0-0",
-                    title: "Subtask 1",
-                    description: "This is a sample subtask description.",
-                  },
-                ],
-                taskCount: 2,
-              },
-              {
-                id: "unique_id-1",
-                title: "Task 2",
-                description: "This is a sample task description.",
-                dueDate: new Date().toISOString(),
-                priority: "High",
-                archived: false,
-              },
-            ],
-            taskCount: 1,
-            attachedDocs: [["Home Page", "https://workbook-sigma.vercel.app/"]],
-            people: {},
-            comments: [],
-            id: "unique_id",
-            invite: false,
-          })
-        );
+        dispatch(loadSampleProject());
         return;
+      } else if (params.get("sample") !== "true") {
+        dispatch(removeSampleProject());
       }
 
       // If the user is logged in, get their projects from Firestore
