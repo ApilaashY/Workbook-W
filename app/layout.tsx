@@ -45,18 +45,6 @@ export default function RootLayout({
           rel="dns-prefetch"
           href="https://workbook-b27a1-default-rtdb.firebaseio.com"
         />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
-          crossOrigin="anonymous"
-        ></script>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
-          crossOrigin="anonymous"
-        ></script>
-        <SpeedInsights />
-        <GoogleAnalytics gaId="G-Q3E5ECQQ24" />
       </head>
       {/* suppressHydrationWarning prevents React from logging hydration mismatch
           warnings for transient attributes injected on the client (e.g. by
@@ -66,6 +54,14 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        {/* Load analytics after main content */}
+        <SpeedInsights />
+        <GoogleAnalytics gaId="G-Q3E5ECQQ24" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
+          crossOrigin="anonymous"
+        ></script>
       </body>
     </html>
   );

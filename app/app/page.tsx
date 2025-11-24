@@ -3,7 +3,7 @@
 // This is the main page for the app portion of the website
 
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { onValue, ref } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
@@ -29,85 +29,100 @@ export default function App() {
 
   // Variables
   const projectData = useSelector((state: ProjectStore) => state.projects);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   // const [emailVerified, setEmailVerified] = useState(true);
 
   // This sets up the projects that the current user has access to
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      // If the user is not logged in, redirect to the login page
-      if (!user && params.get("sample") !== "true") {
-        router.push("/login");
-        return;
-      }
+    // Defer Firebase to next tick to allow initial paint
+    const timeoutId = setTimeout(() => {
+      startTransition(() => {
+        setIsLoading(true);
+      });
 
-      if (!user || params.get("sample") === "true") {
-        // Load sample project
-        dispatch(loadSampleProject());
-        setIsLoading(false);
-        return;
-      } else if (params.get("sample") !== "true") {
-        dispatch(removeSampleProject());
-      }
+      onAuthStateChanged(auth, (user) => {
+        // If the user is not logged in, redirect to the login page
+        if (!user && params.get("sample") !== "true") {
+          router.push("/login");
+          return;
+        }
 
-      // If the user is logged in, get their projects from Firestore
-      // setEmailVerified(user.emailVerified);
-
-      // Get the user's projects from Firestore
-      getDoc(doc(fdb, "Users", user.uid))
-        .then((doc) => {
-          const projectIds: string[] = doc.data()?.projects || [];
-          const inviteIds: string[] = doc.data()?.invites || [];
-
-          // If no projects, stop loading immediately
-          if (projectIds.length === 0 && inviteIds.length === 0) {
-            setIsLoading(false);
-            return;
-          }
-
-          // Show UI immediately with first project, then load others
-          let loadedCount = 0;
-          const totalCount = projectIds.length + inviteIds.length;
-
-          // Add each project to the Redux store and listen for changes from the firebase database
-          projectIds.forEach((id, index) => {
-            onValue(
-              ref(db, `projects/${id}`),
-              (projData) => {
-                dispatch(
-                  addProject({ ...projData.val(), id: id, invite: false })
-                );
-                loadedCount++;
-                // Stop showing loading after first project loads (improves LCP)
-                if (index === 0 || loadedCount >= totalCount) {
-                  setIsLoading(false);
-                }
-              },
-              { onlyOnce: false }
-            );
-          });
-
-          // Add each invite project to the Redux store and listen for changes from the firebase database
-          inviteIds.forEach((id) => {
-            onValue(
-              ref(db, `projects/${id}`),
-              (projData) => {
-                dispatch(
-                  addProject({ ...projData.val(), id: id, invite: true })
-                );
-                loadedCount++;
-                if (loadedCount >= totalCount) {
-                  setIsLoading(false);
-                }
-              },
-              { onlyOnce: false }
-            );
-          });
-        })
-        .catch(() => {
+        if (!user || params.get("sample") === "true") {
+          // Load sample project
+          dispatch(loadSampleProject());
           setIsLoading(false);
-        });
-    });
+          return;
+        } else if (params.get("sample") !== "true") {
+          dispatch(removeSampleProject());
+        }
+
+        // If the user is logged in, get their projects from Firestore
+        // setEmailVerified(user.emailVerified);
+
+        // Get the user's projects from Firestore
+        getDoc(doc(fdb, "Users", user.uid))
+          .then((doc) => {
+            const projectIds: string[] = doc.data()?.projects || [];
+            const inviteIds: string[] = doc.data()?.invites || [];
+
+            // If no projects, stop loading immediately
+            if (projectIds.length === 0 && inviteIds.length === 0) {
+              setIsLoading(false);
+              return;
+            }
+
+            // Show UI immediately with first project, then load others
+            let loadedCount = 0;
+            const totalCount = projectIds.length + inviteIds.length;
+
+            // Add each project to the Redux store and listen for changes from the firebase database
+            projectIds.forEach((id, index) => {
+              onValue(
+                ref(db, `projects/${id}`),
+                (projData) => {
+                  dispatch(
+                    addProject({ ...projData.val(), id: id, invite: false })
+                  );
+                  loadedCount++;
+                  // Stop showing loading after first project loads (improves LCP)
+                  if (index === 0 || loadedCount >= totalCount) {
+                    startTransition(() => {
+                      setIsLoading(false);
+                    });
+                  }
+                },
+                { onlyOnce: false }
+              );
+            });
+
+            // Add each invite project to the Redux store and listen for changes from the firebase database
+            inviteIds.forEach((id) => {
+              onValue(
+                ref(db, `projects/${id}`),
+                (projData) => {
+                  dispatch(
+                    addProject({ ...projData.val(), id: id, invite: true })
+                  );
+                  loadedCount++;
+                  if (loadedCount >= totalCount) {
+                    startTransition(() => {
+                      setIsLoading(false);
+                    });
+                  }
+                },
+                { onlyOnce: false }
+              );
+            });
+          })
+          .catch(() => {
+            startTransition(() => {
+              setIsLoading(false);
+            });
+          });
+      });
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [dispatch, router, params]);
 
   // Function to add a new project
