@@ -34,54 +34,80 @@ export default function App() {
 
   // This sets up the projects that the current user has access to
   useEffect(() => {
-    // Defer Firebase initialization to improve FCP
-    const timer = setTimeout(() => {
-      onAuthStateChanged(auth, (user) => {
-        // If the user is not logged in, redirect to the login page
-        if (!user && params.get("sample") !== "true") {
-          router.push("/login");
-          return;
-        }
+    onAuthStateChanged(auth, (user) => {
+      // If the user is not logged in, redirect to the login page
+      if (!user && params.get("sample") !== "true") {
+        router.push("/login");
+        return;
+      }
 
-        if (!user || params.get("sample") === "true") {
-          // Load sample project
-          dispatch(loadSampleProject());
-          setIsLoading(false);
-          return;
-        } else if (params.get("sample") !== "true") {
-          dispatch(removeSampleProject());
-        }
+      if (!user || params.get("sample") === "true") {
+        // Load sample project
+        dispatch(loadSampleProject());
+        setIsLoading(false);
+        return;
+      } else if (params.get("sample") !== "true") {
+        dispatch(removeSampleProject());
+      }
 
-        // If the user is logged in, get their projects from Firestore
-        // setEmailVerified(user.emailVerified);
+      // If the user is logged in, get their projects from Firestore
+      // setEmailVerified(user.emailVerified);
 
-        // Get the user's projects from Firestore
-        getDoc(doc(fdb, "Users", user.uid)).then((doc) => {
+      // Get the user's projects from Firestore
+      getDoc(doc(fdb, "Users", user.uid))
+        .then((doc) => {
           const projectIds: string[] = doc.data()?.projects || [];
           const inviteIds: string[] = doc.data()?.invites || [];
 
+          // If no projects, stop loading immediately
+          if (projectIds.length === 0 && inviteIds.length === 0) {
+            setIsLoading(false);
+            return;
+          }
+
+          // Show UI immediately with first project, then load others
+          let loadedCount = 0;
+          const totalCount = projectIds.length + inviteIds.length;
+
           // Add each project to the Redux store and listen for changes from the firebase database
-          projectIds.forEach((id) => {
-            onValue(ref(db, `projects/${id}`), (projData) => {
-              dispatch(
-                addProject({ ...projData.val(), id: id, invite: false })
-              );
-            });
+          projectIds.forEach((id, index) => {
+            onValue(
+              ref(db, `projects/${id}`),
+              (projData) => {
+                dispatch(
+                  addProject({ ...projData.val(), id: id, invite: false })
+                );
+                loadedCount++;
+                // Stop showing loading after first project loads (improves LCP)
+                if (index === 0 || loadedCount >= totalCount) {
+                  setIsLoading(false);
+                }
+              },
+              { onlyOnce: false }
+            );
           });
 
           // Add each invite project to the Redux store and listen for changes from the firebase database
           inviteIds.forEach((id) => {
-            onValue(ref(db, `projects/${id}`), (projData) => {
-              dispatch(addProject({ ...projData.val(), id: id, invite: true }));
-            });
+            onValue(
+              ref(db, `projects/${id}`),
+              (projData) => {
+                dispatch(
+                  addProject({ ...projData.val(), id: id, invite: true })
+                );
+                loadedCount++;
+                if (loadedCount >= totalCount) {
+                  setIsLoading(false);
+                }
+              },
+              { onlyOnce: false }
+            );
           });
-
+        })
+        .catch(() => {
           setIsLoading(false);
         });
-      });
-    }, 0);
-
-    return () => clearTimeout(timer);
+    });
   }, [dispatch, router, params]);
 
   // Function to add a new project
@@ -169,56 +195,56 @@ export default function App() {
     <div className="main-window">
       {/* Menu that has all projects */}
       <div style={{ flex: "1 1 auto" }}>
-        {isLoading ? (
-          <div className="project-list">
-            {/* Loading skeleton */}
-            {[1, 2, 3].map((i) => (
+        <div className="project-list">
+          {/* Show projects immediately as they load */}
+          {projectData.map((project) =>
+            project.invite ? (
               <div
-                key={i}
-                className="project-card skeleton"
-                style={{ minHeight: "80px" }}
+                key={project.id}
+                className="project-card"
+                style={{
+                  backgroundColor: "rgba(255, 255, 198, 1)",
+                }}
+                onClick={() => acceptInvite(project.id)}
               >
-                <div
-                  style={{
-                    height: "20px",
-                    backgroundColor: "rgba(0,0,0,0.1)",
-                    borderRadius: "4px",
-                    animation: "pulse 1.5s ease-in-out infinite",
-                  }}
-                />
+                <h3>{project.title}</h3>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="project-list">
-            {projectData.map((project) =>
-              project.invite ? (
-                <div
-                  key={project.id}
-                  className="project-card"
-                  style={{
-                    backgroundColor: "rgba(255, 255, 198, 1)",
-                  }}
-                  onClick={() => acceptInvite(project.id)}
-                >
+            ) : (
+              <Link
+                href={`/app/project/${project.id}${
+                  params.get("sample") === "true" ? "?sample=true" : ""
+                }`}
+                key={project.id}
+                prefetch={true}
+              >
+                <div className="project-card">
                   <h3>{project.title}</h3>
                 </div>
-              ) : (
-                <Link
-                  href={`/app/project/${project.id}${
-                    params.get("sample") === "true" ? "?sample=true" : ""
-                  }`}
-                  key={project.id}
-                  prefetch={true}
+              </Link>
+            )
+          )}
+          {/* Show loading skeleton only if still loading AND no projects loaded yet */}
+          {isLoading && projectData.length === 0 && (
+            <>
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={`skeleton-${i}`}
+                  className="project-card skeleton"
+                  style={{ minHeight: "80px" }}
                 >
-                  <div className="project-card">
-                    <h3>{project.title}</h3>
-                  </div>
-                </Link>
-              )
-            )}
-          </div>
-        )}
+                  <div
+                    style={{
+                      height: "20px",
+                      backgroundColor: "rgba(0,0,0,0.1)",
+                      borderRadius: "4px",
+                      animation: "pulse 1.5s ease-in-out infinite",
+                    }}
+                  />
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       </div>
 
       <button

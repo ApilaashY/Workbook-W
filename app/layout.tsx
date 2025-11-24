@@ -30,6 +30,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Preconnect to Firebase to improve LCP */}
+        <link rel="preconnect" href="https://workbook-b27a1.firebaseapp.com" />
+        <link
+          rel="preconnect"
+          href="https://workbook-b27a1-default-rtdb.firebaseio.com"
+        />
+        <link rel="preconnect" href="https://firestore.googleapis.com" />
+        <link
+          rel="dns-prefetch"
+          href="https://workbook-b27a1.firebaseapp.com"
+        />
+        <link
+          rel="dns-prefetch"
+          href="https://workbook-b27a1-default-rtdb.firebaseio.com"
+        />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
