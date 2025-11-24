@@ -55,3 +55,17 @@
 .add-project-button:hover {
   background-color: var(--primaryHover);
 }
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.skeleton {
+  pointer-events: none;
+}
