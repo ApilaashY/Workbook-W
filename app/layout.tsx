@@ -7,13 +7,25 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: "swap", // Improves FCP by showing fallback font first
+  display: "swap",
+  preload: true,
+  fallback: [
+    "system-ui",
+    "-apple-system",
+    "BlinkMacSystemFont",
+    "Segoe UI",
+    "sans-serif",
+  ],
+  adjustFontFallback: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  display: "swap", // Improves FCP by showing fallback font first
+  display: "swap",
+  preload: false, // Don't preload mono font, it's less critical
+  fallback: ["Courier New", "monospace"],
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
@@ -54,14 +66,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
-        {/* Load analytics after main content */}
+        {/* Load analytics after main content - lazy loaded for mobile performance */}
         <SpeedInsights />
         <GoogleAnalytics gaId="G-Q3E5ECQQ24" />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
-          crossOrigin="anonymous"
-        ></script>
       </body>
     </html>
   );
