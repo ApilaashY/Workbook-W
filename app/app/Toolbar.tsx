@@ -67,33 +67,6 @@ declare global {
   }
 }
 
-// Speech recognition function to get user input
-// async function getSpeechInput(): Promise<string> {
-//   return new Promise((resolve) => {
-//     const SpeechRecognition =
-//       window.SpeechRecognition || window.webkitSpeechRecognition;
-//     if (!SpeechRecognition) {
-//       alertDialog("Speech recognition not supported in this browser.");
-//       resolve("");
-//       return;
-//     }
-//     const recognition = new SpeechRecognition();
-//     recognition.lang = "en-US";
-//     recognition.interimResults = false;
-//     recognition.maxAlternatives = 1;
-
-//     recognition.onresult = (event: SpeechRecognitionEvent) => {
-//       resolve(event.results[0][0].transcript);
-//     };
-//     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-//       alertDialog("Speech recognition error: " + event.error);
-//       resolve("");
-//     };
-//     recognition.onend = () => {};
-//     recognition.start();
-//   });
-// }
-
 export default function Toolbar({
   searchParams,
 }: {
@@ -251,6 +224,27 @@ export default function Toolbar({
     setStack(newStack);
   }, [id, projectData, router]);
 
+  // Function to get a suggestion from the user and send it to the backend
+  async function sendSuggestion() {
+    const suggestion = await promptMessage(
+      "I really appreciate your support by just using this website. Have a suggestion for a feature you would use? Enter it here:"
+    );
+
+    if (!suggestion || suggestion.trim() === "") return;
+
+    fetch(`${process.env.NEXT_PUBLIC_LINK}/api/suggestion`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        suggestion: suggestion,
+      }),
+    });
+
+    alertMessage("Suggestion Sent", "Thank you for helping improve Workbook!");
+  }
+
   return (
     <>
       {/* Menu to toggle toolbar on mobile */}
@@ -323,6 +317,12 @@ export default function Toolbar({
           </div>
         </div>
         <div className="toolbar-bottom-section">
+          <button
+            className="toolbar-title toolbar-button"
+            onClick={() => sendSuggestion()}
+          >
+            Suggestion
+          </button>
           <button className="terrance-button" onClick={_AICommands}>
             Ask Terrance
           </button>
