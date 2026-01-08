@@ -6,7 +6,6 @@ import { store } from "@/lib/store";
 import Toolbar from "./Toolbar";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import AdSense from "./AdSense";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,7 +13,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Suspense fallback={<div>Loading...</div>}>
         <AppSuspenseWrapper>{children}</AppSuspenseWrapper>
       </Suspense>
-      <AdSense />
     </Provider>
   );
 }

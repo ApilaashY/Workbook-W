@@ -1,0 +1,82 @@
+.legal-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  line-height: 1.8;
+}
+
+.legal-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+}
+
+.last-updated {
+  color: var(--secondaryText);
+  font-style: italic;
+  margin-bottom: 2rem;
+}
+
+.legal-container section {
+  margin: 2.5rem 0;
+}
+
+.legal-container h2 {
+  font-size: 1.8rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.legal-container h3 {
+  font-size: 1.4rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.legal-container p {
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+}
+
+.legal-container ul {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.legal-container li {
+  margin-bottom: 0.75rem;
+  font-size: 1.05rem;
+}
+
+.legal-container strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.legal-container a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.legal-container a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .legal-container {
+    padding: 1rem;
+  }
+
+  .legal-container h1 {
+    font-size: 2rem;
+  }
+
+  .legal-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .legal-container h3 {
+    font-size: 1.2rem;
+  }
+}

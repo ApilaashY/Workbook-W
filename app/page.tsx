@@ -1,11 +1,16 @@
 import Link from "next/link";
 import "./home.css";
 import Navbar from "@/lib/Components/Navbar/Navbar";
+import dynamic from "next/dynamic";
+
+// Lazy load AdSense only on public pages
+const AdSense = dynamic(() => import("./app/AdSense"), { ssr: true });
 
 export default function Home() {
   return (
     <>
       <Navbar />
+      <AdSense />
 
       <div className="starter">
         <div className="starter-content">
@@ -70,6 +75,133 @@ export default function Home() {
           Create a Free Account
         </Link>
       </div>
+
+      <div
+        className="features"
+        style={{ background: "var(--bubbleBackgroundColor)" }}
+      >
+        <h2>How Workbook Works</h2>
+        <div className="feature-list">
+          <div className="feature-item">
+            <h3>1. Create Projects</h3>
+            <p>
+              Start by creating projects for your work, school, or personal
+              goals. Organize everything in one place.
+            </p>
+          </div>
+          <div className="feature-item">
+            <h3>2. Add Tasks</h3>
+            <p>
+              Break down projects into manageable tasks. Set deadlines,
+              priorities, and dependencies.
+            </p>
+          </div>
+          <div className="feature-item">
+            <h3>3. Collaborate</h3>
+            <p>
+              Invite team members, assign tasks, and work together in real-time
+              to achieve your goals.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="features">
+        <h2>Why Choose Workbook?</h2>
+        <div className="feature-list">
+          <div className="feature-item">
+            <h3>🆓 Free to Start</h3>
+            <p>
+              Get started with our generous free tier. No credit card required.
+              Upgrade only when you need more features.
+            </p>
+          </div>
+          <div className="feature-item">
+            <h3>⚡ Lightning Fast</h3>
+            <p>
+              Built with modern technology for instant loading and real-time
+              updates. No more waiting around.
+            </p>
+          </div>
+          <div className="feature-item">
+            <h3>🔒 Secure & Private</h3>
+            <p>
+              Your data is encrypted and protected with enterprise-grade
+              security. We take privacy seriously.
+            </p>
+          </div>
+          <div className="feature-item">
+            <h3>📱 Works Everywhere</h3>
+            <p>
+              Access your projects from any device - desktop, tablet, or mobile.
+              Your work is always with you.
+            </p>
+          </div>
+          <div className="feature-item">
+            <h3>👥 Built for Teams</h3>
+            <p>
+              Collaborate seamlessly with team members. Share projects, assign
+              tasks, and track progress together.
+            </p>
+          </div>
+          <div className="feature-item">
+            <h3>🎨 Customizable</h3>
+            <p>
+              Organize your way with flexible project structures. Create nested
+              tasks and customize to fit your workflow.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <footer
+        style={{
+          padding: "3rem 2rem",
+          textAlign: "center",
+          borderTop: "1px solid var(--borderColor)",
+          marginTop: "4rem",
+        }}
+      >
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "2rem",
+              flexWrap: "wrap",
+              marginBottom: "2rem",
+            }}
+          >
+            <Link
+              href="/about"
+              style={{ color: "var(--primary)", textDecoration: "none" }}
+            >
+              About
+            </Link>
+            <Link
+              href="/privacy"
+              style={{ color: "var(--primary)", textDecoration: "none" }}
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              style={{ color: "var(--primary)", textDecoration: "none" }}
+            >
+              Terms of Service
+            </Link>
+            <Link
+              href="/contact"
+              style={{ color: "var(--primary)", textDecoration: "none" }}
+            >
+              Contact
+            </Link>
+          </div>
+          <p style={{ color: "var(--secondaryText)", margin: "0" }}>
+            © 2025 Workbook. All rights reserved. Built by Apilaash Yoharan.
+          </p>
+        </div>
+      </footer>
     </>
   );
 }
