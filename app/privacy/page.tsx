@@ -218,8 +218,8 @@ export default function Privacy() {
           </p>
           <p>
             <strong>Email:</strong>{" "}
-            <a href="mailto:apilaashyoharan@gmail.com">
-              apilaashyoharan@gmail.com
+            <a href="mailto:apilaashy@gmail.com">
+              apilaashy@gmail.com
             </a>
           </p>
         </section>

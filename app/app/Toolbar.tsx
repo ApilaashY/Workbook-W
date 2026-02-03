@@ -18,6 +18,7 @@ import { findTaskById } from "@/lib/firebase";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
 import { confirmDialog } from "@/lib/Components/Dialogs/ConfirmDialog";
+import { getSpeechInput } from "@/lib/speech";
 
 // Interfaces for speech recognition
 interface SpeechRecognitionEvent {

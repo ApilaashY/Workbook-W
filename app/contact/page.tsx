@@ -29,8 +29,8 @@ export default function Contact() {
               <p>
                 For general inquiries, support, or feedback:
                 <br />
-                <a href="mailto:apilaashyoharan@gmail.com">
-                  apilaashyoharan@gmail.com
+                <a href="mailto:apilaashy@gmail.com">
+                  apilaashy@gmail.com
                 </a>
               </p>
             </div>
@@ -40,7 +40,7 @@ export default function Contact() {
               <p>
                 Found a bug? Help us improve by reporting it:
                 <br />
-                <a href="mailto:apilaashyoharan@gmail.com?subject=Bug Report">
+                <a href="mailto:apilaashy@gmail.com?subject=Bug Report">
                   Report a Bug
                 </a>
               </p>
@@ -51,7 +51,7 @@ export default function Contact() {
               <p>
                 Have an idea for a new feature?
                 <br />
-                <a href="mailto:apilaashyoharan@gmail.com?subject=Feature Request">
+                <a href="mailto:apilaashy@gmail.com?subject=Feature Request">
                   Suggest a Feature
                 </a>
               </p>
@@ -62,7 +62,7 @@ export default function Contact() {
               <p>
                 Interested in partnerships or business opportunities?
                 <br />
-                <a href="mailto:apilaashyoharan@gmail.com?subject=Business Inquiry">
+                <a href="mailto:apilaashy@gmail.com?subject=Business Inquiry">
                   Contact for Business
                 </a>
               </p>
