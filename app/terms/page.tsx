@@ -18,8 +18,8 @@ export default function Terms() {
         <section>
           <h2>1. Acceptance of Terms</h2>
           <p>
-            By accessing and using Workbook ("the Service"), you accept and
-            agree to be bound by these Terms of Service ("Terms"). If you do not
+            By accessing and using Workbook (&quot;the Service&quot;), you accept and
+            agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not
             agree to these Terms, please do not use the Service.
           </p>
         </section>
@@ -63,7 +63,7 @@ export default function Terms() {
           <h3>4.1 Your Content</h3>
           <p>
             You retain ownership of all content you create, upload, or share
-            through the Service ("User Content"). By uploading User Content, you
+            through the Service (&quot;User Content&quot;). By uploading User Content, you
             grant us a license to store, process, and display your content
             solely for the purpose of providing the Service.
           </p>
@@ -148,9 +148,9 @@ export default function Terms() {
 
         <section>
           <h2>9. Disclaimers and Limitations of Liability</h2>
-          <h3>9.1 Service "As Is"</h3>
+          <h3>9.1 Service &quot;As Is&quot;</h3>
           <p>
-            The Service is provided "as is" and "as available" without
+            The Service is provided &quot;as is&quot; and &quot;as available&quot; without
             warranties of any kind, either express or implied, including but not
             limited to warranties of merchantability, fitness for a particular
             purpose, or non-infringement.
@@ -207,7 +207,7 @@ export default function Terms() {
           <p>
             We may update these Terms from time to time. We will notify you of
             significant changes by posting the new Terms on this page and
-            updating the "Last Updated" date. Continued use of the Service after
+            updating the &quot;Last Updated&quot; date. Continued use of the Service after
             changes constitutes acceptance of the modified Terms.
           </p>
         </section>

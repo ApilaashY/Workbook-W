@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://workbook.apilaash.com";
+  const baseUrl = "https://workbook-sigma.vercel.app";
 
   return [
     {

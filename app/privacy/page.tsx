@@ -18,7 +18,7 @@ export default function Privacy() {
         <section>
           <h2>1. Introduction</h2>
           <p>
-            Welcome to Workbook ("we," "our," or "us"). We are committed to
+            Welcome to Workbook (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to
             protecting your personal information and your right to privacy. This
             Privacy Policy explains how we collect, use, disclose, and safeguard
             your information when you use our project management platform.
@@ -206,7 +206,7 @@ export default function Privacy() {
           <p>
             We may update this Privacy Policy from time to time. We will notify
             you of any changes by posting the new Privacy Policy on this page
-            and updating the "Last Updated" date.
+            and updating the &quot;Last Updated&quot; date.
           </p>
         </section>
 

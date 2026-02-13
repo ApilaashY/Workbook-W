@@ -191,6 +191,12 @@ export default function Home() {
               Terms of Service
             </Link>
             <Link
+              href="/resources"
+              style={{ color: "var(--primary)", textDecoration: "none" }}
+            >
+              Resources
+            </Link>
+            <Link
               href="/contact"
               style={{ color: "var(--primary)", textDecoration: "none" }}
             >

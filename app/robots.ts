@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/app/", "/api/"],
       },
     ],
-    sitemap: "https://workbook.apilaash.com/sitemap.xml",
+    sitemap: "https://workbook-sigma.vercel.app/sitemap.xml",
   };
 }
