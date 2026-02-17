@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { promptMessage } from "@/lib/Components/Dialogs/PromptDialog";
 import { alertMessage } from "@/lib/Components/Dialogs/AlertDialog";
+import { confirmDialog } from "@/lib/Components/Dialogs/ConfirmDialog";
 
 export default function App() {
   // Hooks
@@ -187,7 +188,13 @@ export default function App() {
       return;
     }
 
-    if (!confirm("Are you sure you want to accept this invite?")) return;
+    if (
+      !confirmDialog(
+        "Accept Invite",
+        "Are you sure you want to accept this invite?"
+      )
+    )
+      return;
 
     // Send api request to accept the invite
     fetch("/api/coop/acceptInvite", {
