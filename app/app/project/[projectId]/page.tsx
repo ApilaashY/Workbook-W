@@ -75,7 +75,7 @@ function SortableTask({
     router.push(
       `/app/project/task/${task.id}${
         searchParams.get("sample") === "true" ? "?sample=true" : ""
-      }`
+      }`,
     );
   }
 
@@ -88,7 +88,7 @@ function SortableTask({
     updateTask(
       task.id,
       "progress",
-      e.currentTarget.checked ? "Done" : "Not Started"
+      e.currentTarget.checked ? "Done" : "Not Started",
     );
   }
 
@@ -172,13 +172,12 @@ function ProjectSuspenseWrapper({
   const [id, setId] = useState<string>("");
   const [project, setProject] = useState<ProjectClass | undefined>(undefined);
   const projectData: ProjectClass[] = useSelector(
-    (state: ProjectStore) => state.projects
+    (state: ProjectStore) => state.projects,
   );
   const [sortBy, setSortBy] = useState<string>("Custom");
   const [taskClassification, setTaskClassification] =
     useState<string>("General Tasks");
   const [ascending, setAscending] = useState<boolean>(false);
-  const [showOrder, setShowOrder] = useState<boolean>(false);
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<
     [string, string, string, string, TaskClass][]
@@ -195,11 +194,11 @@ function ProjectSuspenseWrapper({
       return project.tasks.filter((task) => task.archived);
     } else if (taskClassification === "Finished") {
       return project.tasks.filter(
-        (task) => !task.archived && task.progress === "Done"
+        (task) => !task.archived && task.progress === "Done",
       );
     } else if (taskClassification === "Unfinished") {
       return project.tasks.filter(
-        (task) => !task.archived && task.progress !== "Done"
+        (task) => !task.archived && task.progress !== "Done",
       );
     } else {
       return project.tasks; // "All"
@@ -256,14 +255,14 @@ function ProjectSuspenseWrapper({
   }, [params]);
 
   const projectInfo: ProjectClass | undefined = projectData.find(
-    (p) => p.id === id
+    (p) => p.id === id,
   );
 
   // Go back to the app page if the projectInfo is empty and there is a valid id
   useEffect(() => {
     if (!projectInfo && id)
       router.push(
-        `/app${searchParams.get("sample") === "true" ? "?sample=true" : ""}`
+        `/app${searchParams.get("sample") === "true" ? "?sample=true" : ""}`,
       );
   }, [projectInfo, id, router, searchParams]);
 
@@ -360,7 +359,14 @@ function ProjectSuspenseWrapper({
                 setSearchResults([]);
                 setShowSearch((prev) => !prev);
               }}
-              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5em", color: "#64748b", fontSize: "0.9rem" }}
+              style={{
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5em",
+                color: "#64748b",
+                fontSize: "0.9rem",
+              }}
             >
               <FaSearch />
               <span>Search tasks...</span>
@@ -392,7 +398,13 @@ function ProjectSuspenseWrapper({
             </select>
             {sortBy !== "Custom" && (
               <button
-                style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.2rem", padding: "0 0.5em" }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "1.2rem",
+                  padding: "0 0.5em",
+                }}
                 onClick={() => setAscending((prev) => !prev)}
               >
                 {!ascending ? "↑" : "↓"}
@@ -423,7 +435,13 @@ function ProjectSuspenseWrapper({
                 />
               ))}
               {searchResults.length === 0 && (
-                <div style={{ padding: "2em", textAlign: "center", color: "#64748b" }}>
+                <div
+                  style={{
+                    padding: "2em",
+                    textAlign: "center",
+                    color: "#64748b",
+                  }}
+                >
                   No tasks found matching your search.
                 </div>
               )}
