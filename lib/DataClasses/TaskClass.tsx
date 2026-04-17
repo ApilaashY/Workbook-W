@@ -123,10 +123,10 @@ export const TaskProgressStats: Record<
   TaskProgress,
   { color: string; alertLate: boolean; value: number }
 > = {
-  "Not Started": { color: "#808080", alertLate: true, value: 0 },
-  "In Progress": { color: "#ffff00", alertLate: true, value: 1 },
-  Scheduled: { color: "#0000ff", alertLate: true, value: 2 },
-  Done: { color: "#32cb6c", alertLate: false, value: 3 },
+  "Not Started": { color: "#94a3b8", alertLate: true, value: 0 },
+  "In Progress": { color: "#f59e0b", alertLate: true, value: 1 },
+  Scheduled: { color: "#6366f1", alertLate: true, value: 2 },
+  Done: { color: "#10b981", alertLate: false, value: 3 },
 };
 
 export const PriorityTypes: string[] = [

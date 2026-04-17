@@ -347,150 +347,150 @@ function ProjectSuspenseWrapper({
     <Kanban tasks={project.tasks} setKanbanMode={setKanbanMode} />
   ) : (
     <div className="project-window">
-      <div className="project-task-list">
-        <div className="project-task-list-header">
-          <h2
-            style={{ cursor: "pointer" }}
-            onClick={() => setShowOrder((prev) => !prev)}
-          >
-            Project Task List
-          </h2>
-          {showOrder ? (
-            <div className="project-task-list-header-controls">
-              {false && (
-                <button onClick={() => setKanbanMode(true)}>Kanban Mode</button>
-              )}
-              <select
-                className="sort-select"
-                onChange={(e) => setTaskClassification(e.target.value)}
+      <header className="project-header">
+        <h1 className="project-title-large">{project.title}</h1>
+        <div className="project-action-bar">
+          <div className="project-action-bar-left">
+            <button className="add-task-button" onClick={createNewTask}>
+              + Add Task
+            </button>
+            <div
+              className="search-trigger"
+              onClick={() => {
+                setSearchResults([]);
+                setShowSearch((prev) => !prev);
+              }}
+              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5em", color: "#64748b", fontSize: "0.9rem" }}
+            >
+              <FaSearch />
+              <span>Search tasks...</span>
+            </div>
+          </div>
+
+          <div className="project-action-bar-right">
+            <select
+              className="sort-select"
+              onChange={(e) => setTaskClassification(e.target.value)}
+              value={taskClassification}
+            >
+              <option value="General Tasks">General Tasks</option>
+              <option value="Archived">Archived</option>
+              <option value="Finished">Finished</option>
+              <option value="Unfinished">Unfinished</option>
+              <option value="All">All Projects</option>
+            </select>
+            <select
+              className="sort-select"
+              onChange={(e) => setSortBy(e.target.value)}
+              value={sortBy}
+            >
+              <option value="Custom">Custom Order</option>
+              <option value="Creation Date">Shared Date</option>
+              <option value="Alphabetical">A-Z Name</option>
+              <option value="Priority">Priority Level</option>
+              <option value="Due Date">Goal Date</option>
+            </select>
+            {sortBy !== "Custom" && (
+              <button
+                style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.2rem", padding: "0 0.5em" }}
+                onClick={() => setAscending((prev) => !prev)}
               >
-                <option value="General Tasks">General Tasks</option>
-                <option value="Archived">Archived</option>
-                <option value="Finished">Finished</option>
-                <option value="Unfinished">Unfinished</option>
-                <option value="All">All</option>
-              </select>
-              <select
-                className="sort-select"
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <option value="Custom">Custom</option>
-                <option value="Creation Date">Creation Date</option>
-                <option value="Alphabetical">Alphabetical</option>
-                <option value="Priority">Priority</option>
-                <option value="Due Date">Due Date</option>
-              </select>
-              {sortBy === "Custom" ? null : (
-                <h3
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setAscending((prev) => !prev)}
-                >
-                  {!ascending ? "⬆" : "⬇"}
-                </h3>
+                {!ascending ? "↑" : "↓"}
+              </button>
+            )}
+          </div>
+        </div>
+      </header>
+
+      <main className="project-main-content">
+        <section className="project-task-list">
+          {showSearch ? (
+            <div className="project-task-list-only">
+              <SearchBox
+                tasks={project.tasks}
+                results={searchResults}
+                setResults={setSearchResults}
+              />
+              {searchResults.map((result) => (
+                <SortableTask
+                  key={result[4].id}
+                  task={result[4]}
+                  color={TaskProgressStats[result[4].progress].color}
+                  moveable={false}
+                  searchDetails={
+                    result.slice(0, 4) as [string, string, string, string]
+                  }
+                />
+              ))}
+              {searchResults.length === 0 && (
+                <div style={{ padding: "2em", textAlign: "center", color: "#64748b" }}>
+                  No tasks found matching your search.
+                </div>
               )}
             </div>
-          ) : null}
-        </div>
-
-        {showSearch ? (
-          <div className="project-task-list-only">
-            {searchResults.map((result) => (
-              <SortableTask
-                key={result[4].id}
-                task={result[4]}
-                color={TaskProgressStats[result[4].progress].color}
-                moveable={false}
-                searchDetails={
-                  result.slice(0, 4) as [string, string, string, string]
-                } // [category, before, match, after]
-              />
-            ))}
-          </div>
-        ) : sortBy !== "Custom" ? (
-          <div className="project-task-list-only">
-            {sortedTasks.map((task) => {
-              return (
+          ) : sortBy !== "Custom" ? (
+            <div className="project-task-list-only">
+              {sortedTasks.map((task) => (
                 <SortableTask
                   key={task.id}
                   task={task}
                   color={TaskProgressStats[task.progress].color}
                   moveable={false}
                 />
-              );
-            })}
-          </div>
-        ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-            modifiers={[restrictToVerticalAxis]}
-          >
-            <SortableContext
-              items={filteredTasks}
-              strategy={verticalListSortingStrategy}
+              ))}
+            </div>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+              modifiers={[restrictToVerticalAxis]}
             >
-              <div className="project-task-list-only">
-                {sortedTasks.map((task) => {
-                  return (
+              <SortableContext
+                items={filteredTasks}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="project-task-list-only">
+                  {sortedTasks.map((task) => (
                     <SortableTask
                       key={task.id}
                       task={task}
                       color={TaskProgressStats[task.progress].color}
                       moveable={true}
                     />
-                  );
-                })}
-              </div>
-            </SortableContext>
-          </DndContext>
-        )}
-        {showSearch ? (
-          <SearchBox
-            tasks={project.tasks}
-            results={searchResults}
-            setResults={setSearchResults}
-          />
-        ) : null}
-        <div className="task-bottom-actions">
-          <FaSearch
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              setSearchResults([]);
-              setShowSearch((prev) => !prev);
-            }}
-          />
-          <button className="add-task-button" onClick={createNewTask}>
-            Add Task
-          </button>
-        </div>
-      </div>
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
+        </section>
 
-      <div className="project-task-summary">
-        <div className="project-info-card">
-          <h3 className="info-label">Status of all Tasks</h3>
-          <ProgressStatus project={project} />
-        </div>
+        <aside className="project-task-summary">
+          <div className="project-info-card">
+            <h3 className="info-label">Statistics</h3>
+            <ProgressStatus project={project} />
+          </div>
 
-        <div className="project-info-card">
-          <h3 className="info-label">Attached Links</h3>
-          <AttachedDocs
-            links={project.attachedDocs}
-            updateFunction={updateProject}
-            id={id}
-            sample={searchParams.get("sample") === "true"}
-          />
-        </div>
+          <div className="project-info-card">
+            <h3 className="info-label">Resources</h3>
+            <AttachedDocs
+              links={project.attachedDocs}
+              updateFunction={updateProject}
+              id={id}
+              sample={searchParams.get("sample") === "true"}
+            />
+          </div>
 
-        <div className="project-info-card">
-          <h3 className="info-label">People Involved</h3>
-          <PeopleList
-            people={project.people ?? {}}
-            projectId={project.id}
-            sample={searchParams.get("sample") === "true"}
-          />
-        </div>
-      </div>
+          <div className="project-info-card">
+            <h3 className="info-label">Collaborators</h3>
+            <PeopleList
+              people={project.people ?? {}}
+              projectId={project.id}
+              sample={searchParams.get("sample") === "true"}
+            />
+          </div>
+        </aside>
+      </main>
     </div>
   );
 }

@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
   // Better compression
   compress: true,
 
+  // Turbopack configuration
+  turbopack: {
+    // Explicitly set the root directory to fix workspace detection
+    root: __dirname,
+  },
+
   // Optimize images
   images: {
     formats: ["image/avif", "image/webp"],
