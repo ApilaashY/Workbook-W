@@ -1,15 +1,11 @@
 import Link from "next/link";
 import "./home.css";
 import Navbar from "@/lib/Components/Navbar/Navbar";
-import AdUnit from "@/app/AdUnit";
 
 export default function Home() {
   return (
     <>
       <Navbar />
-
-      {/* Responsive AdSense ad unit — visible to Google's crawler as a real element */}
-      <AdUnit />
 
       <div className="starter">
         <div className="starter-content">

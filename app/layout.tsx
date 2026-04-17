@@ -58,16 +58,11 @@ export default function RootLayout({
           rel="dns-prefetch"
           href="https://workbook-b27a1-default-rtdb.firebaseio.com"
         />
-        {/* Google AdSense — must be in <head> as a real script tag so Google's
-            crawler can verify site ownership. strategy="afterInteractive" loads
-            it after hydration without blocking the initial paint. */}
-        <Script
-          id="adsense-init"
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4914732861439858"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        ></script>
       </head>
       {/* suppressHydrationWarning prevents React from logging hydration mismatch
           warnings for transient attributes injected on the client (e.g. by
