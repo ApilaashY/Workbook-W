@@ -14,23 +14,20 @@ export default function AuthNav() {
       setHasAuth(false);
     }
   });
+
   if (hasAuth === true) {
+    // Logged-in users see their Dashboard link
     return <Link href="/app">Dashboard</Link>;
-  } else if (hasAuth === false) {
-    return (
-      <>
-        <Link href="/login">Login</Link>
-        <Link href="/signup">Register</Link>
-        <Link href="/app?sample=true">Sample</Link>
-      </>
-    );
   }
+
+  // Both the unauthenticated state (hasAuth === false) AND the initial
+  // SSR/loading state (hasAuth === null) show only public links.
+  // This prevents Google's crawler from ever seeing links to /app,
+  // which redirects to a login wall and violates AdSense policy.
   return (
     <>
       <Link href="/login">Login</Link>
       <Link href="/signup">Register</Link>
-      <Link href="/app">Dashboard</Link>
-      <Link href="/app?sample=true">Sample</Link>
     </>
   );
 }

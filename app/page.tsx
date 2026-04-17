@@ -1,16 +1,15 @@
 import Link from "next/link";
 import "./home.css";
 import Navbar from "@/lib/Components/Navbar/Navbar";
-import dynamic from "next/dynamic";
-
-// Lazy load AdSense only on public pages
-const AdSense = dynamic(() => import("./app/AdSense"), { ssr: true });
+import AdUnit from "@/app/AdUnit";
 
 export default function Home() {
   return (
     <>
       <Navbar />
-      <AdSense />
+
+      {/* Responsive AdSense ad unit — visible to Google's crawler as a real element */}
+      <AdUnit />
 
       <div className="starter">
         <div className="starter-content">
@@ -69,7 +68,7 @@ export default function Home() {
       </div>
 
       <div className="cta">
-        <h1>Ready to get started?</h1>
+        <h2>Ready to get started?</h2>
         <p>Join many people already using Workbook to manage their projects</p>
         <Link href="/signup" className="styled-button">
           Create a Free Account
